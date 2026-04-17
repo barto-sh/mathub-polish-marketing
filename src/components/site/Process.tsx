@@ -13,7 +13,7 @@ const STEPS = [
   {
     n: "02",
     title: "Wycena",
-    body: "Dostajesz konkretną cenę w 24 h. Bez „to zależy”.",
+    body: "Dostajesz konkretną cenę w 24 h. Bez ukrytych kosztów.",
     img: processQuote,
     alt: "Wydrukowana wycena trzymana w dłoniach, obok kalkulator i miarka.",
   },
@@ -36,7 +36,7 @@ const Process = () => {
       <div className="container-mh">
         <div className="max-w-3xl">
           <div className="kicker text-yellow-ink">Proces</div>
-          <h2 className="h2 mt-3 text-ink">Trzy kroki. Bez tajemnic.</h2>
+          <h2 className="h2 mt-3 text-ink">Trzy kroki, zero tajemnic.</h2>
         </div>
 
         <ol className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">

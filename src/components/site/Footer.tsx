@@ -21,7 +21,7 @@ const Footer = () => {
             </div>
             <p className="mt-5 text-[14px] leading-relaxed text-paper/60 max-w-[42ch]">
               Przeprowadzki i transport bagażowy. Jednoosobowa działalność z bazą
-              w Trzeszczynie — cała rozmowa, cała robota i cała odpowiedzialność u
+              w Trzeszczynie, cała rozmowa, cała praca i cała odpowiedzialność u
               jednej osoby.
             </p>
           </div>
@@ -73,7 +73,7 @@ const Footer = () => {
             <ul className="mt-4 space-y-2.5 text-[13.5px] text-paper/70">
               {[
                 "Ubezpieczenie towaru w cenie",
-                "Wózek samozaładowczy · udźwig 500 kg",
+                "Wózek samozaładowczy, udźwig 500 kg",
                 "Pasy, koce, pianka w komplecie",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2.5">

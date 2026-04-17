@@ -33,7 +33,7 @@ const Coverage = () => {
               ))}
             </ul>
             <p className="mt-8 text-[15px] leading-relaxed text-ink/70 max-w-[55ch]">
-              Poza województwem — cała Polska: od Szczecina do Rzeszowa. Kursy
+              Poza województwem oferujemy kursy na terenie całej Polski, od Szczecina do Rzeszowa. Kursy
               długodystansowe wyceniamy indywidualnie.
             </p>
           </div>

@@ -56,10 +56,10 @@ const Services = () => {
       <div className="container-mh">
         <div className="max-w-3xl">
           <div className="kicker text-yellow-ink">Zakres</div>
-          <h2 className="h2 mt-3 text-ink">Co wozimy — i jak.</h2>
+          <h2 className="h2 mt-3 text-ink">Co wozimy i jak.</h2>
           <p className="lede mt-5 text-ink/70">
-            Jedna ekipa, jeden bus, sześć typowych zleceń. Jeśli nie ma tu tego
-            czego szukasz, zadzwoń — robimy też rzeczy dziwne, od fortepianu po motor.
+            Jedna ekipa, jeden bus, sześć typowych zleceń. Jeśli nie ma tu tego,
+            czego szukasz, zadzwoń - realizujemy też nietypowe zlecenia, od fortepianu po motocykl.
           </p>
         </div>
 

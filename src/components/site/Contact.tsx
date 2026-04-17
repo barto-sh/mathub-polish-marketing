@@ -12,7 +12,7 @@ const Contact = () => {
             <div className="kicker text-yellow">Kontakt</div>
             <h2 className="h2 mt-3 text-paper">Masz termin. Potrzebujesz wyceny.</h2>
             <p className="lede mt-5 text-paper/75 max-w-[48ch]">
-              Telefon to najszybszy kanał — dzwonisz, opisujesz sytuację, dostajesz
+              Telefon to najszybszy kanał, dzwonisz, opisujesz sytuację, dostajesz
               orientacyjną cenę w trakcie rozmowy. Jeśli wolisz napisać, oddzwaniam
               w ciągu godziny.
             </p>

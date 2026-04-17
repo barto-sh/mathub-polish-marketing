@@ -40,13 +40,13 @@ const Hero = () => {
                 maxWidth: "16ch",
               }}
             >
-              Przeprowadzki bez dramy.{" "}
+              Przeprowadzki bez problemów.{" "}
               <span style={{ color: "#C8941A" }}>My to nosimy.</span>
             </h1>
 
             <p className="lede mt-6 text-ink/75 max-w-xl">
-              Mieszkania, domy, biura. Pakujemy, ładujemy, wiozemy — z wózkiem
-              samozaładowczym o udźwigu 500 kg, więc żadna winda hydrauliczna nie
+              Mieszkania, domy, biura. Pakujemy, ładujemy, wiozemy - z wózkiem
+              samozaładowczym o udźwigu 500 kg, dzięki czemu żadna winda hydrauliczna nie
               jest potrzebna. Zachodniopomorskie i cała Polska.
             </p>
 

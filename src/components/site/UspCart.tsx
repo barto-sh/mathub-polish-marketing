@@ -2,8 +2,8 @@ import { Check } from "lucide-react";
 import cartImg from "@/assets/usp-cart.jpg";
 
 const FEATURES = [
-  "Zjazd z wózkiem po meble z mieszkania na parterze i z piętra",
-  "Załadunek bez „dokładnie tu podstaw samochód” — pomieści się i pół metra dalej",
+  "Odbiór mebli z wózkiem, zarówno z parteru, jak i z piętra",
+  "Załadunek bez konieczności precyzyjnego podjeżdżania - poradzimy sobie nawet przy utrudnionym dostępie",
   "Pianka, folia bąbelkowa, pasy transportowe w komplecie",
 ];
 
@@ -62,7 +62,7 @@ const UspCart = () => {
             </h2>
             <p className="lede mt-5 text-paper/75">
               Paleciak, sztaplarka i winda załadunkowa w jednym. Samodzielnie wjeżdża
-              na pakę z ładunkiem — nie potrzebujemy rampy, hydraulicznej windy przy
+              na przestrzeń ładunkową busa - nie potrzebujemy rampy, hydraulicznej windy przy
               budynku, ani pięciu ludzi do wniesienia pralki. Co oznacza: mniejsza
               ekipa, krótszy czas, niższa cena.
             </p>
