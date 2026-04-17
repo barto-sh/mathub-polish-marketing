@@ -98,15 +98,6 @@ const Hero = () => {
                 className="w-full h-[420px] sm:h-[520px] lg:h-[600px] object-cover"
                 fetchPriority="high"
               />
-              {/* Caption strip */}
-              <div className="absolute bottom-0 left-0 right-0 px-4 py-3 flex items-center justify-between bg-gradient-to-t from-navy/90 to-transparent">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-yellow">
-                  W trakcie roboty
-                </span>
-                <span className="text-[11px] text-paper/70 tabular-nums">
-                  Szczecin · 03/2026
-                </span>
-              </div>
             </div>
           </div>
         </div>

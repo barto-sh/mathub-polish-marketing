@@ -41,15 +41,6 @@ const UspCart = () => {
               Sprzęt — udźwig 500 kg
             </span>
           </div>
-          {/* Bottom right marker */}
-          <div className="absolute bottom-4 right-4 md:bottom-6 md:right-6 text-right">
-            <div className="text-[11px] uppercase tracking-wider text-paper/50">
-              Spec / 01
-            </div>
-            <div className="text-yellow text-[13px] font-semibold tracking-wide">
-              MatHub · Trzeszczyn
-            </div>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-start">
