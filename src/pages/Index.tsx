@@ -1,16 +1,62 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useEffect } from "react";
+import Header from "@/components/site/Header";
+import Hero from "@/components/site/Hero";
+import TrustBar from "@/components/site/TrustBar";
+import Services from "@/components/site/Services";
+import UspCart from "@/components/site/UspCart";
+import Process from "@/components/site/Process";
+import Coverage from "@/components/site/Coverage";
+import Contact from "@/components/site/Contact";
+import Footer from "@/components/site/Footer";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  // IntersectionObserver fade-in for sections (respects prefers-reduced-motion via CSS)
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>(".reveal");
+    if (!("IntersectionObserver" in window) || els.length === 0) {
+      els.forEach((el) => el.classList.add("is-visible"));
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="min-h-screen bg-paper text-ink">
+      <Header />
+      <main>
+        <Hero />
+        <TrustBar />
+        <div className="reveal">
+          <Services />
+        </div>
+        <div className="reveal">
+          <UspCart />
+        </div>
+        <div className="reveal">
+          <Process />
+        </div>
+        <div className="reveal">
+          <Coverage />
+        </div>
+        <div className="reveal">
+          <Contact />
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
