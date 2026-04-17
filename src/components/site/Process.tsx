@@ -1,66 +1,83 @@
+import processNotebook from "@/assets/process-notebook.jpg";
+import processQuote from "@/assets/process-quote.jpg";
+import processDelivery from "@/assets/process-delivery.jpg";
+
 const STEPS = [
   {
     n: "01",
     title: "Rozmowa",
     body: "Dzwonisz, opisujesz co i gdzie. Termin potwierdzamy w rozmowie.",
+    img: processNotebook,
+    alt: "Notes, telefon i kawa na biurku — moment zapisywania szczegółów zlecenia.",
   },
   {
     n: "02",
     title: "Wycena",
     body: "Dostajesz konkretną cenę w 24 h. Bez „to zależy”.",
+    img: processQuote,
+    alt: "Wydrukowana wycena trzymana w dłoniach, obok kalkulator i miarka.",
   },
   {
     n: "03",
     title: "Realizacja",
     body: "Ekipa, bus, wózek. Przywozimy, wnosimy, ustawiamy.",
+    img: processDelivery,
+    alt: "Bus z otwartymi tylnymi drzwiami i wózek z kartonami w drodze do klatki.",
   },
 ];
 
 const Process = () => {
   return (
-    <section id="proces" aria-label="Proces współpracy" className="bg-paper py-20 md:py-28">
+    <section
+      id="proces"
+      aria-label="Proces współpracy"
+      className="bg-paper py-20 md:py-28"
+    >
       <div className="container-mh">
         <div className="max-w-3xl">
           <div className="kicker text-yellow-ink">Proces</div>
           <h2 className="h2 mt-3 text-ink">Trzy kroki. Bez tajemnic.</h2>
         </div>
 
-        <div className="mt-14 relative">
-          {/* Desktop horizontal line */}
-          <div
-            className="hidden md:block absolute top-[36px] left-0 right-0 h-px"
-            style={{ backgroundColor: "hsl(var(--ink) / 0.12)" }}
-            aria-hidden="true"
-          />
-          {/* Mobile vertical line */}
-          <div
-            className="md:hidden absolute top-0 bottom-0 left-[18px] w-px"
-            style={{ backgroundColor: "hsl(var(--ink) / 0.12)" }}
-            aria-hidden="true"
-          />
+        <ol className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+          {STEPS.map((step) => (
+            <li
+              key={step.n}
+              className="relative flex flex-col"
+            >
+              {/* Image */}
+              <div className="relative overflow-hidden rounded-md bg-cream aspect-[5/4] mb-6">
+                <img
+                  src={step.img}
+                  alt={step.alt}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                  style={{ filter: "saturate(0.85) contrast(1.02)" }}
+                />
+                {/* Step number badge */}
+                <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-paper/95 backdrop-blur-sm px-2.5 py-1 rounded-sm">
+                  <span
+                    className="inline-block h-1.5 w-1.5 rounded-full bg-yellow-ink"
+                    aria-hidden="true"
+                  />
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink">
+                    Krok {step.n}
+                  </span>
+                </div>
+              </div>
 
-          <ol className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 relative">
-            {STEPS.map((step, i) => (
-              <li key={step.n} className="relative pl-12 md:pl-0">
-                {/* Dot */}
-                <div
-                  className="absolute md:relative left-0 top-1 md:top-0 md:mb-5 h-9 w-9 rounded-full bg-paper border-2 flex items-center justify-center"
-                  style={{ borderColor: "hsl(41 80% 38%)" }}
-                  aria-hidden="true"
-                >
-                  <span className="h-2 w-2 rounded-full bg-yellow-ink" />
-                </div>
-                <div className="text-yellow-ink text-[42px] md:text-[56px] font-semibold leading-none tracking-tight">
-                  {step.n}
-                </div>
-                <h3 className="mt-3 text-[20px] font-semibold text-ink">{step.title}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-ink/65 max-w-[42ch]">
-                  {step.body}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </div>
+              <div className="text-yellow-ink text-[44px] md:text-[56px] font-semibold leading-none tracking-tight">
+                {step.n}
+              </div>
+              <h3 className="mt-3 text-[20px] font-semibold text-ink">
+                {step.title}
+              </h3>
+              <p className="mt-2 text-[15px] leading-relaxed text-ink/65 max-w-[42ch]">
+                {step.body}
+              </p>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );
