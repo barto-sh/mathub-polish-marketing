@@ -25,7 +25,7 @@ const UspCart = () => {
         <div className="relative mb-14 md:mb-20 rounded-md overflow-hidden">
           <img
             src={cartImg}
-            alt="Wózek samozaładowczy MatHub z udźwigiem 500 kg unoszący zabezpieczoną pralkę owiniętą kocami transportowymi i spiętą żółtymi pasami."
+            alt="Elektryczny wózek paletowy z masztem podnoszącym MatHub (udźwig 500 kg) z zabezpieczoną pralką owiniętą kocami transportowymi i spiętą żółtymi pasami, na bruku przed kamienicą o zmierzchu."
             width={1920}
             height={1080}
             loading="lazy"
