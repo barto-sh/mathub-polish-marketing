@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Phone, Menu, X, Hexagon } from "lucide-react";
+import { Phone, Menu, X, Truck } from "lucide-react";
 
 const PHONE_DISPLAY = "+48 730 857 710";
 const PHONE_HREF = "tel:+48730857710";
@@ -46,10 +46,10 @@ const Header = () => {
           aria-label="Strona główna MatHub"
         >
           <span
-            className="inline-flex h-8 w-8 items-center justify-center rounded-sm bg-yellow transition-transform duration-500 group-hover:rotate-90"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-sm bg-yellow transition-transform duration-300 group-hover:translate-x-0.5"
             aria-hidden="true"
           >
-            <Hexagon className="h-5 w-5 fill-navy text-navy" />
+            <Truck className="h-5 w-5 text-navy" strokeWidth={2.25} />
           </span>
           <span
             className="text-[22px] font-semibold text-ink"

@@ -1,4 +1,4 @@
-import { Hexagon, Phone, Clock, MapPin } from "lucide-react";
+import { Truck, Phone, Clock, MapPin } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -12,7 +12,7 @@ const Footer = () => {
                 className="inline-flex h-8 w-8 items-center justify-center rounded-sm bg-yellow"
                 aria-hidden="true"
               >
-                <Hexagon className="h-5 w-5 fill-navy text-navy" />
+                <Truck className="h-5 w-5 text-navy" strokeWidth={2.25} />
               </span>
               <span
                 className="text-[22px] font-semibold text-paper"
