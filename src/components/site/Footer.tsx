@@ -36,7 +36,7 @@ const Footer = () => {
                 <span className="text-paper/50">Nazwa:</span> MatHub
               </li>
               <li>
-                <span className="text-paper/50">JDG / NIP:</span> 858-167-45-59
+                <span className="text-paper/50">NIP:</span> 858-167-45-59
               </li>
             </ul>
           </div>
