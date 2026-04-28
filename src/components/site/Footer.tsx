@@ -38,9 +38,6 @@ const Footer = () => {
               <li>
                 <span className="text-paper/50">JDG / NIP:</span> 858-167-45-59
               </li>
-              <li>
-                <span className="text-paper/50">REGON:</span> _________
-              </li>
             </ul>
           </div>
 
@@ -60,7 +57,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-2.5 group">
                 <Clock className="h-4 w-4 text-paper/50 transition-colors group-hover:text-yellow shrink-0" />
-                <span>Pon–Sob · 7:00–20:00</span>
+                <span>Pon–Sob · 8:00–20:00</span>
               </li>
             </ul>
           </div>

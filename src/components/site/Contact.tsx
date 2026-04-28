@@ -38,7 +38,7 @@ const Contact = () => {
                   {PHONE_DISPLAY}
                 </div>
                 <div className="mt-0.5 text-[13px] text-navy/70">
-                  Pon–Sob · 7:00–20:00
+                  Pon–Sob · 8:00–20:00
                 </div>
               </div>
               <ArrowRight className="h-5 w-5 text-navy shrink-0" aria-hidden="true" />
