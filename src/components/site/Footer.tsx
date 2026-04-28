@@ -1,4 +1,4 @@
-import { Hexagon, Phone, Mail, MapPin } from "lucide-react";
+import { Hexagon, Phone, Clock, MapPin } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -59,10 +59,8 @@ const Footer = () => {
                 </a>
               </li>
               <li className="flex items-center gap-2.5 group">
-                <Mail className="h-4 w-4 text-paper/50 transition-colors group-hover:text-yellow shrink-0" />
-                <a href="mailto:kontakt@mathub.pl" className="hover:text-yellow transition-mh">
-                  kontakt@mathub.pl
-                </a>
+                <Clock className="h-4 w-4 text-paper/50 transition-colors group-hover:text-yellow shrink-0" />
+                <span>Pon–Sob · 7:00–20:00</span>
               </li>
             </ul>
           </div>
