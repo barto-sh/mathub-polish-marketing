@@ -62,7 +62,7 @@ const Hero = () => {
                 href="#kontakt"
                 className="inline-flex items-center justify-center gap-2 rounded-sm border border-navy px-5 h-12 text-[15px] font-semibold text-navy transition-mh hover:bg-navy hover:text-paper"
               >
-                Napisz i oddzwonię
+                Sprawdź termin
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </a>
             </div>
