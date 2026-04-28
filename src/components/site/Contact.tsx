@@ -1,7 +1,7 @@
 import { Phone, Mail, MapPin, ArrowRight } from "lucide-react";
 
-const PHONE_DISPLAY = "+48 XXX XXX XXX";
-const PHONE_HREF = "tel:+48000000000";
+const PHONE_DISPLAY = "+48 730 857 710";
+const PHONE_HREF = "tel:+48730857710";
 
 const Contact = () => {
   return (

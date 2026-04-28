@@ -1,8 +1,8 @@
 import { Phone, ArrowRight } from "lucide-react";
 import heroImg from "@/assets/hero-hands.jpg";
 
-const PHONE_DISPLAY = "+48 XXX XXX XXX";
-const PHONE_HREF = "tel:+48000000000";
+const PHONE_DISPLAY = "+48 730 857 710";
+const PHONE_HREF = "tel:+48730857710";
 
 const Hero = () => {
   return (
@@ -45,7 +45,7 @@ const Hero = () => {
             </h1>
 
             <p className="lede mt-6 text-ink/75 max-w-xl">
-              Mieszkania, domy, biura. Pakujemy, ładujemy, wiozemy - z wózkiem
+              Mieszkania, domy, biura. Pakujemy, ładujemy, wieziemy - z wózkiem
               samozaładowczym o udźwigu 500 kg, dzięki czemu żadna winda hydrauliczna nie
               jest potrzebna. Zachodniopomorskie i cała Polska.
             </p>

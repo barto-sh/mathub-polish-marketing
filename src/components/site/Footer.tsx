@@ -1,25 +1,27 @@
+import { Hexagon, Phone, Mail, MapPin } from "lucide-react";
+
 const Footer = () => {
   return (
     <footer className="bg-[hsl(var(--navy-deep))] text-paper">
       <div className="container-mh py-16 md:py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-10 lg:gap-12">
-          {/* Brand */}
-          <div>
+          {/* Brand & Description */}
+          <div className="flex flex-col gap-5">
             <div className="flex items-center gap-2.5">
               <span
-                className="inline-flex h-7 w-7 items-center justify-center rounded-sm bg-yellow"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-sm bg-yellow"
                 aria-hidden="true"
               >
-                <span className="text-navy text-[14px] font-bold leading-none">M</span>
+                <Hexagon className="h-5 w-5 fill-navy text-navy" />
               </span>
               <span
-                className="text-[20px] font-semibold text-paper"
+                className="text-[22px] font-semibold text-paper"
                 style={{ letterSpacing: "-0.01em" }}
               >
                 MatHub
               </span>
             </div>
-            <p className="mt-5 text-[14px] leading-relaxed text-paper/60 max-w-[42ch]">
+            <p className="mt-1 text-[14px] leading-relaxed text-paper/60 max-w-[42ch]">
               Przeprowadzki i transport bagażowy. Jednoosobowa działalność z bazą
               w Trzeszczynie, cała rozmowa, cała praca i cała odpowiedzialność u
               jednej osoby.
@@ -28,13 +30,13 @@ const Footer = () => {
 
           {/* Dane firmy */}
           <div>
-            <div className="kicker text-yellow text-[11px]">Dane firmy</div>
+            <h3 className="kicker text-yellow text-[11px]">Dane firmy</h3>
             <ul className="mt-4 space-y-2 text-[13.5px] text-paper/70">
               <li>
                 <span className="text-paper/50">Nazwa:</span> MatHub
               </li>
               <li>
-                <span className="text-paper/50">JDG / NIP:</span> _________
+                <span className="text-paper/50">JDG / NIP:</span> 858-167-45-59
               </li>
               <li>
                 <span className="text-paper/50">REGON:</span> _________
@@ -42,25 +44,23 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Adres */}
+          {/* Kontakt */}
           <div>
-            <div className="kicker text-yellow text-[11px]">Adres / kontakt</div>
-            <ul className="mt-4 space-y-2 text-[13.5px] text-paper/70">
-              <li>
-                <span className="text-paper/50">Baza:</span> Trzeszczyn, 72-004 Police
+            <h3 className="kicker text-yellow text-[11px]">Adres / kontakt</h3>
+            <ul className="mt-4 space-y-3 text-[13.5px] text-paper/70">
+              <li className="flex items-start gap-2.5 group">
+                <MapPin className="h-4 w-4 mt-0.5 text-paper/50 transition-colors group-hover:text-yellow shrink-0" />
+                <span>Trzeszczyn, 72-004 Police</span>
               </li>
-              <li>
-                <span className="text-paper/50">Telefon:</span>{" "}
-                <a href="tel:+48000000000" className="hover:text-yellow transition-mh">
-                  +48 XXX XXX XXX
+              <li className="flex items-center gap-2.5 group">
+                <Phone className="h-4 w-4 text-paper/50 transition-colors group-hover:text-yellow shrink-0" />
+                <a href="tel:+48730857710" className="hover:text-yellow transition-mh">
+                  +48 730 857 710
                 </a>
               </li>
-              <li>
-                <span className="text-paper/50">E-mail:</span>{" "}
-                <a
-                  href="mailto:kontakt@mathub.pl"
-                  className="hover:text-yellow transition-mh"
-                >
+              <li className="flex items-center gap-2.5 group">
+                <Mail className="h-4 w-4 text-paper/50 transition-colors group-hover:text-yellow shrink-0" />
+                <a href="mailto:kontakt@mathub.pl" className="hover:text-yellow transition-mh">
                   kontakt@mathub.pl
                 </a>
               </li>
@@ -69,7 +69,7 @@ const Footer = () => {
 
           {/* Realizacja */}
           <div>
-            <div className="kicker text-yellow text-[11px]">Realizacja</div>
+            <h3 className="kicker text-yellow text-[11px]">Realizacja</h3>
             <ul className="mt-4 space-y-2.5 text-[13.5px] text-paper/70">
               {[
                 "Ubezpieczenie towaru w cenie",
