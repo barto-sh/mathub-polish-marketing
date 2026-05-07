@@ -52,13 +52,12 @@ const Coverage = () => {
           </div>
 
           <div className="relative rounded-3xl overflow-hidden border border-line bg-white shadow-lg group">
-            <div className="absolute inset-0 grayscale-[40%] opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-in-out z-10 pointer-events-none"></div>
             <iframe
               title="Mapa: Trzeszczyn, 72-004 Police"
               src="https://www.google.com/maps?q=53.55,14.52&z=11&output=embed"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="w-full h-[400px] md:h-[480px] border-0 relative z-0"
+              className="w-full h-[400px] md:h-[480px] border-0 grayscale-[15%] saturate-[0.9] contrast-[1.02] transition-all duration-700 ease-in-out group-hover:grayscale-0 group-hover:saturate-100"
             />
           </div>
         </div>

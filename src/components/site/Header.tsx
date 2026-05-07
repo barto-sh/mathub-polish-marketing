@@ -102,31 +102,34 @@ const Header = () => {
 
       {/* Mobile panel */}
       <div
-        className={`md:hidden absolute top-full left-0 w-full bg-paper shadow-lg transition-all duration-300 origin-top overflow-hidden ${
-          open ? "scale-y-100 opacity-100 border-t border-line" : "scale-y-0 opacity-0 h-0"
+        aria-hidden={!open}
+        className={`md:hidden absolute top-full left-0 w-full bg-paper/95 backdrop-blur-md shadow-[0_24px_64px_hsl(222_33%_9%/0.14)] transition-[max-height,opacity,transform] duration-300 ease-out overflow-hidden overscroll-contain ${
+          open
+            ? "max-h-[calc(100dvh-80px)] opacity-100 translate-y-0 border-t border-line"
+            : "max-h-0 opacity-0 -translate-y-2 pointer-events-none border-t border-transparent"
         }`}
       >
-        <div className="container-mh py-6 flex flex-col gap-1">
-          {NAV.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className="group flex items-center justify-between rounded-sm px-4 py-3.5 text-[15px] font-medium text-ink transition-colors hover:bg-line/30"
-            >
-              {item.label}
-            </a>
-          ))}
-          <div className="mt-4 px-4 pb-2">
-            <a
-              href={PHONE_HREF}
-              onClick={() => setOpen(false)}
-              className="flex w-full items-center justify-center gap-2 rounded-sm bg-yellow h-12 text-[15px] font-semibold text-navy transition-colors hover:bg-[hsl(45_100%_56%)]"
-            >
-              <Phone className="h-4 w-4" aria-hidden="true" />
-              Zadzwoń {PHONE_DISPLAY}
-            </a>
+        <div className="container-mh max-h-[calc(100dvh-80px)] py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] flex flex-col">
+          <div className="min-h-0 overflow-y-auto rounded-md border border-line bg-paper divide-y divide-line">
+            {NAV.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="group flex items-center justify-between px-4 py-2.5 text-[15px] font-medium text-ink transition-colors hover:bg-cream/70"
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
+          <a
+            href={PHONE_HREF}
+            onClick={() => setOpen(false)}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-md bg-yellow h-10 text-[15px] font-semibold text-navy shadow-sm transition-colors hover:bg-[hsl(45_100%_56%)]"
+          >
+            <Phone className="h-4 w-4" aria-hidden="true" />
+            Zadzwoń {PHONE_DISPLAY}
+          </a>
         </div>
       </div>
     </header>

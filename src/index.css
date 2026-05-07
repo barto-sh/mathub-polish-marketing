@@ -16,7 +16,7 @@
     --navy: 217 50% 21%;          /* #1a2f4f */
     --navy-deep: 215 53% 12%;     /* #0E1B2E */
     --yellow: 45 100% 51%;        /* #FFC107 */
-    --yellow-ink: 41 80% 38%;     /* #B8860B */
+    --yellow-ink: 41 80% 31%;
     --yellow-accent: 39 76% 45%;  /* #C8941A — hero accent */
 
     /* shadcn token aliases mapped to brand */
@@ -108,7 +108,7 @@
   }
 
   .h2 {
-    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    font-size: clamp(1.625rem, 3.5vw, 2.5rem);
     font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.1;

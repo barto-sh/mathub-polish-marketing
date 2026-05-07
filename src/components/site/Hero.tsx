@@ -36,7 +36,7 @@ const Hero = () => {
             <h1
               className="display mt-6 text-ink"
               style={{
-                fontSize: "clamp(2.5rem, 6.5vw, 4.75rem)",
+                fontSize: "clamp(2.35rem, 6.5vw, 4.75rem)",
                 maxWidth: "16ch",
               }}
             >
@@ -96,7 +96,6 @@ const Hero = () => {
                 width={1080}
                 height={1920}
                 className="w-full h-[420px] sm:h-[520px] lg:h-[600px] object-cover"
-                fetchPriority="high"
               />
             </div>
           </div>

@@ -77,16 +77,16 @@ const UspCart = () => {
             </ul>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-1 gap-px bg-line-dark rounded-md overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-px bg-line-dark rounded-md overflow-hidden">
             {SPECS.map((s) => (
               <div
                 key={s.label}
                 className={`bg-navy p-6 md:p-7 ${
-                  s.span ? "col-span-2 lg:col-span-1" : ""
+                  s.span ? "sm:col-span-2 lg:col-span-1" : ""
                 }`}
               >
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-yellow text-[40px] md:text-[48px] font-semibold leading-none tracking-tight">
+                <div className="flex items-baseline gap-2">
+                  <span className="whitespace-nowrap text-yellow text-[clamp(2.35rem,11vw,3rem)] md:text-[48px] font-semibold leading-none tracking-tight">
                     {s.value}
                   </span>
                   {s.unit && (
