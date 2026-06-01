@@ -25,4 +25,20 @@ describe("landing page", () => {
     fireEvent.click(screen.getByRole("button", { name: "Zamknij menu" }));
     expect(document.body.style.overflow).toBe("");
   });
+
+  it("removes hidden mobile menu links from the tab order", () => {
+    render(<Index />);
+
+    const hiddenMenu = document.getElementById("mobile-menu");
+    expect(hiddenMenu).toHaveAttribute("aria-hidden", "true");
+    hiddenMenu?.querySelectorAll("a").forEach((link) => {
+      expect(link).toHaveAttribute("tabindex", "-1");
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Otwórz menu" }));
+    expect(hiddenMenu).toHaveAttribute("aria-hidden", "false");
+    hiddenMenu?.querySelectorAll("a").forEach((link) => {
+      expect(link).not.toHaveAttribute("tabindex", "-1");
+    });
+  });
 });

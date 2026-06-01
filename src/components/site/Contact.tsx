@@ -88,12 +88,12 @@ const Contact = () => {
                   <span className="block font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-navy/60">
                     Zadzwoń
                   </span>
-                  <span className="mt-1 block text-[clamp(1.55rem,3vw,2.05rem)] font-bold leading-tight tracking-tight">
+                  <span className="mt-1 block whitespace-nowrap text-[1.25rem] font-bold leading-tight tracking-tight sm:text-[clamp(1.55rem,3vw,2.05rem)]">
                     {PHONE_DISPLAY}
                   </span>
                   <span className="mt-1 block text-[13px] text-navy/70">Pon–Sob · 8:00–20:00</span>
                 </span>
-                <ArrowRight className="h-5 w-5 shrink-0 transition-mh group-hover:translate-x-1.5" aria-hidden="true" />
+                <ArrowRight className="hidden h-5 w-5 shrink-0 transition-mh group-hover:translate-x-1.5 sm:block" aria-hidden="true" />
               </a>
             </li>
 

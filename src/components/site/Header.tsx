@@ -147,6 +147,7 @@ const Header = () => {
               <a
                 key={item.href}
                 href={item.href}
+                tabIndex={open ? 0 : -1}
                 onClick={() => setOpen(false)}
                 className="flex min-h-11 items-center px-4 py-3 text-[15px] font-medium text-ink transition-colors hover:bg-cream/70"
               >
@@ -156,6 +157,7 @@ const Header = () => {
           </div>
           <a
             href={PHONE_HREF}
+            tabIndex={open ? 0 : -1}
             onClick={() => setOpen(false)}
             className="mt-2 flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-yellow px-4 py-3 text-[15px] font-semibold text-navy shadow-sm transition-colors hover:bg-[hsl(45_100%_56%)]"
           >
