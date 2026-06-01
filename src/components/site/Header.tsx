@@ -5,19 +5,40 @@ const PHONE_DISPLAY = "+48 730 857 710";
 const PHONE_HREF = "tel:+48730857710";
 
 const NAV = [
-  { href: "#uslugi", label: "Usługi" },
-  { href: "#wozek", label: "Wózek" },
-  { href: "#proces", label: "Proces" },
-  { href: "#zasieg", label: "Zasięg" },
-  { href: "#kontakt", label: "Kontakt" },
+  { href: "#uslugi", label: "Usługi", id: "uslugi" },
+  { href: "#wozek", label: "Wózek", id: "wozek" },
+  { href: "#proces", label: "Proces", id: "proces" },
+  { href: "#zasieg", label: "Zasięg", id: "zasieg" },
+  { href: "#kontakt", label: "Kontakt", id: "kontakt" },
 ];
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const sections = NAV.map((n) => document.getElementById(n.id)).filter(
+      (el): el is HTMLElement => !!el
+    );
+    if (!sections.length || !("IntersectionObserver" in window)) return;
+    const visible = new Set<string>();
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) visible.add(e.target.id);
+          else visible.delete(e.target.id);
+        });
+        setActiveId(NAV.find((n) => visible.has(n.id))?.id ?? null);
+      },
+      { rootMargin: "-45% 0px -50% 0px" }
+    );
+    sections.forEach((s) => io.observe(s));
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -30,93 +51,104 @@ const Header = () => {
     };
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const onDark = !scrolled && !open;
+
   return (
     <header
-      className={`sticky top-0 w-full z-50 transition-all duration-500 ease-in-out ${
-        scrolled
-          ? "bg-paper/95 backdrop-blur-md shadow-sm py-3 border-b border-line"
-          : "bg-paper py-5 border-b border-transparent"
+      className={`fixed top-0 z-50 w-full border-b backdrop-blur-md transition-mh ${
+        onDark
+          ? "border-paper/15 bg-ink/18 text-paper"
+          : "border-line bg-paper/95 text-ink shadow-sm"
       }`}
     >
-      <div className="container-mh flex items-center justify-between">
-        {/* Logo Opcja B: Premium Minimalist */}
-        <a
-          href="#top"
-          className="group flex items-center gap-2.5 transition-transform hover:-translate-y-0.5 duration-300"
-          aria-label="Strona główna MatHub"
-        >
-          <span
-            className="inline-flex h-8 w-8 items-center justify-center rounded-sm bg-yellow transition-transform duration-300 group-hover:translate-x-0.5"
-            aria-hidden="true"
+      <div className="container-mh py-3.5 md:py-4">
+        <div className="flex min-h-10 items-center justify-between gap-4">
+          <a
+            href="#top"
+            className="group flex items-center gap-2.5 transition-transform duration-300 hover:-translate-y-0.5"
+            aria-label="Strona główna MatHub"
+            onClick={() => setOpen(false)}
           >
-            <Truck className="h-5 w-5 text-navy" strokeWidth={2.25} />
-          </span>
-          <span
-            className="text-[22px] font-semibold text-ink"
-            style={{ letterSpacing: "-0.01em" }}
-          >
-            MatHub
-          </span>
-        </a>
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-sm bg-yellow" aria-hidden="true">
+              <Truck className="h-5 w-5 text-navy" strokeWidth={2.25} />
+            </span>
+            <span className="text-[22px] font-semibold" style={{ letterSpacing: "-0.01em" }}>
+              MatHub
+            </span>
+          </a>
 
-        {/* Desktop Navigation */}
-        <nav
-          aria-label="Główna nawigacja"
-          className="hidden md:flex items-center gap-8 lg:gap-12"
-        >
-          {NAV.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="relative text-[14.5px] font-medium text-ink/80 transition-colors duration-300 hover:text-ink group py-1"
-            >
-              {item.label}
-              {/* Elegant centered animated underline */}
-              <span className="absolute bottom-0 left-0 h-[2px] w-full bg-ink scale-x-0 origin-center transition-transform duration-300 ease-out group-hover:scale-x-100"></span>
-            </a>
-          ))}
-        </nav>
+          <nav aria-label="Główna nawigacja" className="hidden items-center gap-8 md:flex lg:gap-10">
+            {NAV.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                aria-current={activeId === item.id ? "true" : undefined}
+                className={`text-[14.5px] font-medium transition-mh hover:-translate-y-px ${
+                  activeId === item.id
+                    ? onDark
+                      ? "text-yellow"
+                      : "text-navy"
+                    : onDark
+                      ? "text-paper/72 hover:text-paper"
+                      : "text-ink/60 hover:text-ink"
+                }`}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
 
-        {/* CTA Button */}
-        <div className="hidden md:block">
           <a
             href={PHONE_HREF}
-            className="inline-flex items-center gap-2 rounded-sm bg-yellow px-5 h-11 text-[14.5px] font-semibold text-navy transition-all duration-300 hover:bg-[hsl(45_100%_56%)] hover:shadow-sm hover:-translate-y-0.5"
+            className={`hidden h-10 items-center gap-2 rounded-sm px-4 text-[13.5px] font-semibold transition-mh md:inline-flex ${
+              onDark
+                ? "border border-paper/18 bg-paper/6 text-paper hover:border-yellow hover:text-yellow"
+                : "bg-yellow text-navy hover:bg-[hsl(45_100%_56%)]"
+            }`}
           >
-            <Phone className="h-4 w-4" aria-hidden="true" />
-            <span>Zadzwoń</span>
+            <Phone className="h-[15px] w-[15px]" aria-hidden="true" />
+            <span>730 857 710</span>
           </a>
-        </div>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          type="button"
-          className="md:hidden inline-flex h-10 w-10 items-center justify-center rounded-sm text-ink transition-colors hover:bg-line/50"
-          aria-label={open ? "Zamknij menu" : "Otwórz menu"}
-          aria-expanded={open}
-          onClick={() => setOpen((v) => !v)}
-        >
-          {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+          <button
+            type="button"
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-sm transition-colors md:hidden ${
+              onDark ? "text-paper hover:bg-paper/10" : "text-ink hover:bg-line/50"
+            }`}
+            aria-label={open ? "Zamknij menu" : "Otwórz menu"}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile panel */}
       <div
+        id="mobile-menu"
         aria-hidden={!open}
-        className={`md:hidden absolute top-full left-0 w-full bg-paper/95 backdrop-blur-md shadow-[0_24px_64px_hsl(222_33%_9%/0.14)] transition-[max-height,opacity,transform] duration-300 ease-out overflow-hidden overscroll-contain ${
+        className={`absolute left-0 top-full w-full overflow-hidden overscroll-contain bg-paper/95 shadow-[0_24px_64px_hsl(222_33%_9%/0.14)] backdrop-blur-md transition-[max-height,opacity,transform] duration-300 ease-out md:hidden ${
           open
-            ? "max-h-[calc(100dvh-80px)] opacity-100 translate-y-0 border-t border-line"
-            : "max-h-0 opacity-0 -translate-y-2 pointer-events-none border-t border-transparent"
+            ? "max-h-[calc(100dvh-72px)] translate-y-0 border-t border-line opacity-100"
+            : "pointer-events-none max-h-0 -translate-y-2 border-t border-transparent opacity-0"
         }`}
       >
-        <div className="container-mh max-h-[calc(100dvh-80px)] py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] flex flex-col">
-          <div className="min-h-0 overflow-y-auto rounded-md border border-line bg-paper divide-y divide-line">
+        <div className="container-mh flex max-h-[calc(100dvh-72px)] flex-col py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+          <div className="min-h-0 divide-y divide-line overflow-y-auto rounded-md border border-line bg-paper">
             {NAV.map((item) => (
               <a
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="group flex items-center justify-between px-4 py-2.5 text-[15px] font-medium text-ink transition-colors hover:bg-cream/70"
+                className="flex min-h-11 items-center px-4 py-3 text-[15px] font-medium text-ink transition-colors hover:bg-cream/70"
               >
                 {item.label}
               </a>
@@ -125,7 +157,7 @@ const Header = () => {
           <a
             href={PHONE_HREF}
             onClick={() => setOpen(false)}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-md bg-yellow h-10 text-[15px] font-semibold text-navy shadow-sm transition-colors hover:bg-[hsl(45_100%_56%)]"
+            className="mt-2 flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-yellow px-4 py-3 text-[15px] font-semibold text-navy shadow-sm transition-colors hover:bg-[hsl(45_100%_56%)]"
           >
             <Phone className="h-4 w-4" aria-hidden="true" />
             Zadzwoń {PHONE_DISPLAY}
