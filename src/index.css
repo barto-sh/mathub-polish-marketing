@@ -258,7 +258,7 @@
 
 /* USP „Wózek" — cinematic Ken Burns (motion-safe) */
 @keyframes uspKenBurns { from { transform: scale(1.06); } to { transform: scale(1.16); } }
-@media (prefers-reduced-motion: no-preference) {
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
   .usp-kenburns { animation: uspKenBurns 22s ease-in-out infinite alternate; }
 }
 

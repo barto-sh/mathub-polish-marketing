@@ -1,0 +1,1227 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MatHub — 5 kreatywnych navbarów</title>
+  <meta name="description" content="Pięć standalone koncepcji navbaru dopasowanych do strony MatHub: przeprowadzki, transport, wózek samozaładowczy, Szczecin i cała Polska." />
+  <style>
+    :root {
+      --paper: #fafafa;
+      --cream: #f5f1e8;
+      --ink: #0b1220;
+      --muted: #4b5563;
+      --navy: #1a2f4f;
+      --navy-deep: #0e1b2e;
+      --yellow: #ffc107;
+      --yellow-hot: #ffd34d;
+      --yellow-ink: #8f6310;
+      --line: rgba(11, 18, 32, 0.12);
+      --line-dark: rgba(250, 250, 250, 0.14);
+      --radius-sm: 2px;
+      --radius-md: 8px;
+      --radius-lg: 18px;
+      --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+      color-scheme: light;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--paper);
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 193, 7, 0.17), transparent 34rem),
+        linear-gradient(180deg, #fff, var(--cream) 38rem, var(--paper));
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+
+    :focus-visible {
+      outline: 3px solid var(--yellow);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    .page-shell {
+      width: min(1220px, calc(100% - 32px));
+      margin-inline: auto;
+      padding: 34px 0 70px;
+    }
+
+    .brief {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.62fr);
+      gap: 28px;
+      align-items: stretch;
+      margin-bottom: 34px;
+    }
+
+    .brief__main,
+    .brief__side {
+      border: 1px solid var(--line);
+      background: rgba(250, 250, 250, 0.78);
+      box-shadow: 0 24px 70px rgba(11, 18, 32, 0.08);
+      backdrop-filter: blur(18px);
+    }
+
+    .brief__main { padding: clamp(22px, 4vw, 42px); }
+    .brief__side { padding: 22px; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--yellow-ink);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 8px;
+      height: 8px;
+      content: "";
+      border-radius: 999px;
+      background: var(--yellow);
+      box-shadow: 0 0 0 7px rgba(255, 193, 7, 0.14);
+    }
+
+    h1 {
+      max-width: 13ch;
+      margin: 18px 0 0;
+      font-size: clamp(2.35rem, 7vw, 5.75rem);
+      line-height: 0.96;
+      letter-spacing: -0.055em;
+      font-weight: 760;
+    }
+
+    .brief p {
+      max-width: 68ch;
+      margin: 20px 0 0;
+      color: rgba(11, 18, 32, 0.72);
+      font-size: clamp(1rem, 1.4vw, 1.16rem);
+      line-height: 1.65;
+    }
+
+    .brief strong { color: var(--ink); }
+
+    .insight-list {
+      display: grid;
+      gap: 14px;
+      margin: 20px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .insight-list li {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 11px;
+      color: rgba(11, 18, 32, 0.72);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .insight-list b {
+      color: var(--navy);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 34px 0 18px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: clamp(1.7rem, 3vw, 2.6rem);
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+
+    .section-title p {
+      max-width: 48ch;
+      margin: 0;
+      color: rgba(11, 18, 32, 0.62);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .concepts {
+      display: grid;
+      gap: 28px;
+    }
+
+    .concept-card {
+      overflow: clip;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      box-shadow: 0 24px 80px rgba(11, 18, 32, 0.08);
+    }
+
+    .concept-meta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 18px clamp(16px, 3vw, 26px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .concept-meta h3 {
+      margin: 0;
+      font-size: clamp(1.05rem, 1.8vw, 1.45rem);
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+    }
+
+    .concept-meta p {
+      margin: 7px 0 0;
+      color: rgba(11, 18, 32, 0.62);
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 11px;
+      border: 1px solid rgba(255, 193, 7, 0.42);
+      background: rgba(255, 193, 7, 0.13);
+      color: var(--yellow-ink);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .showcase {
+      position: relative;
+      min-height: 430px;
+      overflow: hidden;
+      background: var(--navy-deep);
+      color: var(--paper);
+    }
+
+    .showcase--photo {
+      background:
+        linear-gradient(90deg, rgba(14, 27, 46, 0.96), rgba(14, 27, 46, 0.68) 42%, rgba(14, 27, 46, 0.18) 74%, rgba(14, 27, 46, 0.56)),
+        linear-gradient(0deg, rgba(11, 18, 32, 0.94), rgba(11, 18, 32, 0.08) 58%),
+        url("src/assets/hero-hands.jpg") center / cover;
+    }
+
+    .showcase--cream {
+      background:
+        radial-gradient(circle at 84% 20%, rgba(255, 193, 7, 0.24), transparent 19rem),
+        linear-gradient(135deg, #fff 0%, var(--cream) 50%, #eee6d5 100%);
+      color: var(--ink);
+    }
+
+    .showcase--map {
+      background:
+        linear-gradient(90deg, rgba(14, 27, 46, 0.98), rgba(14, 27, 46, 0.78)),
+        repeating-linear-gradient(90deg, transparent 0 92px, rgba(250, 250, 250, 0.05) 92px 93px),
+        repeating-linear-gradient(0deg, transparent 0 72px, rgba(250, 250, 250, 0.05) 72px 73px),
+        var(--navy-deep);
+    }
+
+    .showcase__copy {
+      position: absolute;
+      left: clamp(18px, 5vw, 58px);
+      bottom: clamp(24px, 5vw, 54px);
+      z-index: 1;
+      max-width: 560px;
+    }
+
+    .showcase__copy small {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--yellow);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .showcase__copy small::before {
+      width: 8px;
+      height: 8px;
+      content: "";
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .showcase__copy h4 {
+      max-width: 12ch;
+      margin: 12px 0 0;
+      font-size: clamp(2.15rem, 6vw, 4.65rem);
+      line-height: 0.98;
+      letter-spacing: -0.055em;
+    }
+
+    .showcase__copy p {
+      max-width: 50ch;
+      margin: 16px 0 0;
+      color: currentColor;
+      opacity: 0.74;
+      font-size: 15.5px;
+      line-height: 1.6;
+    }
+
+    .nav {
+      --nav-surface: rgba(250, 250, 250, 0.1);
+      --nav-border: rgba(250, 250, 250, 0.18);
+      --nav-text: var(--paper);
+      --nav-muted: rgba(250, 250, 250, 0.7);
+      --nav-solid: var(--yellow);
+      --nav-solid-text: var(--navy-deep);
+      position: relative;
+      z-index: 3;
+      color: var(--nav-text);
+    }
+
+    .nav a,
+    .nav button {
+      transition: transform 240ms var(--ease), color 240ms var(--ease), background 240ms var(--ease), border-color 240ms var(--ease), opacity 240ms var(--ease);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 760;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      background: var(--yellow);
+      color: var(--navy-deep);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 0 0 7px rgba(255, 193, 7, 0.14);
+    }
+
+    .brand-mark svg { width: 21px; height: 21px; }
+
+    .links {
+      display: flex;
+      align-items: center;
+      gap: clamp(16px, 2.7vw, 34px);
+    }
+
+    .links a {
+      position: relative;
+      color: var(--nav-muted);
+      font-size: 14px;
+      font-weight: 660;
+      letter-spacing: -0.01em;
+    }
+
+    .links a:hover,
+    .links a[aria-current="page"] { color: var(--nav-text); }
+
+    .phone-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 42px;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: var(--nav-solid);
+      color: var(--nav-solid-text);
+      font-size: 13.5px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .phone-cta:hover { transform: translateY(-2px); background: var(--yellow-hot); }
+
+    .menu-button {
+      display: none;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      border: 1px solid var(--nav-border);
+      background: var(--nav-surface);
+      color: inherit;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+
+    .menu-button span,
+    .menu-button::before,
+    .menu-button::after {
+      display: block;
+      width: 18px;
+      height: 2px;
+      content: "";
+      border-radius: 99px;
+      background: currentColor;
+      transition: transform 240ms var(--ease), opacity 240ms var(--ease);
+    }
+
+    .menu-button::before { transform: translateY(-6px); }
+    .menu-button::after { transform: translateY(6px); }
+    .menu-button[aria-expanded="true"] span { opacity: 0; }
+    .menu-button[aria-expanded="true"]::before { transform: translateY(2px) rotate(45deg); }
+    .menu-button[aria-expanded="true"]::after { transform: translateY(-2px) rotate(-45deg); }
+
+    .mobile-panel {
+      display: none;
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: calc(100% + 10px);
+      overflow: hidden;
+      border: 1px solid rgba(11, 18, 32, 0.12);
+      background: rgba(250, 250, 250, 0.97);
+      color: var(--ink);
+      box-shadow: 0 24px 70px rgba(11, 18, 32, 0.22);
+      backdrop-filter: blur(18px);
+      transform-origin: top;
+    }
+
+    .mobile-panel a {
+      display: flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid rgba(11, 18, 32, 0.08);
+      color: rgba(11, 18, 32, 0.78);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .mobile-panel a:last-child {
+      margin: 10px;
+      justify-content: center;
+      border: 0;
+      background: var(--yellow);
+      color: var(--navy-deep);
+    }
+
+    .nav.is-open .mobile-panel { display: block; animation: panelIn 230ms var(--ease) both; }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(-8px) scaleY(0.96); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* 1. Dispatch Bar */
+    .dispatch-nav {
+      position: sticky;
+      top: 0;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 22px;
+      padding: 16px clamp(18px, 4vw, 42px);
+      border-bottom: 1px solid var(--nav-border);
+      background: linear-gradient(180deg, rgba(11, 18, 32, 0.58), rgba(11, 18, 32, 0.2));
+      backdrop-filter: blur(18px);
+    }
+
+    .dispatch-nav .brand { justify-self: start; }
+    .dispatch-nav .links { justify-self: center; }
+    .dispatch-nav .phone-cta { justify-self: end; }
+
+    .dispatch-nav .links a::after {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -20px;
+      height: 3px;
+      content: "";
+      background: var(--yellow);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 280ms var(--ease);
+    }
+
+    .dispatch-nav .links a:hover::after,
+    .dispatch-nav .links a[aria-current="page"]::after { transform: scaleX(1); }
+
+    .dispatch-status {
+      position: absolute;
+      left: clamp(18px, 4vw, 42px);
+      bottom: -42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 193, 7, 0.28);
+      background: rgba(11, 18, 32, 0.48);
+      color: rgba(250, 250, 250, 0.86);
+      font-size: 12px;
+      font-weight: 720;
+      backdrop-filter: blur(16px);
+    }
+
+    .dispatch-status span:first-child {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 7px rgba(34, 197, 94, 0.13);
+    }
+
+    /* 2. Lift Rail */
+    .lift-nav-wrap {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 116px;
+      border-right: 1px solid rgba(250, 250, 250, 0.16);
+      background: linear-gradient(180deg, rgba(11, 18, 32, 0.72), rgba(11, 18, 32, 0.34));
+      backdrop-filter: blur(18px);
+    }
+
+    .lift-nav {
+      display: grid;
+      height: 100%;
+      grid-template-rows: auto 1fr auto;
+      padding: 18px 16px;
+    }
+
+    .lift-nav .brand {
+      justify-content: center;
+      gap: 0;
+    }
+
+    .lift-nav .brand span:last-child {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    .lift-links {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .lift-links a {
+      display: grid;
+      width: 72px;
+      min-height: 52px;
+      place-items: center;
+      border: 1px solid rgba(250, 250, 250, 0.11);
+      color: rgba(250, 250, 250, 0.66);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .lift-links a:hover,
+    .lift-links a[aria-current="page"] {
+      border-color: rgba(255, 193, 7, 0.55);
+      background: rgba(255, 193, 7, 0.12);
+      color: var(--yellow);
+      transform: translateX(5px);
+    }
+
+    .lift-nav .phone-cta {
+      width: 72px;
+      min-height: 72px;
+      padding: 0;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .lift-spec {
+      position: absolute;
+      top: 34px;
+      right: 34px;
+      display: grid;
+      grid-template-columns: auto auto auto;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid rgba(250, 250, 250, 0.14);
+      background: rgba(11, 18, 32, 0.32);
+      backdrop-filter: blur(14px);
+    }
+
+    .lift-spec div {
+      min-width: 114px;
+      padding: 13px 14px;
+      background: rgba(250, 250, 250, 0.06);
+    }
+
+    .lift-spec b {
+      display: block;
+      color: var(--yellow);
+      font-size: 20px;
+      letter-spacing: -0.04em;
+    }
+
+    .lift-spec span {
+      display: block;
+      margin-top: 3px;
+      color: rgba(250, 250, 250, 0.58);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .lift-showcase .showcase__copy { left: clamp(148px, 16vw, 218px); }
+
+    /* 3. Route Ticket */
+    .ticket-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      width: min(1120px, calc(100% - 36px));
+      margin: 22px auto 0;
+      padding: 12px;
+      border: 1px solid rgba(11, 18, 32, 0.14);
+      background: rgba(250, 250, 250, 0.82);
+      color: var(--ink);
+      box-shadow: 0 18px 50px rgba(11, 18, 32, 0.09);
+      backdrop-filter: blur(16px);
+    }
+
+    .ticket-nav .brand-mark { box-shadow: none; }
+
+    .ticket-route {
+      display: grid;
+      min-width: min(520px, 48vw);
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ticket-route a {
+      display: flex;
+      min-height: 46px;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed rgba(11, 18, 32, 0.2);
+      color: rgba(11, 18, 32, 0.68);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .ticket-route a:hover,
+    .ticket-route a[aria-current="page"] {
+      border-color: rgba(143, 99, 16, 0.44);
+      background: rgba(255, 193, 7, 0.12);
+      color: var(--ink);
+    }
+
+    .ticket-dots {
+      width: 74px;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, rgba(11, 18, 32, 0.34) 0 6px, transparent 6px 12px);
+    }
+
+    .ticket-side {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .ticket-side .quote-link {
+      min-height: 42px;
+      padding: 0 15px;
+      border: 1px solid rgba(11, 18, 32, 0.12);
+      color: rgba(11, 18, 32, 0.7);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .ticket-side .phone-cta { min-height: 42px; }
+
+    .ticket-proof {
+      position: absolute;
+      right: clamp(18px, 5vw, 58px);
+      bottom: clamp(24px, 5vw, 54px);
+      display: grid;
+      gap: 10px;
+      width: min(330px, calc(100% - 36px));
+    }
+
+    .ticket-proof div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px 14px;
+      border: 1px solid rgba(11, 18, 32, 0.12);
+      background: rgba(250, 250, 250, 0.8);
+      box-shadow: 0 12px 32px rgba(11, 18, 32, 0.07);
+      backdrop-filter: blur(12px);
+    }
+
+    .ticket-proof b { font-size: 13px; }
+    .ticket-proof span { color: var(--yellow-ink); font-size: 12px; font-weight: 900; }
+
+    /* 4. Command Dock */
+    .dock-nav {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      display: flex;
+      width: min(1080px, calc(100% - 34px));
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px;
+      border: 1px solid rgba(255, 193, 7, 0.22);
+      background: rgba(11, 18, 32, 0.7);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+      transform: translateX(-50%);
+      backdrop-filter: blur(20px);
+    }
+
+    .dock-nav .brand {
+      padding-inline: 4px 10px;
+    }
+
+    .dock-nav .links {
+      flex: 1;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .dock-nav .links a {
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      padding: 0 13px;
+      color: rgba(250, 250, 250, 0.66);
+    }
+
+    .dock-nav .links a:hover,
+    .dock-nav .links a[aria-current="page"] {
+      background: rgba(255, 193, 7, 0.12);
+      color: var(--yellow);
+    }
+
+    .dock-card {
+      position: absolute;
+      top: 34px;
+      right: 34px;
+      width: min(360px, calc(100% - 68px));
+      border: 1px solid rgba(255, 193, 7, 0.2);
+      background: rgba(11, 18, 32, 0.52);
+      color: var(--paper);
+      box-shadow: 0 26px 70px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(18px);
+    }
+
+    .dock-card__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(250, 250, 250, 0.12);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .dock-card__head span:last-child { color: #22c55e; }
+
+    .dock-card ol {
+      display: grid;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .dock-card li {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(250, 250, 250, 0.09);
+    }
+
+    .dock-card li:last-child { border: 0; }
+    .dock-card b { color: var(--yellow); font-size: 13px; }
+    .dock-card p { margin: 0; color: rgba(250, 250, 250, 0.72); font-size: 13px; line-height: 1.4; }
+
+    /* 5. Local Map */
+    .map-nav {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: stretch;
+      min-height: 74px;
+      border-bottom: 1px solid rgba(250, 250, 250, 0.14);
+      background: rgba(11, 18, 32, 0.42);
+      backdrop-filter: blur(18px);
+    }
+
+    .map-nav .brand {
+      padding-inline: clamp(18px, 4vw, 34px);
+      border-right: 1px solid rgba(250, 250, 250, 0.14);
+    }
+
+    .map-lane {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    .map-lane a {
+      position: relative;
+      display: grid;
+      min-width: 104px;
+      place-items: center;
+      padding: 0 18px;
+      border-right: 1px solid rgba(250, 250, 250, 0.12);
+      color: rgba(250, 250, 250, 0.66);
+      font-size: 13px;
+      font-weight: 820;
+    }
+
+    .map-lane a:first-child { border-left: 1px solid rgba(250, 250, 250, 0.12); }
+
+    .map-lane a::before {
+      position: absolute;
+      top: 18px;
+      width: 7px;
+      height: 7px;
+      content: "";
+      border-radius: 999px;
+      background: currentColor;
+      opacity: 0.55;
+    }
+
+    .map-lane a:hover,
+    .map-lane a[aria-current="page"] {
+      background: rgba(255, 193, 7, 0.1);
+      color: var(--yellow);
+    }
+
+    .map-nav .phone-cta {
+      align-self: center;
+      margin-inline: clamp(18px, 4vw, 34px);
+    }
+
+    .map-route-line {
+      position: absolute;
+      inset: 142px 8% auto;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.86), transparent);
+      opacity: 0.75;
+    }
+
+    .map-pin {
+      position: absolute;
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 999px 999px 999px 2px;
+      background: var(--yellow);
+      color: var(--navy-deep);
+      font-weight: 900;
+      transform: rotate(-45deg);
+      box-shadow: 0 0 0 9px rgba(255, 193, 7, 0.12), 0 20px 44px rgba(0, 0, 0, 0.22);
+    }
+
+    .map-pin span { transform: rotate(45deg); }
+    .pin-a { left: 18%; top: 126px; }
+    .pin-b { right: 18%; top: 126px; background: var(--paper); }
+
+    .map-note {
+      position: absolute;
+      top: 198px;
+      left: 50%;
+      width: min(430px, calc(100% - 36px));
+      padding: 16px 18px;
+      border: 1px solid rgba(250, 250, 250, 0.14);
+      background: rgba(11, 18, 32, 0.52);
+      color: rgba(250, 250, 250, 0.72);
+      font-size: 14px;
+      line-height: 1.55;
+      text-align: center;
+      transform: translateX(-50%);
+      backdrop-filter: blur(16px);
+    }
+
+    .map-note b { color: var(--paper); }
+
+    @media (max-width: 980px) {
+      .brief { grid-template-columns: 1fr; }
+      .section-title { display: block; }
+      .section-title p { margin-top: 10px; }
+      .links,
+      .dispatch-nav .phone-cta,
+      .ticket-route,
+      .ticket-side,
+      .dock-nav .links,
+      .dock-nav .phone-cta,
+      .map-lane,
+      .map-nav .phone-cta { display: none; }
+      .menu-button { display: grid; }
+      .dispatch-nav,
+      .ticket-nav,
+      .dock-nav,
+      .map-nav {
+        grid-template-columns: 1fr auto;
+        display: grid;
+        min-height: auto;
+      }
+      .ticket-nav,
+      .dock-nav {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        transform: none;
+        width: calc(100% - 36px);
+        margin: 18px auto 0;
+      }
+      .map-nav .brand { border-right: 0; }
+      .lift-nav-wrap {
+        inset: 0 0 auto;
+        width: auto;
+        height: 76px;
+        border-right: 0;
+        border-bottom: 1px solid rgba(250, 250, 250, 0.16);
+      }
+      .lift-nav {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto;
+        height: 76px;
+        align-items: center;
+      }
+      .lift-links,
+      .lift-nav .phone-cta { display: none; }
+      .lift-nav .brand { justify-content: start; gap: 10px; }
+      .lift-nav .brand span:last-child {
+        position: static;
+        width: auto;
+        height: auto;
+        overflow: visible;
+        clip: auto;
+      }
+      .lift-showcase .showcase__copy { left: clamp(18px, 5vw, 58px); }
+      .lift-spec { display: none; }
+      .ticket-proof { display: none; }
+      .dock-card { display: none; }
+      .showcase { min-height: 500px; }
+      .showcase__copy { right: 18px; }
+    }
+
+    @media (max-width: 620px) {
+      .page-shell { width: min(100% - 20px, 1220px); padding-top: 12px; }
+      .brief__main, .brief__side { padding: 18px; }
+      .concept-meta { grid-template-columns: 1fr; }
+      .badge { width: fit-content; }
+      .brand { font-size: 19px; }
+      .brand-mark { width: 31px; height: 31px; }
+      .dispatch-status { display: none; }
+      .showcase { min-height: 540px; }
+      .showcase__copy h4 { max-width: 10ch; }
+      .map-pin, .map-route-line, .map-note { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-shell">
+    <section class="brief" aria-labelledby="brief-title">
+      <div class="brief__main">
+        <span class="eyebrow">MatHub / navbar concepts</span>
+        <h1 id="brief-title">Nawigacja, która niesie obietnicę.</h1>
+        <p>
+          Przeczytałem stronę jako lokalną, konkretną usługę przeprowadzkową: <strong>nie sprzedaje abstrakcyjnego “transportu”, tylko spokój, termin, rozmowę telefoniczną i fizyczną przewagę wózka samozaładowczego 500 kg</strong>. Dlatego te navbary nie udają SaaS-u ani luksusowej agencji — są operacyjne, sprzętowe, telefoniczne i osadzone w trasie Szczecin / Zachodniopomorskie / Polska.
+        </p>
+      </div>
+      <aside class="brief__side" aria-label="Założenia projektowe">
+        <span class="eyebrow">Założenia</span>
+        <ul class="insight-list">
+          <li><b>01</b><span>Najważniejszy CTA to telefon; formularz jest drugorzędny.</span></li>
+          <li><b>02</b><span>Żółty jest sygnałem akcji, sprzętu i bezpieczeństwa — nie dekoracją.</span></li>
+          <li><b>03</b><span>Nawigacja ma budować zaufanie: usługi, wózek, proces, zasięg, kontakt.</span></li>
+          <li><b>04</b><span>Styl: ciemny granat, papier, zdjęcie w tle, niska ilość ozdobników, dużo użytkowej klarowności.</span></li>
+        </ul>
+      </aside>
+    </section>
+
+    <div class="section-title">
+      <h2>5 kierunków navbaru</h2>
+      <p>Każdy wariant jest samodzielny, responsywny i używa tylko HTML/CSS/małego JS do menu mobilnego. Najbardziej wdrożeniowy jest wariant 1; najbardziej charakterystyczne są 2 i 5.</p>
+    </div>
+
+    <section class="concepts" aria-label="Pięć kreatywnych navbarów MatHub">
+      <article class="concept-card">
+        <div class="concept-meta">
+          <div>
+            <h3>01. Dyspozytornia — aktualny stan ekipy</h3>
+            <p>Najbezpieczniejszy wariant produkcyjny: klasyczny układ, ale z żywym statusem “dostępny dziś”, który od razu wzmacnia telefoniczny charakter strony.</p>
+          </div>
+          <span class="badge">Najlepszy default</span>
+        </div>
+        <div class="showcase showcase--photo">
+          <nav class="nav dispatch-nav" aria-label="Wariant 1: Dyspozytornia">
+            <a class="brand" href="#top" aria-label="MatHub — strona główna">
+              <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 15V8.5c0-.8.7-1.5 1.5-1.5H14v8H4Zm10 0h2.8l1.5-4H20l1 4h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 18.5a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4Zm11 0a1.7 1.7 0 1 0 0-3.4 1.7 1.7 0 0 0 0 3.4Z" stroke="currentColor" stroke-width="2"/></svg></span>
+              <span>MatHub</span>
+            </a>
+            <div class="links" role="list">
+              <a href="#uslugi">Usługi</a>
+              <a href="#wozek" aria-current="page">Wózek</a>
+              <a href="#proces">Proces</a>
+              <a href="#zasieg">Zasięg</a>
+              <a href="#kontakt">Kontakt</a>
+            </div>
+            <a class="phone-cta" href="tel:+48730857710">☎ 730 857 710</a>
+            <button class="menu-button" type="button" aria-label="Otwórz menu" aria-expanded="false"><span></span></button>
+            <div class="mobile-panel" aria-label="Menu mobilne">
+              <a href="#uslugi">Usługi</a><a href="#wozek">Wózek</a><a href="#proces">Proces</a><a href="#zasieg">Zasięg</a><a href="tel:+48730857710">Zadzwoń 730 857 710</a>
+            </div>
+            <div class="dispatch-status" aria-hidden="true"><span></span><span>Dostępny dziś · Trzeszczyn / Szczecin</span></div>
+          </nav>
+          <div class="showcase__copy">
+            <small>Przeprowadzki bez problemów</small>
+            <h4>My to nosimy.</h4>
+            <p>Navbar zachowuje obecny język strony: kinowy hero, mocny numer telefonu, jasna ścieżka do wózka i kontaktu.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="concept-card">
+        <div class="concept-meta">
+          <div>
+            <h3>02. Maszt wózka — pionowa nawigacja sprzętowa</h3>
+            <p>Najbardziej odważny wariant: menu działa jak maszt wózka samozaładowczego. Idealne, jeśli marka ma mocniej oprzeć się na unikalnym sprzęcie 500 kg.</p>
+          </div>
+          <span class="badge">Najbardziej wyróżniający</span>
+        </div>
+        <div class="showcase showcase--photo lift-showcase">
+          <nav class="nav lift-nav-wrap" aria-label="Wariant 2: Maszt wózka">
+            <div class="lift-nav">
+              <a class="brand" href="#top" aria-label="MatHub — strona główna">
+                <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M6 20V5h4v15M14 20V4h3v16M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10 9h7M10 14h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                <span>MatHub</span>
+              </a>
+              <div class="lift-links">
+                <a href="#uslugi">Usługi</a>
+                <a href="#wozek" aria-current="page">Wózek</a>
+                <a href="#proces">Proces</a>
+                <a href="#zasieg">Zasięg</a>
+                <a href="#kontakt">Kontakt</a>
+              </div>
+              <a class="phone-cta" href="tel:+48730857710"><span>☎</span><span>Dzwoń</span></a>
+              <button class="menu-button" type="button" aria-label="Otwórz menu" aria-expanded="false"><span></span></button>
+              <div class="mobile-panel" aria-label="Menu mobilne">
+                <a href="#uslugi">Usługi</a><a href="#wozek">Wózek</a><a href="#proces">Proces</a><a href="#zasieg">Zasięg</a><a href="tel:+48730857710">Zadzwoń 730 857 710</a>
+              </div>
+            </div>
+          </nav>
+          <div class="lift-spec" aria-hidden="true">
+            <div><b>500 kg</b><span>udźwig</span></div>
+            <div><b>0</b><span>ramp</span></div>
+            <div><b>24 h</b><span>wycena</span></div>
+          </div>
+          <div class="showcase__copy">
+            <small>Winda, której nie musisz mieć</small>
+            <h4>Sprzęt prowadzi menu.</h4>
+            <p>Pionowa szyna nie jest ozdobą: komunikuje fizyczną przewagę MatHub i zostawia pełną szerokość hero na zdjęcie oraz obietnicę.</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="concept-card">
+        <div class="concept-meta">
+          <div>
+            <h3>03. Bilet trasy — przeprowadzka jako przejazd od problemu do spokoju</h3>
+            <p>Lżejszy, bardziej “papierowy” wariant dla sekcji jasnych. Nawigacja wygląda jak odcinek trasy, z usługami i kontaktem jako punktami przejazdu.</p>
+          </div>
+          <span class="badge">Najbardziej edytorialny</span>
+        </div>
+        <div class="showcase showcase--cream">
+          <nav class="nav ticket-nav" aria-label="Wariant 3: Bilet trasy">
+            <a class="brand" href="#top" aria-label="MatHub — strona główna">
+              <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 8h16v10H4z" stroke="currentColor" stroke-width="2"/><path d="M8 8V6h8v2M7 13h3m4 0h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span>MatHub</span>
+            </a>
+            <div class="ticket-route">
+              <a href="#uslugi">Usługi</a>
+              <span class="ticket-dots" aria-hidden="true"></span>
+              <a href="#kontakt" aria-current="page">Kontakt</a>
+            </div>
+            <div class="ticket-side">
+              <a class="quote-link" href="#kontakt">Sprawdź termin</a>
+              <a class="phone-cta" href="tel:+48730857710">☎ 730 857 710</a>
+            </div>
+            <button class="menu-button" type="button" aria-label="Otwórz menu" aria-expanded="false"><span></span></button>
+            <div class="mobile-panel" aria-label="Menu mobilne">
+              <a href="#uslugi">Usługi</a><a href="#wozek">Wózek</a><a href="#proces">Proces</a><a href="#zasieg">Zasięg</a><a href="tel:+48730857710">Zadzwoń 730 857 710</a>
+            </div>
+          </nav>
+          <div class="showcase__copy">
+            <small>Rozmowa → Wycena → Realizacja</small>
+            <h4>Trasa bez ukrytych kosztów.</h4>
+            <p>Wariant pasuje do sekcji “Proces” i “Zasięg”: mniej kinowy, bardziej użytkowy, z mocnym skojarzeniem przejazdu.</p>
+          </div>
+          <div class="ticket-proof" aria-hidden="true">
+            <div><b>Ubezpieczenie w cenie</b><span>01</span></div>
+            <div><b>Wycena w 24 h</b><span>02</span></div>
+            <div><b>Bez ukrytych kosztów</b><span>03</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="concept-card">
+        <div class="concept-meta">
+          <div>
+            <h3>04. Command Dock — telefon jako centrum operacji</h3>
+            <p>Navbar przeniesiony na dół hero jak panel dyspozytorski. Dobry dla wersji bardzo konwersyjnej: numer telefonu zawsze jest “pod kciukiem”.</p>
+          </div>
+          <span class="badge">Najmocniejszy CTA</span>
+        </div>
+        <div class="showcase showcase--photo">
+          <div class="dock-card" aria-hidden="true">
+            <div class="dock-card__head"><span>Dzisiejsza ścieżka</span><span>online</span></div>
+            <ol>
+              <li><b>01</b><p>Telefon i opis gabarytów.</p></li>
+              <li><b>02</b><p>Termin oraz wycena bez niespodzianek.</p></li>
+              <li><b>03</b><p>Ekipa, bus, wózek, realizacja.</p></li>
+            </ol>
+          </div>
+          <div class="showcase__copy" style="bottom: 122px;">
+            <small>Najpierw rozmowa</small>
+            <h4>Decyzja jest na dole ekranu.</h4>
+            <p>Dock jest wygodny mobilnie i wzmacnia realny model sprzedaży: użytkownik ma zadzwonić, nie błądzić po rozbudowanym lejku.</p>
+          </div>
+          <nav class="nav dock-nav" aria-label="Wariant 4: Command Dock">
+            <a class="brand" href="#top" aria-label="MatHub — strona główna">
+              <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 17h14M7 17l1-7h8l1 7M9 10V7h6v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 20h.01M16 20h.01" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span>
+              <span>MatHub</span>
+            </a>
+            <div class="links">
+              <a href="#uslugi">Usługi</a><a href="#wozek">Wózek</a><a href="#proces" aria-current="page">Proces</a><a href="#zasieg">Zasięg</a><a href="#kontakt">Kontakt</a>
+            </div>
+            <a class="phone-cta" href="tel:+48730857710">☎ 730 857 710</a>
+            <button class="menu-button" type="button" aria-label="Otwórz menu" aria-expanded="false"><span></span></button>
+            <div class="mobile-panel" aria-label="Menu mobilne">
+              <a href="#uslugi">Usługi</a><a href="#wozek">Wózek</a><a href="#proces">Proces</a><a href="#zasieg">Zasięg</a><a href="tel:+48730857710">Zadzwoń 730 857 710</a>
+            </div>
+          </nav>
+        </div>
+      </article>
+
+      <article class="concept-card">
+        <div class="concept-meta">
+          <div>
+            <h3>05. Lokalna trasa — Szczecin jako punkt startowy</h3>
+            <p>Najbardziej “lokalny” wariant: mapa i punkty trasy robią z navbara obietnicę zasięgu. Dobry, jeśli marka chce mocniej komunikować Zachodniopomorskie + całą Polskę.</p>
+          </div>
+          <span class="badge">Najlepszy pod zasięg</span>
+        </div>
+        <div class="showcase showcase--map">
+          <nav class="nav map-nav" aria-label="Wariant 5: Lokalna trasa">
+            <a class="brand" href="#top" aria-label="MatHub — strona główna">
+              <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Z" stroke="currentColor" stroke-width="2"/><path d="M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" stroke="currentColor" stroke-width="2"/></svg></span>
+              <span>MatHub</span>
+            </a>
+            <div class="map-lane">
+              <a href="#uslugi">Usługi</a><a href="#wozek">Wózek</a><a href="#proces">Proces</a><a href="#zasieg" aria-current="page">Zasięg</a><a href="#kontakt">Kontakt</a>
+            </div>
+            <a class="phone-cta" href="tel:+48730857710">☎ 730 857 710</a>
+            <button class="menu-button" type="button" aria-label="Otwórz menu" aria-expanded="false"><span></span></button>
+            <div class="mobile-panel" aria-label="Menu mobilne">
+              <a href="#uslugi">Usługi</a><a href="#wozek">Wózek</a><a href="#proces">Proces</a><a href="#zasieg">Zasięg</a><a href="tel:+48730857710">Zadzwoń 730 857 710</a>
+            </div>
+          </nav>
+          <div class="map-route-line" aria-hidden="true"></div>
+          <div class="map-pin pin-a" aria-hidden="true"><span>Start</span></div>
+          <div class="map-pin pin-b" aria-hidden="true"><span>PL</span></div>
+          <div class="map-note" aria-hidden="true"><b>Trzeszczyn / Police</b> jako baza. Przeprowadzki po Zachodniopomorskiem i kursy w całą Polskę.</div>
+          <div class="showcase__copy">
+            <small>Zachodniopomorskie bazą</small>
+            <h4>Cała Polska po drodze.</h4>
+            <p>Ten navbar zamienia zasięg w wizualny system: menu jest linią trasy, a telefon końcowym punktem decyzji.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    document.querySelectorAll('.nav').forEach((nav, index) => {
+      const button = nav.querySelector('.menu-button');
+      const panel = nav.querySelector('.mobile-panel');
+      if (!button || !panel) return;
+      const id = `mobile-panel-${index + 1}`;
+      panel.id = id;
+      button.setAttribute('aria-controls', id);
+      button.addEventListener('click', () => {
+        const next = button.getAttribute('aria-expanded') !== 'true';
+        button.setAttribute('aria-expanded', String(next));
+        button.setAttribute('aria-label', next ? 'Zamknij menu' : 'Otwórz menu');
+        nav.classList.toggle('is-open', next);
+      });
+      panel.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          button.setAttribute('aria-expanded', 'false');
+          button.setAttribute('aria-label', 'Otwórz menu');
+          nav.classList.remove('is-open');
+        });
+      });
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      document.querySelectorAll('.nav.is-open').forEach((nav) => {
+        const button = nav.querySelector('.menu-button');
+        if (button) {
+          button.setAttribute('aria-expanded', 'false');
+          button.setAttribute('aria-label', 'Otwórz menu');
+          button.focus();
+        }
+        nav.classList.remove('is-open');
+      });
+    });
+  </script>
+</body>
+</html>

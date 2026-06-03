@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MatHub — proste kreatywne navbary</title>
+  <meta name="description" content="Prostsze, bardziej kreatywne propozycje navbarów MatHub z zachowanym zaakceptowanym tekstem strony 1:1." />
+  <style>
+    :root {
+      --paper: #fafafa;
+      --ink: #0b1220;
+      --navy: #1a2f4f;
+      --deep: #0e1b2e;
+      --yellow: #ffc107;
+      --yellow-2: #ffd34d;
+      --green: #22c55e;
+      --ease: cubic-bezier(.2,.8,.2,1);
+      color-scheme: dark;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--deep); scroll-behavior: auto; }
+    body { margin: 0; background: var(--deep); color: var(--paper); font-family: var(--font, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    body.menu-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button { border: 0; color: inherit; font: inherit; }
+    :focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; border-radius: 3px; }
+
+    .switcher { position: fixed; right: 14px; top: 50%; z-index: 80; display: grid; gap: 6px; padding: 7px; border: 1px solid rgba(250,250,250,.14); background: rgba(11,18,32,.58); box-shadow: 0 20px 70px rgba(0,0,0,.26); backdrop-filter: blur(18px); transform: translateY(-50%); }
+    .switcher a { display: grid; min-height: 38px; place-items: center; padding: 0 12px; color: rgba(250,250,250,.68); font-size: 11px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; transition: background 220ms var(--ease), color 220ms var(--ease), transform 220ms var(--ease); }
+    .switcher a:hover { background: rgba(255,193,7,.14); color: var(--yellow); transform: translateX(-2px); }
+
+    .concept { position: relative; min-height: 100svh; overflow: clip; isolation: isolate; }
+    .hero { min-height: 100svh; display: flex; align-items: end; padding: 128px 0 92px; background: linear-gradient(90deg, rgba(14,27,46,.96), rgba(14,27,46,.66) 42%, rgba(14,27,46,.12) 74%, rgba(14,27,46,.38)), linear-gradient(0deg, rgba(11,18,32,.98), rgba(11,18,32,.18) 54%, rgba(11,18,32,.28)), url("src/assets/hero-hands.jpg") center / cover; }
+    .container { width: min(1200px, calc(100% - 48px)); margin-inline: auto; }
+    .hero-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(280px,390px); gap: clamp(30px,6vw,76px); align-items: end; }
+    .copy { padding-left: clamp(0px,1.2vw,18px); }
+    .status { display: inline-flex; align-items: center; gap: 8px; width: fit-content; border: 1px solid rgba(250,250,250,.2); border-radius: 999px; background: rgba(250,250,250,.055); padding: 7px 12px; backdrop-filter: blur(12px); }
+    .status i { width: 8px; height: 8px; border-radius: 999px; background: var(--green); box-shadow: 0 0 0 7px rgba(34,197,94,.13); }
+    .status span { font-size: 12.5px; font-weight: 500; }
+    h1 { max-width: min(16ch,100%); margin: 24px 0 0; font-size: clamp(2.8rem,7.2vw,6rem); line-height: 1.05; letter-spacing: -.02em; font-weight: 600; text-wrap: balance; }
+    h1 .yellow { color: var(--yellow); }
+    .lede { max-width: 36rem; margin: 24px 0 0; color: rgba(250,250,250,.85); font-size: clamp(1.0625rem,1.4vw,1.25rem); line-height: 1.55; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .btn { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; padding: 0 20px; border: 1px solid transparent; border-radius: 2px; font-size: 15px; font-weight: 650; transition: transform 240ms var(--ease), background 240ms var(--ease), color 240ms var(--ease), border-color 240ms var(--ease); }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-y { background: var(--yellow); color: var(--navy); box-shadow: 0 16px 42px rgba(255,193,7,.16); }
+    .btn-y:hover { background: var(--yellow-2); }
+    .btn-g { border-color: rgba(250,250,250,.3); color: var(--paper); }
+    .btn-g:hover { border-color: var(--yellow); color: var(--yellow); }
+    .proof { border: 1px solid rgba(255,193,7,.22); background: linear-gradient(90deg, rgba(255,193,7,.12), rgba(11,18,32,.58)); box-shadow: 0 22px 62px rgba(0,0,0,.24); backdrop-filter: blur(18px); }
+    .proof div { display: flex; align-items: center; gap: 10px; padding: 16px 18px; border-bottom: 1px solid rgba(250,250,250,.1); }
+    .proof div:last-child { border-bottom: 0; }
+    .pin { display: grid; width: 28px; height: 28px; flex: 0 0 28px; place-items: center; border-radius: 999px; background: var(--yellow); color: var(--deep); font-size: 12px; font-weight: 850; box-shadow: 0 0 0 7px rgba(255,193,7,.12); }
+    .proof strong { font-size: 14px; font-weight: 650; }
+    .note { padding: 40px 0 92px; border-top: 1px solid rgba(250,250,250,.1); background: var(--deep); }
+    .note-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1px; border: 1px solid rgba(250,250,250,.12); background: rgba(250,250,250,.12); }
+    .note article { min-height: 150px; padding: 22px; background: rgba(250,250,250,.055); }
+    .note small { color: var(--yellow); font-size: 11px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+    .note h2 { margin: 12px 0 0; font-size: clamp(1.12rem,1.7vw,1.45rem); line-height: 1.1; letter-spacing: -.03em; }
+    .note p { margin: 10px 0 0; color: rgba(250,250,250,.66); font-size: 14px; line-height: 1.55; }
+
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 650; letter-spacing: -.01em; white-space: nowrap; }
+    .mark { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 2px; background: var(--yellow); color: var(--navy); box-shadow: 0 0 0 7px rgba(255,193,7,.14); }
+    .call { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; padding: 0 15px; border-radius: 2px; background: var(--yellow); color: var(--navy); font-size: 13.5px; font-weight: 750; white-space: nowrap; }
+    .nav { position: absolute; z-index: 35; }
+    .nav a, .nav button { transition: transform 240ms var(--ease), color 240ms var(--ease), background 240ms var(--ease), border-color 240ms var(--ease), opacity 240ms var(--ease); }
+
+    .hamb { display: none; width: 46px; height: 46px; place-items: center; border: 1px solid rgba(250,250,250,.2); background: rgba(250,250,250,.07); }
+    .hamb span, .hamb::before, .hamb::after { display: block; width: 19px; height: 2px; content: ""; border-radius: 999px; background: currentColor; transition: transform 240ms var(--ease), opacity 240ms var(--ease); }
+    .hamb::before { transform: translateY(-6px); }
+    .hamb::after { transform: translateY(6px); }
+    .hamb[aria-expanded="true"] span { opacity: 0; }
+    .hamb[aria-expanded="true"]::before { transform: translateY(2px) rotate(45deg); }
+    .hamb[aria-expanded="true"]::after { transform: translateY(-2px) rotate(-45deg); }
+    .mobile { position: fixed; inset: 76px 14px auto; z-index: 110; display: none; overflow: hidden; border: 1px solid rgba(11,18,32,.12); background: rgba(250,250,250,.98); color: var(--ink); box-shadow: 0 30px 90px rgba(0,0,0,.28); backdrop-filter: blur(20px); }
+    .mobile-top.open .mobile { display: block; animation: menuIn 220ms var(--ease) both; }
+    @keyframes menuIn { from { opacity: 0; transform: translateY(-8px) scaleY(.97); } to { opacity: 1; transform: none; } }
+    .mobile a { display: flex; min-height: 52px; align-items: center; justify-content: space-between; padding: 0 18px; border-bottom: 1px solid rgba(11,18,32,.08); color: rgba(11,18,32,.78); font-size: 15px; font-weight: 650; }
+    .mobile a::after { content: "→"; color: #8f6310; }
+    .mobile .mobile-call { margin: 10px; justify-content: center; background: var(--yellow); color: var(--navy); }
+    .mobile .mobile-call::after { content: ""; }
+
+    /* 01 Aperture: very simple, brand/call plus a small navigation lens */
+    .ap-brand { left: clamp(18px,4vw,54px); top: 22px; }
+    .ap-call { right: clamp(18px,4vw,54px); top: 22px; }
+    .aperture { right: clamp(30px,8vw,120px); top: 118px; width: 250px; height: 250px; border-radius: 999px; border: 1px solid rgba(255,193,7,.3); background: radial-gradient(circle, rgba(255,193,7,.14), rgba(11,18,32,.42) 56%, rgba(11,18,32,.12)); box-shadow: 0 28px 90px rgba(0,0,0,.28); backdrop-filter: blur(18px); }
+    .aperture::before { position: absolute; inset: 38px; content: ""; border-radius: inherit; border: 1px dashed rgba(255,193,7,.28); }
+    .aperture a { position: absolute; display: grid; width: 76px; height: 34px; place-items: center; border: 1px solid rgba(250,250,250,.14); border-radius: 999px; background: rgba(11,18,32,.58); color: rgba(250,250,250,.76); font-size: 12px; font-weight: 750; }
+    .aperture a:hover, .aperture a[aria-current="page"] { border-color: rgba(255,193,7,.62); background: rgba(255,193,7,.18); color: var(--yellow); }
+    .ap1 { left: 87px; top: -17px; } .ap2 { right: -32px; top: 72px; } .ap3 { right: 12px; bottom: 24px; } .ap4 { left: 12px; bottom: 24px; } .ap5 { left: -32px; top: 72px; }
+
+    /* 02 Fold: one quiet folded corner with all navigation */
+    .fold-brand { left: clamp(18px,4vw,54px); top: 22px; }
+    .fold-call { right: clamp(18px,4vw,54px); top: 22px; }
+    .fold { right: 0; top: 84px; width: min(430px, 34vw); border: 1px solid rgba(250,250,250,.13); border-right: 0; background: rgba(11,18,32,.54); box-shadow: 0 28px 90px rgba(0,0,0,.26); backdrop-filter: blur(18px); clip-path: polygon(0 0, 100% 0, 100% 100%, 42px 100%, 0 calc(100% - 42px)); }
+    .fold a { display: flex; min-height: 56px; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid rgba(250,250,250,.1); color: rgba(250,250,250,.72); font-size: 14px; font-weight: 700; }
+    .fold a:last-child { border-bottom: 0; }
+    .fold a::before { content: attr(data-n); color: rgba(255,193,7,.72); font-size: 11px; font-weight: 900; letter-spacing: .12em; }
+    .fold a:hover, .fold a[aria-current="page"] { color: var(--yellow); background: rgba(255,193,7,.08); }
+
+    /* 03 Stitches: a single stitched line; minimal but specific */
+    .st-brand { left: clamp(18px,4vw,54px); top: 22px; }
+    .st-call { right: clamp(18px,4vw,54px); top: 22px; }
+    .stitch-line { left: clamp(18px,4vw,54px); right: clamp(18px,4vw,54px); top: 104px; height: 1px; background: repeating-linear-gradient(90deg, rgba(255,193,7,.95) 0 10px, transparent 10px 20px); opacity: .92; }
+    .stitches { left: clamp(18px,4vw,54px); right: clamp(18px,4vw,54px); top: 82px; display: grid; grid-template-columns: repeat(5, 1fr); }
+    .stitches a { display: grid; min-height: 45px; place-items: start center; color: rgba(250,250,250,.72); font-size: 13px; font-weight: 750; }
+    .stitches a::after { width: 9px; height: 9px; margin-top: 12px; content: ""; border-radius: 999px; background: currentColor; opacity: .45; }
+    .stitches a:hover, .stitches a[aria-current="page"] { color: var(--yellow); }
+
+    .mobile-top { display: none; }
+
+    @media (max-width: 1060px) {
+      .switcher { left: 50%; right: auto; top: auto; bottom: max(10px, env(safe-area-inset-bottom)); display: flex; max-width: calc(100% - 20px); overflow-x: auto; transform: translateX(-50%); }
+      .switcher a { min-width: 86px; }
+      .switcher a:hover { transform: translateY(-1px); }
+      .hero-grid { grid-template-columns: 1fr; }
+      .proof, .aperture, .fold, .stitch-line, .stitches { display: none; }
+      .nav { display: none; }
+      .mobile-top { position: absolute; inset: 0 0 auto; z-index: 45; display: grid; grid-template-columns: 1fr auto; align-items: center; min-height: 76px; padding: 0 18px; border-bottom: 1px solid rgba(250,250,250,.14); background: linear-gradient(180deg, rgba(11,18,32,.68), rgba(11,18,32,.22)); backdrop-filter: blur(18px); }
+      .mobile-top.nav { display: grid; }
+      .hamb { display: grid; }
+      .hero { padding-top: 106px; padding-bottom: 116px; }
+      .note-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .container { width: min(100% - 28px,1200px); }
+      h1 { font-size: clamp(2.5rem,13vw,4rem); line-height: 1.02; }
+      .status { margin-top: 132px; }
+      .actions { display: grid; grid-template-columns: 1fr; max-width: 230px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+  <nav class="switcher" aria-label="Przełącznik wariantów"><a href="#c1">Aperture</a><a href="#c2">Fold</a><a href="#c3">Stitch</a></nav>
+  <main>
+    <section class="concept" id="c1">
+      <nav class="nav ap-brand"><a class="brand" href="#c1"><span class="mark">◎</span><span>MatHub</span></a></nav><nav class="nav ap-call"><a class="call" href="tel:+48730857710">☎ 730 857 710</a></nav><nav class="nav aperture" aria-label="Aperture navigation"><a class="ap1" href="#uslugi">Usługi</a><a class="ap2" href="#wozek" aria-current="page">Wózek</a><a class="ap3" href="#proces">Proces</a><a class="ap4" href="#zasieg">Zasięg</a><a class="ap5" href="#kontakt">Kontakt</a></nav>
+      <nav class="nav mobile-top" data-nav><a class="brand" href="#c1"><span class="mark">◎</span><span>MatHub</span></a><button class="hamb" type="button" aria-label="Otwórz menu" aria-expanded="false"><span></span></button><div class="mobile"><a href="#uslugi">Usługi</a><a href="#wozek">Wózek</a><a href="#proces">Proces</a><a href="#zasieg">Zasięg</a><a href="#kontakt">Kontakt</a><a class="mobile-call" href="tel:+48730857710">Zadzwoń +48 730 857 710</a></div></nav>
+      <div class="hero"><div class="container hero-grid"><div class="copy"><div class="status"><i></i><span>Dostępny dziś · Trzeszczyn / Szczecin i okolice</span></div><h1>Przeprowadzki bez problemów. <span class="yellow">My to nosimy.</span></h1><p class="lede">Mieszkania, domy, biura. Pakujemy, ładujemy, wieziemy - z wózkiem samozaładowczym o udźwigu 500 kg, dzięki czemu żadna winda hydrauliczna nie jest potrzebna. Zachodniopomorskie i cała Polska.</p><div class="actions"><a class="btn btn-y" href="tel:+48730857710">Zadzwoń +48 730 857 710</a><a class="btn btn-g" href="#kontakt">Sprawdź termin</a></div></div><aside class="proof"><div><span class="pin">1</span><strong>Ubezpieczenie towaru w cenie</strong></div><div><span class="pin">2</span><strong>Wycena w 24 h</strong></div><div><span class="pin">3</span><strong>Bez ukrytych kosztów</strong></div></aside></div></div>
+      <div class="note"><div class="container note-grid"><article><small>01 Aperture</small><h2>Proste, ale inne</h2><p>Nie ma belki. Menu jest małym “obiektywem dyspozytora” przy zdjęciu — jedna forma, pięć linków.</p></article><article><small>Dlaczego działa</small><h2>Telefon i wózek są blisko</h2><p>Centrum uwagi zostaje na hero, a menu nie robi konkurencji tekstowi klienta.</p></article><article><small>Najlepsze użycie</small><h2>Najbardziej premium z trzech</h2><p>Dobre, jeśli chcesz kreatywność bez krzyku i bez rekwizytów.</p></article></div></div>
+    </section>
+
+    <section class="concept" id="c2">
+      <nav class="nav fold-brand"><a class="brand" href="#c2"><span class="mark">◩</span><span>MatHub</span></a></nav><nav class="nav fold-call"><a class="call" href="tel:+48730857710">☎ 730 857 710</a></nav><nav class="nav fold" aria-label="Fold navigation"><a data-n="01" href="#uslugi">Usługi</a><a data-n="02" href="#wozek" aria-current="page">Wózek</a><a data-n="03" href="#proces">Proces</a><a data-n="04" href="#zasieg">Zasięg</a><a data-n="05" href="#kontakt">Kontakt</a></nav>
+      <nav class="nav mobile-top" data-nav><a class="brand" href="#c2"><span class="mark">◩</span><span>MatHub</span></a><button class="hamb" type="button" aria-label="Otwórz menu" aria-expanded="false"><span></span></button><div class="mobile"><a href="#uslugi">Usługi</a><a href="#wozek">Wózek</a><a href="#proces">Proces</a><a href="#zasieg">Zasięg</a><a href="#kontakt">Kontakt</a><a class="mobile-call" href="tel:+48730857710">Zadzwoń +48 730 857 710</a></div></nav>
+      <div class="hero"><div class="container hero-grid"><div class="copy"><div class="status"><i></i><span>Dostępny dziś · Trzeszczyn / Szczecin i okolice</span></div><h1>Przeprowadzki bez problemów. <span class="yellow">My to nosimy.</span></h1><p class="lede">Mieszkania, domy, biura. Pakujemy, ładujemy, wieziemy - z wózkiem samozaładowczym o udźwigu 500 kg, dzięki czemu żadna winda hydrauliczna nie jest potrzebna. Zachodniopomorskie i cała Polska.</p><div class="actions"><a class="btn btn-y" href="tel:+48730857710">Zadzwoń +48 730 857 710</a><a class="btn btn-g" href="#kontakt">Sprawdź termin</a></div></div><aside class="proof"><div><span class="pin">1</span><strong>Ubezpieczenie towaru w cenie</strong></div><div><span class="pin">2</span><strong>Wycena w 24 h</strong></div><div><span class="pin">3</span><strong>Bez ukrytych kosztów</strong></div></aside></div></div>
+      <div class="note"><div class="container note-grid"><article><small>02 Fold</small><h2>Zagięty narożnik zlecenia</h2><p>Jedna prosta karta po prawej. Wygląda jak narożnik dokumentu przewozowego, ale nie dominuje strony.</p></article><article><small>Dlaczego działa</small><h2>Czytelność ponad efekt</h2><p>Linki są banalnie czytelne, a kreatywność siedzi w jednym szczególe: zagięciu.</p></article><article><small>Najlepsze użycie</small><h2>Najbezpieczniejszy wybór</h2><p>Najłatwiejszy do wdrożenia w realnym headerze, bez ryzyka usability.</p></article></div></div>
+    </section>
+
+    <section class="concept" id="c3">
+      <nav class="nav st-brand"><a class="brand" href="#c3"><span class="mark">·</span><span>MatHub</span></a></nav><nav class="nav st-call"><a class="call" href="tel:+48730857710">☎ 730 857 710</a></nav><div class="nav stitch-line"></div><nav class="nav stitches" aria-label="Stitch navigation"><a href="#uslugi">Usługi</a><a href="#wozek" aria-current="page">Wózek</a><a href="#proces">Proces</a><a href="#zasieg">Zasięg</a><a href="#kontakt">Kontakt</a></nav>
+      <nav class="nav mobile-top" data-nav><a class="brand" href="#c3"><span class="mark">·</span><span>MatHub</span></a><button class="hamb" type="button" aria-label="Otwórz menu" aria-expanded="false"><span></span></button><div class="mobile"><a href="#uslugi">Usługi</a><a href="#wozek">Wózek</a><a href="#proces">Proces</a><a href="#zasieg">Zasięg</a><a href="#kontakt">Kontakt</a><a class="mobile-call" href="tel:+48730857710">Zadzwoń +48 730 857 710</a></div></nav>
+      <div class="hero"><div class="container hero-grid"><div class="copy"><div class="status"><i></i><span>Dostępny dziś · Trzeszczyn / Szczecin i okolice</span></div><h1>Przeprowadzki bez problemów. <span class="yellow">My to nosimy.</span></h1><p class="lede">Mieszkania, domy, biura. Pakujemy, ładujemy, wieziemy - z wózkiem samozaładowczym o udźwigu 500 kg, dzięki czemu żadna winda hydrauliczna nie jest potrzebna. Zachodniopomorskie i cała Polska.</p><div class="actions"><a class="btn btn-y" href="tel:+48730857710">Zadzwoń +48 730 857 710</a><a class="btn btn-g" href="#kontakt">Sprawdź termin</a></div></div><aside class="proof"><div><span class="pin">1</span><strong>Ubezpieczenie towaru w cenie</strong></div><div><span class="pin">2</span><strong>Wycena w 24 h</strong></div><div><span class="pin">3</span><strong>Bez ukrytych kosztów</strong></div></aside></div></div>
+      <div class="note"><div class="container note-grid"><article><small>03 Stitch</small><h2>Jedna zszywana linia</h2><p>Najprostszy koncept: menu jest linią szycia / mocowania. Minimum UI, maksimum spokoju.</p></article><article><small>Dlaczego działa</small><h2>Nie walczy z hero</h2><p>To najbardziej elegancki wariant, bo zostawia zdjęcie i copy niemal nietknięte.</p></article><article><small>Najlepsze użycie</small><h2>Najbardziej produkcyjny</h2><p>Jeśli ma być kreatywnie, ale nadal ultra-czysto, wybrałbym właśnie Stitch.</p></article></div></div>
+    </section>
+  </main>
+  <script>
+    const navs = [...document.querySelectorAll('[data-nav]')];
+    function closeNav(nav, restoreFocus = false) {
+      const button = nav.querySelector('.hamb');
+      if (!button) return;
+      button.setAttribute('aria-expanded', 'false');
+      button.setAttribute('aria-label', 'Otwórz menu');
+      nav.classList.remove('open');
+      document.body.classList.remove('menu-open');
+      if (restoreFocus) button.focus();
+    }
+    navs.forEach((nav, index) => {
+      const button = nav.querySelector('.hamb');
+      const menu = nav.querySelector('.mobile');
+      if (!button || !menu) return;
+      const id = `simple-menu-${index + 1}`;
+      menu.id = id;
+      button.setAttribute('aria-controls', id);
+      button.addEventListener('click', () => {
+        const open = button.getAttribute('aria-expanded') !== 'true';
+        navs.forEach((other) => closeNav(other));
+        button.setAttribute('aria-expanded', String(open));
+        button.setAttribute('aria-label', open ? 'Zamknij menu' : 'Otwórz menu');
+        nav.classList.toggle('open', open);
+        document.body.classList.toggle('menu-open', open);
+      });
+      menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => closeNav(nav)));
+    });
+    window.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      navs.forEach((nav) => closeNav(nav, nav.classList.contains('open')));
+    });
+  </script>
+</body>
+</html>

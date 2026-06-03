@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import cartImg from "@/assets/usp-cart.jpg";
+import cartMobileImg from "@/assets/usp-cart-mobile.jpg";
 
 const FEATURES = [
   "Odbiór mebli z wózkiem, zarówno z parteru, jak i z piętra",
@@ -53,13 +54,16 @@ const UspCart = () => {
       aria-label="Wózek samozaładowczy"
       className="relative flex min-h-[640px] items-end overflow-hidden bg-navy text-paper md:min-h-[88vh]"
     >
-      <img
-        src={cartImg}
-        alt="Elektryczny wózek paletowy z masztem podnoszącym MatHub (udźwig 500 kg) we wnętrzu paki samochodu transportowego."
-        width={1920}
-        height={1080}
-        className="usp-kenburns absolute inset-0 h-full w-full object-cover"
-      />
+      <picture className="absolute inset-x-0 top-0 block h-[390px] w-full md:inset-0 md:h-full">
+        <source media="(min-width: 768px)" srcSet={cartImg} width={1920} height={1080} />
+        <img
+          src={cartMobileImg}
+          alt="Elektryczny wózek paletowy z masztem podnoszącym MatHub (udźwig 500 kg) we wnętrzu paki samochodu transportowego."
+          width={1732}
+          height={1672}
+          className="usp-kenburns h-full w-full object-contain object-top md:object-cover md:object-center"
+        />
+      </picture>
       <div className="hero-kino__scrim absolute inset-0" aria-hidden="true" />
       <div
         className="pointer-events-none absolute inset-0"
@@ -85,7 +89,7 @@ const UspCart = () => {
       </div>
 
       {/* Content */}
-      <div className="container-mh relative w-full py-16 md:py-20">
+      <div className="container-mh relative w-full pb-16 pt-[430px] md:py-20">
         <div className="max-w-2xl">
           <div className="kicker text-yellow" style={rise(0)}>
             Wyróżnik
