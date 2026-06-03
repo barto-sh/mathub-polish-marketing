@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MatHub — 5 Kreatywnych Navbarów i Footerów (Podgląd 1:1)</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#fafafa',
+            cream: '#f5f1e8',
+            ink: '#0b1220',
+            navy: '#1a2f4f',
+            'navy-deep': '#0e1b2e',
+            yellow: '#ffc107',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Syne, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* Global Styles from MatHub Design System */
+    body {
+      background-color: #fafafa;
+      color: #0b1220;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .container-mh {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .container-mh {
+        padding-left: 40px;
+        padding-right: 40px;
+      }
+    }
+
+    /* Cinematic Hero Treatments */
+    .hero-kino__scrim {
+      background:
+        linear-gradient(90deg, rgba(14, 27, 46, 0.92) 0%, rgba(14, 27, 46, 0.6) 40%, rgba(14, 27, 46, 0.12) 72%, rgba(14, 27, 46, 0.34) 100%),
+        linear-gradient(0deg, rgba(11, 18, 32, 0.95) 2%, rgba(11, 18, 32, 0.22) 42%, transparent 68%);
+    }
+
+    .hero-kino__grain {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px;
+      opacity: 0.08;
+      mix-blend-mode: soft-light;
+    }
+
+    /* Custom Lab Dock Overlay (Collapsible & non-obstructive) */
+    .lab-dock {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(11, 18, 32, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      padding: 16px 24px;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      z-index: 100000;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      width: calc(100% - 48px);
+      max-width: 700px;
+    }
+
+    .lab-dock.collapsed {
+      transform: translate(-50%, calc(100% - 45px));
+      opacity: 0.9;
+    }
+
+    .dock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .dock-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dock-title span {
+      color: #ffc107;
+    }
+
+    .dock-toggle-btn {
+      background: transparent;
+      border: none;
+      color: #ffc107;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .dock-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .selector-label {
+      font-size: 10px;
+      font-weight: bold;
+      color: #8e9bb0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .selector-select {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      width: 100%;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .selector-select:focus {
+      border-color: #ffc107;
+    }
+
+    .dock-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .dock-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .dock-btn-primary {
+      background: #ffc107;
+      color: #0b1220;
+    }
+
+    .dock-btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Code modal overlay */
+    .code-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 14, 0.95);
+      z-index: 1000000;
+      display: none;
+      flex-direction: column;
+      padding: 40px;
+    }
+
+    .code-overlay.show {
+      display: flex;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 16px;
+    }
+
+    .code-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      color: #ffc107;
+      font-weight: bold;
+    }
+
+    .code-close-btn {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .code-box {
+      flex: 1;
+      background: #0d1117;
+      color: #c9d1d9;
+      padding: 24px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      overflow: auto;
+    }
+  </style>
+
+  <!-- CUSTOM CREATIVE NAV & FOOT STYLES -->
+  <style id="custom-concepts-css">
+    /* ==========================================
+       NAVBAR 1: Liquid Portal (Płynny Portal)
+       ========================================== */
+    .nav-portal-wrapper {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 9999;
+    }
+    .portal-trigger {
+      width: 56px;
+      height: 56px;
+      background: #ffc107;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(255, 193, 7, 0.35);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      z-index: 10;
+    }
+    .portal-menu {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: rgba(11, 18, 32, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      padding: 6px 6px 6px 64px;
+      gap: 20px;
+      opacity: 0;
+      transform: scale(0.8) translateX(-20px);
+      transform-origin: left center;
+      pointer-events: none;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      filter: url('#goo-filter');
+    }
+    .nav-portal-wrapper:hover .portal-menu {
+      opacity: 1;
+      transform: scale(1) translateX(0);
+      pointer-events: auto;
+    }
+    .nav-portal-wrapper:hover .portal-trigger {
+      transform: rotate(90deg);
+    }
+    .portal-link {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: color 0.2s;
+      white-space: nowrap;
+    }
+    .portal-link:hover {
+      color: #ffc107;
+    }
+    .portal-phone {
+      background: #ffc107;
+      color: #0b1220;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    /* ==========================================
+       NAVBAR 2: Perspective 3D HUD (Kokpit 3D)
+       ========================================== */
+    .nav-hud-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(5, 8, 14, 0.95);
+      border-bottom: 1px solid rgba(255, 193, 7, 0.25);
+      z-index: 9999;
+      font-family: 'JetBrains Mono', monospace;
+      perspective: 1000px;
+    }
+    .nav-hud-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease;
+    }
+    .hud-logo {
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 800;
+      font-size: 18px;
+      text-decoration: none;
+      letter-spacing: 2px;
+    }
+    .hud-links {
+      display: flex;
+      gap: 16px;
+    }
+    .hud-link {
+      color: rgba(255, 255, 255, 0.65);
+      text-decoration: none;
+      font-size: 12px;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      border: 1px solid transparent;
+      transition: all 0.3s;
+    }
+    .hud-link:hover {
+      color: #ffc107;
+      border-color: #ffc107;
+      box-shadow: 0 0 12px rgba(255, 193, 7, 0.35);
+    }
+
+    /* ==========================================
+       NAVBAR 3: Cargo Spline Node (Węzły Załadunku)
+       ========================================== */
+    .nav-spline-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 9999;
+      background: rgba(15, 23, 42, 0.96);
+      padding: 16px 0;
+      border-bottom: 2px solid #ffc107;
+    }
+    .nav-spline-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .spline-links {
+      display: flex;
+      gap: 32px;
+    }
+    .spline-link {
+      color: #fff;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .spline-link:hover {
+      color: #ffc107;
+    }
+
+    /* ==========================================
+       NAVBAR 4: Typographic Poster Warp
+       ========================================== */
+    .nav-poster-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 9999;
+      background: #000;
+      border-bottom: 2px solid #ffc107;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .poster-btn {
+      background: #ffc107;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+    }
+    .poster-btn:hover {
+      background: #fff;
+      transform: scale(1.05);
+    }
+
+    /* ==========================================
+       NAVBAR 5: Tactile Fluid Trigger
+       ========================================== */
+    .nav-tactile-wrapper {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(20px);
+      padding: 8px 24px;
+      border-radius: 50px;
+      display: flex;
+      gap: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .tactile-btn {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 30px;
+      transition: all 0.2s;
+    }
+    .tactile-btn:hover {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+    }
+
+    /* ==========================================
+       FOOTER 1: 3D Wireframe Terrain
+       ========================================== */
+    .foot-wire-wrapper {
+      background: #020617;
+      padding: 80px 24px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .wire-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    /* ==========================================
+       FOOTER 2: Editorial Manifest Poster
+       ========================================== */
+    .foot-editorial-wrapper {
+      background: #000;
+      color: #fff;
+      padding: 100px 24px;
+      font-family: 'Syne', sans-serif;
+      border-top: 5px solid #ffc107;
+    }
+
+    /* ==========================================
+       FOOTER 3: Interactive Blueprint Slider
+       ========================================== */
+    .foot-blueprint-wrapper {
+      background: #0a1f33;
+      color: #fff;
+      padding: 80px 24px;
+      font-family: 'JetBrains Mono', monospace;
+      border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    }
+
+    /* ==========================================
+       FOOTER 4: Dusk Gravity Canvas
+       ========================================== */
+    .foot-gravity-wrapper {
+      background: #030712;
+      padding: 80px 24px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      border-top: 1px solid #1f2937;
+    }
+    .gravity-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* ==========================================
+       FOOTER 5: Origami 3D Container
+       ========================================== */
+    .foot-origami-wrapper {
+      background: #0f172a;
+      color: #fff;
+      padding: 100px 24px;
+      border-top: 2px solid #ffc107;
+    }
+    .origami-box {
+      background: #1e293b;
+      border: 2px solid #ffc107;
+      padding: 40px;
+      transition: all 0.5s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ACTIVE NAVBAR COMPONENT PORTAL -->
+  <div id="navbar-slot"></div>
+
+  <!-- 1:1 REAL CONTENT HERO SECTION -->
+  <section id="top" aria-label="Wprowadzenie" class="relative isolate flex min-h-[88svh] flex-col overflow-hidden bg-navy-deep text-paper pt-20">
+    <div class="absolute inset-0 z-0 overflow-hidden">
+      <img src="./src/assets/hero-hands.jpg" alt="Pakowanie kartonu w trakcie przeprowadzki" class="h-full w-full object-cover" style="transform: scale(1.08); object-position: 56% 42%;" />
+    </div>
+    <div class="hero-kino__scrim absolute inset-0 z-0" aria-hidden="true"></div>
+    <div class="hero-kino__grain absolute inset-0 z-0" aria-hidden="true"></div>
+
+    <div class="container-mh relative z-10 flex flex-1 flex-col justify-end pt-24 pb-14 md:pb-16">
+      <div class="inline-flex w-fit items-center gap-2 rounded-full border border-paper/20 bg-paper/5 px-3 py-1.5 backdrop-blur-sm">
+        <span class="inline-block h-2 w-2 rounded-full bg-green-600" aria-hidden="true"></span>
+        <span class="text-[12.5px] font-medium text-paper">Dostępny dziś · Trzeszczyn / Szczecin i okolice</span>
+      </div>
+
+      <h1 class="mt-6 text-5xl md:text-8xl font-black leading-none tracking-tight text-white max-w-4xl">
+        Przeprowadzki bez problemów. <span class="text-yellow">My to nosimy.</span>
+      </h1>
+
+      <p class="mt-6 max-w-xl text-lg text-paper/85">
+        Mieszkania, domy, biura. Pakujemy, ładujemy, wieziemy - z wózkiem samozaładowczym o udźwigu 500 kg, dzięki czemu żadna winda hydrauliczna nie jest potrzebna. Zachodniopomorskie i cała Polska.
+      </p>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <a href="tel:+48730857710" class="inline-flex h-12 items-center justify-center gap-2 rounded bg-yellow px-6 text-sm font-bold text-navy transition-all hover:bg-yellow-400">
+          Zadzwoń +48 730 857 710
+        </a>
+        <a href="#kontakt" class="inline-flex h-12 items-center justify-center gap-2 rounded border border-white/30 px-6 text-sm font-bold text-white transition-all hover:border-yellow hover:text-yellow">
+          Sprawdź termin
+        </a>
+      </div>
+    </div>
+
+    <div class="relative z-10 w-full px-6 pb-6 sm:px-10">
+      <div class="mx-auto w-full max-w-[1200px] grid grid-cols-1 items-center gap-4 lg:grid-cols-[1fr_auto_1fr_auto_1fr] bg-black/40 backdrop-blur-md p-4 rounded-lg border border-white/10">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-yellow text-navy font-bold flex items-center justify-center">1</span>
+          <strong class="text-white text-sm">Ubezpieczenie towaru w cenie</strong>
+        </div>
+        <span class="hidden lg:block w-px h-6 bg-white/20"></span>
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-yellow text-navy font-bold flex items-center justify-center">2</span>
+          <strong class="text-white text-sm">Wycena w 24 h</strong>
+        </div>
+        <span class="hidden lg:block w-px h-6 bg-white/20"></span>
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-full bg-yellow text-navy font-bold flex items-center justify-center">3</span>
+          <strong class="text-white text-sm">Bez ukrytych kosztów</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BAR SECTION -->
+  <section class="bg-navy-deep py-16 md:py-20 relative overflow-hidden">
+    <div class="container-mh relative z-10">
+      <div class="grid grid-cols-2 gap-x-6 gap-y-14 md:grid-cols-4">
+        <div class="text-center">
+          <div class="text-4xl md:text-5xl font-black text-yellow">500 kg+</div>
+          <div class="mt-2 text-xs uppercase tracking-wider text-white/50">udźwig wózka samozaładowczego</div>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl md:text-5xl font-black text-yellow">0</div>
+          <div class="mt-2 text-xs uppercase tracking-wider text-white/50">ramp i wind hydraulicznych</div>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl md:text-5xl font-black text-yellow">24 h</div>
+          <div class="mt-2 text-xs uppercase tracking-wider text-white/50">na wycenę od zgłoszenia</div>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl md:text-5xl font-black text-yellow">PL</div>
+          <div class="mt-2 text-xs uppercase tracking-wider text-white/50">zasięg: od Szczecina do Rzeszowa</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES SECTION -->
+  <section id="uslugi" class="bg-paper py-20 md:py-28">
+    <div class="container-mh">
+      <div class="max-w-3xl">
+        <div class="text-yellow-700 font-bold uppercase tracking-wider text-sm">Zakres</div>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-ink mt-2">Co wozimy i jak.</h2>
+        <p class="text-ink/70 mt-4 text-lg">
+          Jedna ekipa, jeden bus, sześć typowych zleceń. Jeśli nie ma tu tego, czego szukasz, zadzwoń - realizujemy też nietypowe zlecenia.
+        </p>
+      </div>
+
+      <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Service Card 1 -->
+        <article class="bg-white border border-black/5 rounded-lg overflow-hidden flex flex-col shadow-sm">
+          <div class="aspect-[4/3] bg-navy overflow-hidden">
+            <img src="./src/assets/svc-boxes.jpg" alt="Mieszkania" class="w-full h-full object-cover" />
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="text-yellow-700 font-bold text-xs uppercase">Mieszkania</div>
+              <h3 class="text-xl font-bold mt-2">Przeprowadzki mieszkań</h3>
+              <p class="text-sm text-ink/65 mt-2">Kawalerka, M3, M5. Pakowanie, demontaż mebli, transport, ustawienie na miejscu.</p>
+            </div>
+          </div>
+        </article>
+        <!-- Service Card 2 -->
+        <article class="bg-white border border-black/5 rounded-lg overflow-hidden flex flex-col shadow-sm">
+          <div class="aspect-[4/3] bg-navy overflow-hidden">
+            <img src="./src/assets/svc-home.jpg" alt="Domy" class="w-full h-full object-cover" />
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="text-yellow-700 font-bold text-xs uppercase">Domy</div>
+              <h3 class="text-xl font-bold mt-2">Przeprowadzki domów</h3>
+              <p class="text-sm text-ink/65 mt-2">Całe gospodarstwo: salon, kuchnia, garaż, piwnica, ogród. W jednym lub kilku kursach.</p>
+            </div>
+          </div>
+        </article>
+        <!-- Service Card 3 -->
+        <article class="bg-white border border-black/5 rounded-lg overflow-hidden flex flex-col shadow-sm">
+          <div class="aspect-[4/3] bg-navy overflow-hidden">
+            <img src="./src/assets/svc-office.jpg" alt="Biura" class="w-full h-full object-cover" />
+          </div>
+          <div class="p-6 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="text-yellow-700 font-bold text-xs uppercase">Biura</div>
+              <h3 class="text-xl font-bold mt-2">Przeprowadzki biur</h3>
+              <p class="text-sm text-ink/65 mt-2">Biurka, serwery, archiwa. Realizujemy po godzinach, żeby nie zatrzymywać firmy.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- USP CART SECTION -->
+  <section id="wozek" class="relative flex min-h-[640px] items-end overflow-hidden bg-navy text-paper md:min-h-[80vh]">
+    <picture class="absolute inset-0 block h-full w-full">
+      <img src="./src/assets/usp-cart.jpg" alt="Wózek samozaładowczy" class="h-full w-full object-cover" />
+    </picture>
+    <div class="hero-kino__scrim absolute inset-0" aria-hidden="true"></div>
+
+    <div class="container-mh relative z-10 w-full pb-16 pt-[400px] md:py-20">
+      <div class="max-w-2xl">
+        <div class="text-yellow font-bold uppercase text-sm">Wyróżnik</div>
+        <h2 class="text-3xl md:text-5xl font-extrabold mt-2 text-white">Wózek samozaładowczy. Winda załadunkowa, której nie musisz mieć.</h2>
+        <p class="text-paper/80 mt-4 text-base">
+          Paleciak, sztaplarka i winda załadunkowa w jednym. Samodzielnie wjeżdża na przestrzeń ładunkową busa - nie potrzebujemy rampy, hydraulicznej windy przy budynku, ani pięciu ludzi do wniesienia pralki.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS SECTION -->
+  <section id="proces" class="bg-paper py-20 md:py-28">
+    <div class="container-mh">
+      <div class="max-w-3xl">
+        <div class="text-yellow-700 font-bold uppercase tracking-wider text-sm">Proces</div>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-ink mt-2">Trzy kroki, zero tajemnic.</h2>
+      </div>
+
+      <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <img src="./src/assets/process-notebook.jpg" class="rounded-lg shadow-sm" alt="Notes" />
+          <h3 class="text-xl font-bold mt-4">1. Rozmowa</h3>
+          <p class="text-ink/70 mt-2 text-sm">Dzwonisz, opisujesz co i gdzie. Termin potwierdzamy w rozmowie.</p>
+        </div>
+        <div>
+          <img src="./src/assets/process-quote.jpg" class="rounded-lg shadow-sm" alt="Wycena" />
+          <h3 class="text-xl font-bold mt-4">2. Wycena</h3>
+          <p class="text-ink/70 mt-2 text-sm">Dostajesz konkretną cenę w 24 h. Bez ukrytych kosztów.</p>
+        </div>
+        <div>
+          <img src="./src/assets/process-delivery.jpg" class="rounded-lg shadow-sm" alt="Realizacja" />
+          <h3 class="text-xl font-bold mt-4">3. Realizacja</h3>
+          <p class="text-ink/70 mt-2 text-sm">Ekipa, bus, wózek. Przywozimy, wnosimy, ustawiamy.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COVERAGE MAP SECTION -->
+  <section id="zasieg" class="bg-cream py-20 md:py-28">
+    <div class="container-mh">
+      <div class="max-w-3xl mb-12">
+        <div class="text-yellow-700 font-bold uppercase tracking-wider text-sm">Zasięg</div>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-ink mt-2">Zachodniopomorskie bazą. Cała Polska po drodze.</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-lg font-bold">Ogólnopolski zasięg</h3>
+            <p class="text-sm text-ink/70 mt-1">Nasza flota przemierza całą Polskę, od Szczecina po Rzeszów.</p>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold">Baza operacyjna</h3>
+            <p class="text-sm text-ink/70 mt-1">Zachodniopomorskie to nasz dom. Stąd wyruszamy.</p>
+          </div>
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-black/10 shadow-lg h-[400px]">
+          <iframe title="Mapa" src="https://www.google.com/maps?q=53.55,14.52&z=11&output=embed" class="w-full h-full border-none"></iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="kontakt" class="text-paper py-20 md:py-28" style="background: radial-gradient(125% 90% at 100% 0%, #1e3a8a, #0e1b2e 58%)">
+    <div class="container-mh">
+      <div class="max-w-3xl mx-auto text-center">
+        <div class="text-yellow font-bold uppercase tracking-widest text-xs">Kontakt</div>
+        <h2 class="text-3xl md:text-5xl font-extrabold mt-4">Masz termin. Potrzebujesz wyceny.</h2>
+        <p class="mt-4 text-white/70 max-w-xl mx-auto">Dzwonisz, opisujesz sytuację, dostajesz cenę bezpośrednio w trakcie rozmowy.</p>
+
+        <div class="mt-8">
+          <a href="tel:+48730857710" class="inline-flex flex-col bg-yellow text-navy px-8 py-6 rounded-lg font-bold shadow-lg transition-transform hover:scale-105 text-left">
+            <span class="text-xs uppercase opacity-70">Zadzwoń bezpośrednio</span>
+            <span class="text-2xl mt-1 font-black">+48 730 857 710</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTIVE FOOTER COMPONENT PORTAL -->
+  <div id="footer-slot"></div>
+
+
+  <!-- LAB INTERACTIVE DOCK OVERLAY (Fully collapsible to prevent layout obstruction) -->
+  <div class="lab-dock" id="lab-dock">
+    <div class="dock-header" onclick="toggleDock()">
+      <div class="dock-title">
+        <span>MatHub Creative Lab v2</span> · Kontroler Podglądu
+      </div>
+      <button class="dock-toggle-btn" id="dock-toggle-label">[ Zwiń Panel ]</button>
+    </div>
+
+    <div class="dock-controls" id="dock-body-controls">
+      <div>
+        <label class="selector-label">Navbar (Styl)</label>
+        <select class="selector-select" id="navbar-select-el">
+          <option value="1">Liquid Portal (N1)</option>
+          <option value="2">Perspective 3D HUD (N2)</option>
+          <option value="3">Cargo Spline Node (N3)</option>
+          <option value="4">Typographic Poster Warp (N4)</option>
+          <option value="5">Tactile Fluid Trigger (N5)</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="selector-label">Footer (Styl)</label>
+        <select class="selector-select" id="footer-select-el">
+          <option value="1">3D Wireframe Terrain (F1)</option>
+          <option value="2">Editorial Manifest Poster (F2)</option>
+          <option value="3">Interactive Blueprint Slider (F3)</option>
+          <option value="4">Dusk Gravity Canvas (F4)</option>
+          <option value="5">Origami 3D Container (F5)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="dock-actions" id="dock-body-actions">
+      <button class="dock-btn dock-btn-secondary" onclick="toggleCodeOverlay()">Pokaż Kod HTML/CSS</button>
+      <button class="dock-btn dock-btn-primary" id="copy-btn">Skopiuj do Schowka</button>
+    </div>
+  </div>
+
+
+  <!-- CODE VIEW OVERLAY -->
+  <div class="code-overlay" id="code-overlay">
+    <div class="code-header">
+      <div class="code-title">KOD KOMPONENTU (HTML / CSS)</div>
+      <button class="code-close-btn" onclick="toggleCodeOverlay()">×</button>
+    </div>
+    <pre class="code-box"><code id="code-box-output">Generowanie kodu...</code></pre>
+  </div>
+
+  <div class="copy-toast" id="copy-toast">Kod został pomyślnie skopiowany!</div>
+
+
+  <!-- RAW STATIC HTML TEMPLATES FOR SWITCHING -->
+  <div style="display:none;" id="templates">
+    <!-- Navbar 1 -->
+    <div id="nav-1-content">
+<div class="nav-portal-wrapper">
+  <div class="portal-trigger">
+    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" class="w-6 h-6"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </div>
+  <div class="portal-menu">
+    <a href="#top" class="portal-link font-black text-yellow text-lg mr-4">MatHub</a>
+    <a href="#uslugi" class="portal-link">Usługi</a>
+    <a href="#wozek" class="portal-link">Wózek</a>
+    <a href="#proces" class="portal-link">Proces</a>
+    <a href="#kontakt" class="portal-link">Kontakt</a>
+    <a href="tel:+48730857710" class="portal-phone">+48 730 857 710</a>
+  </div>
+</div>
+<!-- Goo Filter -->
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display:none;">
+  <defs>
+    <filter id="goo-filter">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
+      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo" />
+      <feBlend in="SourceGraphic" in2="goo" />
+    </filter>
+  </defs>
+</svg>
+    </div>
+
+    <!-- Navbar 2 -->
+    <div id="nav-2-content">
+<div class="nav-hud-wrapper" id="hud-nav">
+  <div class="nav-hud-container" id="hud-container">
+    <a href="#top" class="hud-logo">MATHUB // DECK</a>
+    <div class="hud-links">
+      <a href="#uslugi" class="hud-link">USŁUGI</a>
+      <a href="#wozek" class="hud-link">WÓZEK</a>
+      <a href="#kontakt" class="hud-link">KONTAKT</a>
+    </div>
+    <div style="font-size:10px; color:#ffc107;" class="hidden md:block">
+      LAT: 53.55° N · LON: 14.52° E
+    </div>
+  </div>
+</div>
+    </div>
+
+    <!-- Navbar 3 -->
+    <div id="nav-3-content">
+<div class="nav-spline-wrapper">
+  <div class="nav-spline-container">
+    <a href="#top" style="color:#ffc107; font-weight:900; font-size:24px; text-decoration:none; font-family:'Syne';">MatHub</a>
+    <div class="spline-links">
+      <a href="#uslugi" class="spline-link">Usługi</a>
+      <a href="#wozek" class="spline-link">Wózek</a>
+      <a href="#kontakt" class="spline-link">Kontakt</a>
+    </div>
+  </div>
+</div>
+    </div>
+
+    <!-- Navbar 4 -->
+    <div id="nav-4-content">
+<div class="nav-poster-wrapper">
+  <span style="color:#fff; font-family:'Syne'; font-weight:800; font-size:18px;">MatHub // TRZESZCZYN</span>
+  <button class="poster-btn" onclick="alert('Infolinia: +48 730 857 710')">Zadaj pytanie</button>
+</div>
+    </div>
+
+    <!-- Navbar 5 -->
+    <div id="nav-5-content">
+<div class="nav-tactile-wrapper">
+  <a href="#uslugi" class="tactile-btn">Usługi</a>
+  <a href="#wozek" class="tactile-btn">Wózek</a>
+  <a href="tel:+48730857710" class="tactile-btn" style="color:#ffc107;">+48 730 857 710</a>
+</div>
+    </div>
+
+    <!-- Footer 1 -->
+    <div id="foot-1-content">
+<footer class="foot-wire-wrapper">
+  <canvas class="wire-canvas" id="wire-canvas"></canvas>
+  <div style="max-width: 1200px; margin: 0 auto; position: relative; z-index: 10;">
+    <h2 style="font-family:'Syne', sans-serif; font-size:36px; color:#ffc107; font-weight:800; margin-bottom:20px;">MatHub</h2>
+    <p style="max-width:600px; opacity:0.75; font-size:15px; line-height:1.6;">
+      Jednoosobowa działalność transportowa z bazą w Trzeszczynie. Bezpieczny transport mebli, AGD i ładunków ponadgabarytowych z wózkiem samozaładowczym 500 kg.
+    </p>
+    <div style="margin-top: 40px; font-size: 13px; opacity: 0.5;">
+      © 2026 MatHub. Wszelkie prawa zastrzeżone. NIP: 858-167-45-59. Zachodniopomorskie.
+    </div>
+  </div>
+</footer>
+    </div>
+
+    <!-- Footer 2 -->
+    <div id="foot-2-content">
+<footer class="foot-editorial-wrapper">
+  <div style="max-width: 1200px; margin:0 auto; display:grid; grid-template-columns: 1fr; md:grid-template-columns: 2fr 1fr; gap: 40px;">
+    <div>
+      <h2 style="font-size: clamp(36px, 6vw, 72px); font-weight:900; line-height:0.9; text-transform:uppercase; letter-spacing:-2px;">MY TO NOSIMY.</h2>
+      <p style="font-family:'Inter', sans-serif; font-size:15px; margin-top:24px; max-width:600px; opacity:0.6; line-height:1.6;">
+        Ubezpieczenie towaru OCP w cenie, profesjonalny transport mebli, pralek, lodówek i maszyn. Działamy na terenie całego województwa zachodniopomorskiego oraz całego kraju.
+      </p>
+    </div>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size:13px; line-height:1.8; text-transform:uppercase; opacity:0.8;">
+      NIP: 858-167-45-59<br>
+      BAZA: TRZESZCZYN, POLICE<br>
+      INFOLINIA: +48 730 857 710
+    </div>
+  </div>
+</footer>
+    </div>
+
+    <!-- Footer 3 -->
+    <div id="foot-3-content">
+<footer class="foot-blueprint-wrapper">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <h3 style="color:#ffc107; font-size:14px; margin-bottom: 20px; letter-spacing:1px;">SCHEMAT TECHNICZNY MATHUB SHEET // MH-2026</h3>
+    <div style="background:rgba(255,255,255,0.03); padding:24px; border: 1px dashed rgba(255,255,255,0.15); margin-bottom:30px;">
+      <label style="font-size:13px;">DOPASUJ OBCIĄŻENIE MASZYNY: <span id="weight-lbl" style="color:#ffc107; font-weight:bold;">250 kg</span></label><br>
+      <input type="range" min="50" max="500" value="250" style="width:100%; margin-top:10px; accent-color:#ffc107;" id="w-slider">
+    </div>
+    <p style="font-size:13px; opacity:0.7;">Dane rejestrowe: MatHub NIP: 858-167-45-59. Adres: Trzeszczyn, 72-004 Police. Zasięg: cała Polska.</p>
+  </div>
+</footer>
+    </div>
+
+    <!-- Footer 4 -->
+    <div id="foot-4-content">
+<footer class="foot-gravity-wrapper" id="grav-foot">
+  <canvas class="gravity-canvas" id="grav-canvas"></canvas>
+  <div style="max-width:1200px; margin:0 auto; position:relative; z-index:10;">
+    <h2 style="font-size:28px; font-family:'Syne'; color:#ffc107; margin-bottom:16px;">MatHub Trzeszczyn</h2>
+    <p style="font-size:15px; opacity:0.8; max-width:500px;">Zadzwoń bezpośrednio: +48 730 857 710. Jesteśmy dostępni od poniedziałku do soboty w godzinach 8:00–20:00.</p>
+  </div>
+</footer>
+    </div>
+
+    <!-- Footer 5 -->
+    <div id="foot-5-content">
+<footer class="foot-origami-wrapper">
+  <div class="origami-box" id="orig-box">
+    <h2 style="font-size:28px; font-family:'Syne'; color:#ffc107; margin-bottom:12px; font-weight:900;">OTWARTY KONTENER INFORMACYJNY</h2>
+    <p style="font-size:15px; opacity:0.8; line-height:1.6;">NIP firmy: 858-167-45-59 · Telefon alarmowy: +48 730 857 710 · Baza operacyjna: Trzeszczyn, 72-004 Police.</p>
+  </div>
+</footer>
+    </div>
+  </div>
+
+
+  <!-- DOCK INTERACTIVITY LOGIC -->
+  <script>
+    let isCollapsed = false;
+    const labDock = document.getElementById('lab-dock');
+    const toggleLabel = document.getElementById('dock-toggle-label');
+    const dbControls = document.getElementById('dock-body-controls');
+    const dbActions = document.getElementById('dock-body-actions');
+
+    function toggleDock() {
+      isCollapsed = !isCollapsed;
+      if (isCollapsed) {
+        labDock.classList.add('collapsed');
+        toggleLabel.innerText = '[ Rozwiń ]';
+        dbControls.style.display = 'none';
+        dbActions.style.display = 'none';
+      } else {
+        labDock.classList.remove('collapsed');
+        toggleLabel.innerText = '[ Zwiń Panel ]';
+        dbControls.style.display = 'grid';
+        dbActions.style.display = 'flex';
+      }
+    }
+
+    // Direct render values
+    let activeNav = '1';
+    let activeFoot = '1';
+
+    const selectNav = document.getElementById('navbar-select-el');
+    const selectFoot = document.getElementById('footer-select-el');
+    const navbarSlot = document.getElementById('navbar-slot');
+    const footerSlot = document.getElementById('footer-slot');
+    const codeBoxOutput = document.getElementById('code-box-output');
+    const copyBtn = document.getElementById('copy-btn');
+    const copyToast = document.getElementById('copy-toast');
+
+    function update() {
+      // Clean previous events/intervals if any
+      if (window.wireAnimationId) cancelAnimationFrame(window.wireAnimationId);
+      if (window.gravityAnimationId) cancelAnimationFrame(window.gravityAnimationId);
+
+      // Inject HTML templates
+      const navHtml = document.getElementById(`nav-${activeNav}-content`).innerHTML;
+      const footHtml = document.getElementById(`foot-${activeFoot}-content`).innerHTML;
+
+      navbarSlot.innerHTML = navHtml;
+      footerSlot.innerHTML = footHtml;
+
+      // Run dynamic JS scripts associated with components
+      initDynamicNav(activeNav);
+      initDynamicFoot(activeFoot);
+
+      // Update Code Box text
+      const cssRules = document.getElementById('custom-concepts-css').innerHTML.trim();
+      const codeOutput = `<!-- === MATHUB CUSTOM COMPONENT EXPORT === -->
+<style>
+${cssRules}
+</style>
+
+<!-- NAVBAR COMPONENT -->
+${navHtml.trim()}
+
+<!-- FOOTER COMPONENT -->
+${footHtml.trim()}`;
+
+      codeBoxOutput.textContent = codeOutput;
+    }
+
+    // Dynamic Initializations
+    function initDynamicNav(id) {
+      if (id === '2') {
+        const hudNav = document.getElementById('hud-nav');
+        const container = document.getElementById('hud-container');
+        if (hudNav && container) {
+          window.addEventListener('mousemove', (e) => {
+            const x = (e.clientX - window.innerWidth / 2) * 0.015;
+            const y = (e.clientY - window.innerHeight / 2) * 0.08;
+            container.style.transform = `rotateX(${-y}deg) rotateY(${x}deg)`;
+          });
+        }
+      }
+    }
+
+    function initDynamicFoot(id) {
+      if (id === '1') {
+        const canvas = document.getElementById('wire-canvas');
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          const resize = () => {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+          };
+          resize();
+          window.addEventListener('resize', resize);
+
+          function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = 'rgba(255, 193, 7, 0.15)';
+            ctx.lineWidth = 1;
+            const time = Date.now() * 0.001;
+
+            // Draw landscape grid lines
+            for (let i = -100; i < canvas.width + 100; i += 40) {
+              ctx.beginPath();
+              ctx.moveTo(i, canvas.height);
+              ctx.lineTo(i + Math.sin(time + i) * 30, 0);
+              ctx.stroke();
+            }
+            window.wireAnimationId = requestAnimationFrame(draw);
+          }
+          draw();
+        }
+      } else if (id === '3') {
+        const slider = document.getElementById('w-slider');
+        const lbl = document.getElementById('weight-lbl');
+        if (slider && lbl) {
+          slider.addEventListener('input', (e) => {
+            lbl.innerText = `${e.target.value} kg`;
+          });
+        }
+      } else if (id === '4') {
+        const canvas = document.getElementById('grav-canvas');
+        const foot = document.getElementById('grav-foot');
+        if (canvas && foot) {
+          const ctx = canvas.getContext('2d');
+          canvas.width = foot.offsetWidth;
+          canvas.height = foot.offsetHeight;
+
+          let mx = canvas.width / 2;
+          let my = canvas.height / 2;
+
+          foot.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mx = e.clientX - rect.left;
+            my = e.clientY - rect.top;
+          });
+
+          const stars = Array.from({ length: 40 }, () => ({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            r: Math.random() * 2 + 1,
+            speed: Math.random() * 0.02 + 0.01
+          }));
+
+          function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(255, 193, 7, 0.6)';
+
+            stars.forEach(s => {
+              // Pull stars slowly to cursor coordinates
+              s.x += (mx - s.x) * s.speed;
+              s.y += (my - s.y) * s.speed;
+
+              ctx.beginPath();
+              ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+              ctx.fill();
+            });
+
+            window.gravityAnimationId = requestAnimationFrame(draw);
+          }
+          draw();
+        }
+      }
+    }
+
+    function toggleCodeOverlay() {
+      document.getElementById('code-overlay').classList.toggle('show');
+    }
+
+    selectNav.addEventListener('change', (e) => {
+      activeNav = e.target.value;
+      update();
+    });
+
+    selectFoot.addEventListener('change', (e) => {
+      activeFoot = e.target.value;
+      update();
+    });
+
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(codeBoxOutput.textContent).then(() => {
+        copyToast.style.opacity = '1';
+        setTimeout(() => { copyToast.style.opacity = '0'; }, 2000);
+      });
+    });
+
+    // Boot
+    update();
+  </script>
+</body>
+</html>

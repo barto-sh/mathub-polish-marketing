@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Truck, Phone, Clock, MapPin } from "lucide-react";
 
 const REALIZACJA = [
@@ -7,9 +8,87 @@ const REALIZACJA = [
 ];
 
 const Footer = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // 3D Wireframe Canvas Animation Logic
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animFrameId: number;
+    let width = (canvas.width = canvas.offsetWidth);
+    let height = (canvas.height = canvas.offsetHeight);
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+    };
+    window.addEventListener("resize", handleResize);
+
+    // Grid properties
+    const cols = 24;
+    const rows = 14;
+    let offset = 0;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.strokeStyle = "rgba(255, 193, 7, 0.08)"; // Brand gold with low alpha
+      ctx.lineWidth = 1;
+
+      // Animate grid offset forward to simulate driving
+      offset = (offset + 0.5) % 40;
+
+      // Draw perspective perspective grid lines
+      for (let r = 0; r < rows; r++) {
+        const y = (r * 40 - offset) + 20;
+        if (y < 0 || y > height) continue;
+
+        // Fade lines as they approach the horizon (top)
+        const alpha = (y / height) * 0.15;
+        ctx.strokeStyle = `rgba(255, 193, 7, ${alpha})`;
+
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+
+      // Draw converging vertical lines for perspective road effect
+      const centerX = width / 2;
+      for (let c = 0; c <= cols; c++) {
+        const xOffset = (c - cols / 2) * (width / cols) * 1.8;
+
+        ctx.strokeStyle = "rgba(255, 193, 7, 0.04)";
+        ctx.beginPath();
+        ctx.moveTo(centerX + xOffset * 0.1, 0); // Converge at horizon
+        ctx.lineTo(centerX + xOffset, height);  // Diverge at front
+        ctx.stroke();
+      }
+
+      animFrameId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(animFrameId);
+    };
+  }, []);
+
   return (
-    <footer className="bg-[hsl(var(--navy-deep))] text-paper">
-      <div className="container-mh py-16 md:py-20">
+    <footer className="relative bg-[hsl(var(--navy-deep))] text-paper overflow-hidden">
+      {/* 3D Wireframe Canvas Overlay */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full pointer-events-none z-0"
+      />
+
+      <div className="container-mh relative z-10 py-16 md:py-20">
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[2.2fr_1fr_1.1fr_1.2fr] lg:gap-12">
           {/* Brand */}
           <div>
@@ -51,7 +130,7 @@ const Footer = () => {
               </li>
               <li className="group flex items-center gap-2.5">
                 <Phone className="h-[15px] w-[15px] shrink-0 text-paper/40 transition-colors group-hover:text-yellow" />
-                <a href="tel:+48730857710" className="transition-mh hover:text-yellow">
+                <a href="tel:+48730857710" className="transition-all duration-200 hover:text-yellow">
                   +48 730 857 710
                 </a>
               </li>
@@ -77,7 +156,7 @@ const Footer = () => {
         </div>
 
         {/* Legal strip */}
-        <div className="mt-14 flex flex-col items-start justify-between gap-2 border-t border-line-dark pt-6 font-mono text-[12px] text-paper/40 sm:flex-row sm:items-center">
+        <div className="mt-14 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 font-mono text-[12px] text-paper/40 sm:flex-row sm:items-center">
           <div>© 2026 MatHub. Wszystkie prawa zastrzeżone.</div>
           <div>Zachodniopomorskie · PL</div>
         </div>

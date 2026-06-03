@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MatHub — 5 Kreatywnych Redesignów Stopki (Footer)</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#fafafa',
+            cream: '#f5f1e8',
+            ink: '#0b1220',
+            navy: '#1a2f4f',
+            'navy-deep': '#0e1b2e',
+            yellow: '#ffc107',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts: Inter, JetBrains Mono, Syne -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;850&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #fafafa;
+      color: #0b1220;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .container-mh {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .container-mh {
+        padding-left: 40px;
+        padding-right: 40px;
+      }
+    }
+
+    /* Interactive Laboratory Dock Styling */
+    .lab-dock {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(11, 18, 32, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      padding: 16px 24px;
+      border-radius: 16px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      width: calc(100% - 48px);
+      max-width: 800px;
+    }
+
+    .lab-dock.collapsed {
+      transform: translate(-50%, calc(100% - 46px));
+      opacity: 0.9;
+    }
+
+    .dock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .dock-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dock-title span {
+      color: #ffc107;
+    }
+
+    .dock-toggle-btn {
+      background: transparent;
+      border: none;
+      color: #ffc107;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .dock-controls {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .dock-controls {
+        grid-template-columns: 1fr auto;
+      }
+    }
+
+    .selector-label {
+      font-size: 10px;
+      font-weight: bold;
+      color: #8e9bb0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .selector-select {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      width: 100%;
+      font-size: 14px;
+      outline: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: border-color 0.2s;
+    }
+
+    .selector-select:focus {
+      border-color: #ffc107;
+    }
+
+    .dock-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .dock-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .dock-btn:active {
+      transform: scale(0.98);
+    }
+
+    .dock-btn-primary {
+      background: #ffc107;
+      color: #0b1220;
+    }
+
+    .dock-btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Concept Description area inside dock */
+    .concept-desc-meta {
+      font-size: 12px;
+      color: #8e9bb0;
+      line-height: 1.5;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Code modal overlay */
+    .code-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 14, 0.97);
+      z-index: 1000000;
+      display: none;
+      flex-direction: column;
+      padding: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .code-overlay {
+        padding: 40px;
+      }
+    }
+
+    .code-overlay.show {
+      display: flex;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+      padding-bottom: 16px;
+    }
+
+    .code-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      color: #ffc107;
+      font-weight: 700;
+    }
+
+    .code-close-btn {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 28px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .code-box {
+      flex: 1;
+      background: #080d16;
+      color: #c9d1d9;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      overflow: auto;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .copy-toast {
+      position: fixed;
+      bottom: 110px;
+      right: 24px;
+      background: #ffc107;
+      color: #0b1220;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 100001;
+    }
+  </style>
+
+  <!-- STYLE CONCEPTS -->
+  <style id="custom-concepts-css">
+    /* =========================================================================
+       CONCEPT 1: Liquid Wave & Frosted Scrim (Glassmorphism & Wave Top)
+       ========================================================================= */
+    .c1-footer {
+      background: radial-gradient(130% 100% at 50% 100%, hsl(217 55% 18%), hsl(220 60% 7%) 80%);
+      position: relative;
+      overflow: hidden;
+      clip-path: ellipse(150% 100% at 50% 100%);
+    }
+
+    /* Wave effect divider top */
+    .c1-wave-boundary {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 16px;
+      background: linear-gradient(180deg, rgba(255,193,7,0.1), transparent);
+    }
+
+    .c1-glass-col {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+      padding: 24px;
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+
+    .c1-glass-col:hover {
+      border-color: rgba(255, 193, 7, 0.25);
+      background: rgba(255, 255, 255, 0.04);
+      transform: translateY(-4px);
+    }
+
+    /* =========================================================================
+       CONCEPT 2: 3D Interactive Blueprint (Perspective Wireframe Terrain)
+       ========================================================================= */
+    .c2-footer {
+      background-color: #050912;
+      position: relative;
+      overflow: hidden;
+      perspective: 1200px;
+    }
+
+    .c2-grid-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0.22;
+      z-index: 1;
+    }
+
+    .c2-hud-col {
+      background: rgba(10, 18, 30, 0.8);
+      border: 1px dashed rgba(255, 193, 7, 0.15);
+      border-radius: 6px;
+      padding: 24px;
+      position: relative;
+      z-index: 10;
+      transition: all 0.35s ease;
+    }
+
+    .c2-hud-col:hover {
+      border-color: #ffc107;
+      box-shadow: 0 0 25px rgba(255, 193, 7, 0.15);
+      transform: translateZ(15px);
+    }
+
+    .c2-hud-bracket {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-color: rgba(255, 193, 7, 0.3);
+    }
+    .c2-bracket-tl { top: 8px; left: 8px; border-top: 1.5px solid currentColor; border-left: 1.5px solid currentColor; }
+    .c2-bracket-br { bottom: 8px; right: 8px; border-bottom: 1.5px solid currentColor; border-right: 1.5px solid currentColor; }
+
+    /* =========================================================================
+       CONCEPT 3: Brutalist Cargo Manifest (Swiss Grid / Block dividers)
+       ========================================================================= */
+    .c3-footer {
+      background-color: #0b1220;
+      border-top: 4px solid #ffc107;
+      position: relative;
+    }
+
+    .c3-cargo-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+    }
+
+    @media (min-width: 1024px) {
+      .c3-cargo-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .c3-cargo-cell {
+      padding: 40px 24px;
+      border-right: 1.5px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.25s;
+    }
+
+    .c3-cargo-cell:last-child {
+      border-right: none;
+    }
+
+    .c3-cargo-cell:hover {
+      background: rgba(255, 193, 7, 0.02);
+    }
+
+    .c3-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 2px 6px;
+      color: rgba(255, 255, 255, 0.4);
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .c3-cargo-cell:hover .c3-badge {
+      color: #ffc107;
+      border-color: rgba(255, 193, 7, 0.5);
+    }
+
+    /* =========================================================================
+       CONCEPT 4: Magnetic Gravity Particles (Interactive Physics Settle)
+       ========================================================================= */
+    .c4-footer {
+      background-color: #030710;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .c4-particle-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .c4-content-wrapper {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* =========================================================================
+       CONCEPT 5: Typography Split Editorial (Stretch reveal headline)
+       ========================================================================= */
+    .c5-footer {
+      background-color: #000;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .c5-giant-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 850;
+      font-size: clamp(2.5rem, 8vw, 8rem);
+      line-height: 0.85;
+      text-transform: uppercase;
+      letter-spacing: -3px;
+      color: #121824;
+      transition: all 0.5s ease;
+      cursor: pointer;
+    }
+
+    .c5-giant-text:hover {
+      color: #ffc107;
+      transform: scaleY(1.05) skewX(-2deg);
+      text-shadow: 0 0 40px rgba(255, 193, 7, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIMULATED SITE PREVIEW SKELETON (HERO / SERVICES) -->
+  <section class="bg-navy-deep py-20 border-b border-white/5 relative z-10 text-center">
+    <div class="container-mh">
+      <h2 class="text-3xl font-black text-white" style="font-family:'Syne';">MatHub Website Simulator</h2>
+      <p class="text-white/55 mt-2">Dolina podglądu stopki — przewiń na sam dół, aby zobaczyć redesign stopki w akcji.</p>
+    </div>
+  </section>
+
+  <!-- DYNAMIC TARGET SLOT FOR FOOTER SWITCHER -->
+  <div id="footer-slot">
+    <!-- Active footer template injected here -->
+  </div>
+
+
+  <!-- FLOATING INTERACTIVE LAB DOCK -->
+  <div class="lab-dock" id="lab-dock">
+    <div class="dock-header" onclick="toggleDock()">
+      <div class="dock-title">
+        <span>MatHub Footer Lab</span> // Panel Kontrolny
+      </div>
+      <button class="dock-toggle-btn" id="dock-toggle-label">[ Zwiń Panel ]</button>
+    </div>
+
+    <div class="dock-controls" id="dock-body-controls">
+      <div>
+        <label class="selector-label">Wybierz Redesign Stopki (Footer)</label>
+        <select class="selector-select" id="concept-select-el">
+          <option value="1">1. Liquid Wave & Frosted Scrim (Glassmorphism & Wave Top)</option>
+          <option value="2">2. 3D Interactive Blueprint (Perspective Grid Horizon)</option>
+          <option value="3">3. Brutalist Cargo Manifest (Swiss Grid / Rigid Block Cell)</option>
+          <option value="4">4. Magnetic Gravity Particles (Interactive Physics Settle)</option>
+          <option value="5">5. Typography Split Editorial (Stretch Reveal Headline & Clean split)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="concept-desc-meta" id="concept-desc-meta">
+      Wczytywanie szczegółów projektu...
+    </div>
+
+    <div class="dock-actions" id="dock-body-actions">
+      <button class="dock-btn dock-btn-secondary" onclick="toggleCodeOverlay()">Pokaż Kod HTML/CSS</button>
+      <button class="dock-btn dock-btn-primary" id="copy-btn">Skopiuj do Schowka</button>
+    </div>
+  </div>
+
+  <!-- CODE PREVIEW SCREEN -->
+  <div class="code-overlay" id="code-overlay">
+    <div class="code-header">
+      <div class="code-title">KOD STOPKI DO SKOPIOWANIA (Wklej bezpośrednio do Footer.tsx)</div>
+      <button class="code-close-btn" onclick="toggleCodeOverlay()">×</button>
+    </div>
+    <pre class="code-box"><code id="code-box-output">Generowanie specyfikacji stopki...</code></pre>
+  </div>
+
+  <div class="copy-toast" id="copy-toast">Kod stopki został skopiowany do schowka!</div>
+
+  <!-- RAW TEMPLATES -->
+  <div style="display:none;" id="templates">
+
+    <!-- CONCEPT 1 -->
+    <div id="concept-1-html">
+<footer class="c1-footer text-paper py-16 md:py-20">
+  <div class="c1-wave-boundary"></div>
+  <div class="container-mh relative z-10">
+    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-[2.2fr_1fr_1.1fr_1.2fr] lg:gap-12">
+
+      <!-- Brand -->
+      <div class="c1-glass-col">
+        <div class="flex items-center gap-2.5">
+          <span class="inline-flex h-[30px] w-[30px] items-center justify-center rounded-md bg-yellow">
+            <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" class="h-4.5 w-4.5 text-navy"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125a1.125 1.125 0 0 0 1.125-1.125V9.75M3.75 14.25h15m-15 0a2.25 2.25 0 0 1-2.25-2.25V9.75A2.25 2.25 0 0 1 3.75 7.5h11.25A2.25 2.25 0 0 1 17.25 9.75v4.5m-10.5 6h9"/></svg>
+          </span>
+          <span class="text-[20px] font-semibold text-paper" style="letter-spacing: -0.01em">
+            MatHub
+          </span>
+        </div>
+        <p class="mt-[18px] max-w-[40ch] text-[13.5px] leading-relaxed text-paper/70">
+          Przeprowadzki i transport bagażowy. Jednoosobowa działalność z bazą
+          w Trzeszczynie, cała rozmowa, cała praca i cała odpowiedzialność u
+          jednej osoby.
+        </p>
+      </div>
+
+      <!-- Dane firmy -->
+      <div class="c1-glass-col">
+        <h3 class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-yellow">Dane firmy</h3>
+        <ul class="mt-[18px] space-y-2.5 text-[14px] text-paper/75">
+          <li>
+            <span class="text-paper/40">Nazwa:</span> MatHub
+          </li>
+          <li>
+            <span class="text-paper/40">NIP:</span> <span class="font-mono">858-167-45-59</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Adres / kontakt -->
+      <div class="c1-glass-col">
+        <h3 class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-yellow">Adres / kontakt</h3>
+        <ul class="mt-[18px] space-y-3 text-[14px] text-paper/75">
+          <li class="flex items-start gap-2.5">
+            <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" class="h-4.5 w-4.5 mt-0.5 text-yellow shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25s-7.5-4.108-7.5-11.25g-9 9 0 0 1 18 0z"/></svg>
+            <span>Trzeszczyn, 72-004 Police</span>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" class="h-4.5 w-4.5 text-yellow shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.824-1.806-5.122-4.103-6.927-6.927l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25z"/></svg>
+            <a href="tel:+48730857710" class="hover:text-yellow transition-colors font-medium">
+              +48 730 857 710
+            </a>
+          </li>
+          <li class="flex items-center gap-2.5">
+            <svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" class="h-4.5 w-4.5 text-yellow shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+            <span>Pon–Sob · 8:00–20:00</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Realizacja -->
+      <div class="c1-glass-col">
+        <h3 class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-yellow">Realizacja</h3>
+        <ul class="mt-[18px] space-y-2.5 text-[14px] text-paper/75">
+          <li class="flex items-start gap-2.5">
+            <span class="mt-[7px] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-yellow" aria-hidden="true"></span>
+            <span>Ubezpieczenie towaru w cenie</span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <span class="mt-[7px] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-yellow" aria-hidden="true"></span>
+            <span>Wózek samozaładowczy, udźwig 500 kg</span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <span class="mt-[7px] inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-yellow" aria-hidden="true"></span>
+            <span>Pasy, koce, pianka w komplecie</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Legal Strip -->
+    <div class="mt-14 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 font-mono text-[12px] text-paper/40 sm:flex-row sm:items-center">
+      <div>© 2026 MatHub. Wszystkie prawa zastrzeżone.</div>
+      <div>Zachodniopomorskie · PL</div>
+    </div>
+  </div>
+</footer>
+    </div>
+
+    <!-- CONCEPT 2 -->
+    <div id="concept-2-html">
+<footer class="c2-footer py-16 md:py-20 text-paper">
+  <canvas class="c2-grid-canvas" id="c2-grid-canvas-el"></canvas>
+
+  <div class="container-mh relative z-10">
+    <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-[2.2fr_1fr_1.1fr_1.2fr] lg:gap-12">
+
+      <!-- Brand -->
+      <div class="c2-hud-col">
+        <div class="c2-hud-bracket c2-bracket-tl"></div>
+        <div class="c2-hud-bracket c2-bracket-br"></div>
+
+        <div class="flex items-center gap-2.5">
+          <span class="w-2.5 h-2.5 rounded-full bg-yellow animate-pulse"></span>
+          <span class="text-[18px] font-bold tracking-widest text-white uppercase font-mono">MatHub // NODE_0</span>
+        </div>
+        <p class="mt-[18px] max-w-[40ch] text-[13px] font-mono leading-relaxed text-paper/60">
+          Przeprowadzki i transport bagażowy. Jednoosobowa działalność z bazą
+          w Trzeszczynie, cała rozmowa, cała praca i cała odpowiedzialność u
+          jednej osoby.
+        </p>
+      </div>
+
+      <!-- Dane firmy -->
+      <div class="c2-hud-col">
+        <div class="c2-hud-bracket c2-bracket-tl"></div>
+        <div class="c2-hud-bracket c2-bracket-br"></div>
+        <h3 class="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-yellow">[ DANE REJESTROWE ]</h3>
+        <ul class="mt-[18px] space-y-2.5 text-[13px] font-mono text-paper/70">
+          <li>
+            <span class="text-paper/45">Nazwa:</span> MatHub
+          </li>
+          <li>
+            <span class="text-paper/45">NIP:</span> 858-167-45-59
+          </li>
+        </ul>
+      </div>
+
+      <!-- Adres / kontakt -->
+      <div class="c2-hud-col">
+        <div class="c2-hud-bracket c2-bracket-tl"></div>
+        <div class="c2-hud-bracket c2-bracket-br"></div>
+        <h3 class="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-yellow">[ TELEMETRIA / ADRES ]</h3>
+        <ul class="mt-[18px] space-y-2.5 text-[13px] font-mono text-paper/70">
+          <li>Trzeszczyn, 72-004 Police</li>
+          <li>
+            TEL: <a href="tel:+48730857710" class="text-yellow hover:underline">+48 730 857 710</a>
+          </li>
+          <li>OPEN: Pon–Sob · 8:00–20:00</li>
+        </ul>
+      </div>
+
+      <!-- Realizacja -->
+      <div class="c2-hud-col">
+        <div class="c2-hud-bracket c2-bracket-tl"></div>
+        <div class="c2-hud-bracket c2-bracket-br"></div>
+        <h3 class="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-yellow">[ PARAMETRY FLOTY ]</h3>
+        <ul class="mt-[18px] space-y-2.5 text-[13px] font-mono text-paper/70">
+          <li class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 border border-yellow bg-yellow/20"></span>
+            <span>Ubezpieczenie towaru w cenie</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 border border-yellow bg-yellow/20"></span>
+            <span>Wózek samozaładowczy, udźwig 500 kg</span>
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 border border-yellow bg-yellow/20"></span>
+            <span>Pasy, koce, pianka w komplecie</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Legal strip -->
+    <div class="mt-14 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 font-mono text-[12px] text-paper/40 sm:flex-row sm:items-center">
+      <div>© 2026 MatHub. Wszystkie prawa zastrzeżone.</div>
+      <div>SYS_LAT: 53.55° N · SYS_LON: 14.52° E · PL</div>
+    </div>
+  </div>
+</footer>
+    </div>
+
+    <!-- CONCEPT 3 -->
+    <div id="concept-3-html">
+<footer class="c3-footer py-0 text-paper">
+  <div class="c3-cargo-grid">
+
+    <!-- Cell 1: Brand description -->
+    <div class="c3-cargo-cell">
+      <span class="c3-badge">Firma / Opis</span>
+      <h2 style="font-family:'Syne';" class="text-xl font-bold uppercase tracking-tight text-white mb-4">MatHub</h2>
+      <p class="text-[13.5px] leading-relaxed text-paper/60 font-mono">
+        Przeprowadzki i transport bagażowy. Jednoosobowa działalność z bazą
+        w Trzeszczynie, cała rozmowa, cała praca i cała odpowiedzialność u
+        jednej osoby.
+      </p>
+    </div>
+
+    <!-- Cell 2: Dane firmy -->
+    <div class="c3-cargo-cell">
+      <span class="c3-badge">Dane firmy</span>
+      <ul class="space-y-3 text-[14px] font-mono text-paper/70">
+        <li>
+          <span class="text-paper/40 block text-xs uppercase">Nazwa</span>
+          <span class="text-white font-bold">MatHub</span>
+        </li>
+        <li>
+          <span class="text-paper/40 block text-xs uppercase">NIP</span>
+          <span class="text-white font-bold">858-167-45-59</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Cell 3: Adres / Kontakt -->
+    <div class="c3-cargo-cell">
+      <span class="c3-badge">Adres / Kontakt</span>
+      <ul class="space-y-3 text-[14px] font-mono text-paper/70">
+        <li>
+          <span class="text-paper/40 block text-xs uppercase">Baza operacyjna</span>
+          <span class="text-white font-bold">Trzeszczyn, 72-004 Police</span>
+        </li>
+        <li>
+          <span class="text-paper/40 block text-xs uppercase">Infolinia</span>
+          <a href="tel:+48730857710" class="text-yellow font-black hover:underline">+48 730 857 710</a>
+        </li>
+        <li>
+          <span class="text-paper/40 block text-xs uppercase">Godziny pracy</span>
+          <span class="text-white">Pon–Sob · 8:00–20:00</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Cell 4: Realizacja -->
+    <div class="c3-cargo-cell">
+      <span class="c3-badge">Warunki / Realizacja</span>
+      <ul class="space-y-3.5 text-[13px] font-mono text-paper/60">
+        <li class="flex items-start gap-2">
+          <span class="text-yellow font-bold">[✓]</span>
+          <span>Ubezpieczenie towaru w cenie</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-yellow font-bold">[✓]</span>
+          <span>Wózek samozaładowczy, udźwig 500 kg</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-yellow font-bold">[✓]</span>
+          <span>Pasy, koce, pianka w komplecie</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Legal strip bottom -->
+  <div class="container-mh py-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[12px] text-paper/40">
+    <div>© 2026 MatHub. Wszystkie prawa zastrzeżone.</div>
+    <div>Zachodniopomorskie · PL</div>
+  </div>
+</footer>
+    </div>
+
+    <!-- CONCEPT 4 -->
+    <div id="concept-4-html">
+<footer class="c4-footer py-16 md:py-20 text-paper">
+  <canvas class="c4-particle-canvas" id="c4-particle-canvas-el"></canvas>
+
+  <div class="container-mh c4-content-wrapper">
+    <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[2.2fr_1fr_1.1fr_1.2fr] lg:gap-12">
+
+      <!-- Brand description -->
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-yellow"></span>
+          <span class="text-lg font-bold tracking-widest text-white uppercase font-mono">MatHub</span>
+        </div>
+        <p class="mt-[18px] max-w-[40ch] text-[13.5px] leading-relaxed text-paper/60 font-light">
+          Przeprowadzki i transport bagażowy. Jednoosobowa działalność z bazą
+          w Trzeszczynie, cała rozmowa, cała praca i cała odpowiedzialność u
+          jednej osoby.
+        </p>
+      </div>
+
+      <!-- Dane firmy -->
+      <div>
+        <h3 class="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-paper/40">Dane firmy</h3>
+        <ul class="mt-[18px] space-y-2.5 text-[14px] text-paper/70 font-light">
+          <li>
+            <span class="opacity-40">Nazwa:</span> MatHub
+          </li>
+          <li>
+            <span class="opacity-40">NIP:</span> <span class="font-mono text-yellow font-bold">858-167-45-59</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Adres / kontakt -->
+      <div>
+        <h3 class="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-paper/40">Adres / kontakt</h3>
+        <ul class="mt-[18px] space-y-3.5 text-[14px] text-paper/70 font-light">
+          <li>Trzeszczyn, 72-004 Police</li>
+          <li>
+            <a href="tel:+48730857710" class="text-yellow font-medium hover:underline tracking-tight">+48 730 857 710</a>
+          </li>
+          <li>Pon–Sob · 8:00–20:00</li>
+        </ul>
+      </div>
+
+      <!-- Realizacja -->
+      <div>
+        <h3 class="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-paper/40">Realizacja</h3>
+        <ul class="mt-[18px] space-y-2.5 text-[13.5px] text-paper/70 font-light">
+          <li class="flex items-start gap-2">
+            <span class="text-yellow text-[10px] mt-0.5">•</span>
+            <span>Ubezpieczenie towaru w cenie</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-yellow text-[10px] mt-0.5">•</span>
+            <span>Wózek samozaładowczy, udźwig 500 kg</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-yellow text-[10px] mt-0.5">•</span>
+            <span>Pasy, koce, pianka w komplecie</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Legal Strip -->
+    <div class="mt-14 flex flex-col items-start justify-between gap-2 border-t border-white/10 pt-6 font-mono text-[12px] text-paper/30 sm:flex-row sm:items-center">
+      <div>© 2026 MatHub. Wszystkie prawa zastrzeżone.</div>
+      <div>Zachodniopomorskie · PL</div>
+    </div>
+  </div>
+</footer>
+    </div>
+
+    <!-- CONCEPT 5 -->
+    <div id="concept-5-html">
+<footer class="c5-footer py-20 text-paper">
+  <div class="container-mh">
+
+    <!-- Giant Interactive Typography Header -->
+    <div class="c5-giant-text mb-16 tracking-tighter" style="font-family:'Syne';">
+      MATHUB //
+    </div>
+
+    <div class="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[2.2fr_1fr_1.1fr_1.2fr] lg:gap-12 border-t border-white/10 pt-12">
+
+      <!-- Brand desc -->
+      <div>
+        <h3 class="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-yellow">Manifest</h3>
+        <p class="mt-4 max-w-[40ch] text-[13.5px] leading-relaxed text-paper/60 font-light">
+          Przeprowadzki i transport bagażowy. Jednoosobowa działalność z bazą
+          w Trzeszczynie, cała rozmowa, cała praca i cała odpowiedzialność u
+          jednej osoby.
+        </p>
+      </div>
+
+      <!-- Dane firmy -->
+      <div>
+        <h3 class="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-paper/40">Firma</h3>
+        <ul class="mt-4 space-y-2 text-[14px] text-paper/70 font-light">
+          <li>MatHub</li>
+          <li class="font-mono text-xs tracking-tight text-white/50">NIP: 858-167-45-59</li>
+        </ul>
+      </div>
+
+      <!-- Adres / kontakt -->
+      <div>
+        <h3 class="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-paper/40">Kontakt</h3>
+        <ul class="mt-4 space-y-2.5 text-[14px] text-paper/70 font-light">
+          <li>Trzeszczyn, 72-004 Police</li>
+          <li>
+            <a href="tel:+48730857710" class="text-yellow hover:underline">+48 730 857 710</a>
+          </li>
+          <li class="text-xs text-white/50">Pon–Sob · 8:00–20:00</li>
+        </ul>
+      </div>
+
+      <!-- Realizacja -->
+      <div>
+        <h3 class="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-paper/40">Realizacja</h3>
+        <ul class="mt-4 space-y-2 text-[13.5px] text-paper/60 font-light">
+          <li>Ubezpieczenie towaru w cenie</li>
+          <li>Wózek samozaładowczy, udźwig 500 kg</li>
+          <li>Pasy, koce, pianka w komplecie</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Legal Strip -->
+    <div class="mt-16 flex flex-col items-start justify-between gap-2 border-t border-white/5 pt-6 font-mono text-[11px] text-paper/30 sm:flex-row sm:items-center">
+      <div>© 2026 MatHub. Wszystkie prawa zastrzeżone.</div>
+      <div>Zachodniopomorskie · PL</div>
+    </div>
+  </div>
+</footer>
+    </div>
+
+  </div>
+
+  <!-- INTERACTIVE SWITCHER LOGIC -->
+  <script>
+    // Collapsing logic for lab dock
+    let isCollapsed = false;
+    const labDock = document.getElementById('lab-dock');
+    const toggleLabel = document.getElementById('dock-toggle-label');
+    const dbControls = document.getElementById('dock-body-controls');
+    const dbActions = document.getElementById('dock-body-actions');
+    const dbMeta = document.getElementById('concept-desc-meta');
+
+    function toggleDock() {
+      isCollapsed = !isCollapsed;
+      if (isCollapsed) {
+        labDock.classList.add('collapsed');
+        toggleLabel.innerText = '[ Rozwiń ]';
+        dbControls.style.display = 'none';
+        dbActions.style.display = 'none';
+        dbMeta.style.display = 'none';
+      } else {
+        labDock.classList.remove('collapsed');
+        toggleLabel.innerText = '[ Zwiń Panel ]';
+        dbControls.style.display = 'grid';
+        dbActions.style.display = 'flex';
+        dbMeta.style.display = 'block';
+      }
+    }
+
+    let activeId = '1';
+    const conceptSelect = document.getElementById('concept-select-el');
+    const footerSlot = document.getElementById('footer-slot');
+    const codeBoxOutput = document.getElementById('code-box-output');
+    const copyBtn = document.getElementById('copy-btn');
+    const copyToast = document.getElementById('copy-toast');
+
+    const metaInfo = {
+      '1': {
+        desc: '<strong>Liquid Wave & Frosted Scrim</strong>: Wprowadza organiczny łuk oddzielający stopkę od reszty strony oraz półprzezroczyste, szklane kontenery kolumn z rozmytym tłem. Całość wykończona jest subtelnym złotym rozświetleniem i wektorowymi ikonami akcji.',
+        init: function() {}
+      },
+      '2': {
+        desc: '<strong>3D Interactive Blueprint Grid</strong>: Cyfrowy rysunek techniczny w przestrzeni. W tle stopki renderowana jest siatka drutowa (HTML5 Canvas), która reaguje zmianą nachylenia na ruch kursora myszy. Kolumny stopki ujęte są w ramy z narożnymi celownikami.',
+        init: function() {
+          const canvas = document.getElementById('c2-grid-canvas-el');
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          const parent = canvas.parentElement;
+
+          let width = canvas.width = parent.offsetWidth;
+          let height = canvas.height = parent.offsetHeight;
+
+          window.addEventListener('resize', () => {
+            width = canvas.width = parent.offsetWidth;
+            height = canvas.height = parent.offsetHeight;
+          });
+
+          let mx = width / 2;
+          let my = height / 2;
+
+          parent.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mx = e.clientX - rect.left;
+            my = e.clientY - rect.top;
+          });
+
+          let offset = 0;
+          function draw() {
+            ctx.clearRect(0,0,width,height);
+            ctx.strokeStyle = 'rgba(255, 193, 7, 0.05)';
+            ctx.lineWidth = 1;
+            offset = (offset + 0.4) % 40;
+
+            const cols = 20;
+            const rows = 10;
+            const centerX = width / 2;
+
+            // Pitch control based on mouse coordinate Y
+            const pitch = (my / height) * 0.4 + 0.1;
+
+            // Draw horizontal perspective lines
+            for (let r = 0; r < rows; r++) {
+              const y = (r * 35 - offset) + 10;
+              const alpha = (y / height) * 0.12;
+              ctx.strokeStyle = `rgba(255, 193, 7, ${alpha})`;
+              ctx.beginPath();
+              ctx.moveTo(0, y);
+              ctx.lineTo(width, y);
+              ctx.stroke();
+            }
+
+            // Draw perspective column grids tilting toward cursor X coordinate
+            for (let c = 0; c <= cols; c++) {
+              const xOffset = (c - cols/2) * (width / cols) * 2;
+              const targetHorizon = centerX + (mx - centerX) * 0.15;
+              ctx.strokeStyle = 'rgba(255,193,7,0.03)';
+              ctx.beginPath();
+              ctx.moveTo(targetHorizon + xOffset * 0.1, 0);
+              ctx.lineTo(centerX + xOffset, height);
+              ctx.stroke();
+            }
+
+            window.c2AnimId = requestAnimationFrame(draw);
+          }
+          draw();
+        }
+      },
+      '3': {
+        desc: '<strong>Brutalist Cargo Manifest</strong>: Wysoce geometryczny i czytelny układ szwajcarski. Stopka podzielona jest na równe pionowe komórki o grubych obramowaniach. Wartości i nagłówki posiadają szare etykiety przypominające listy przewozowe.',
+        init: function() {}
+      },
+      '4': {
+        desc: '<strong>Magnetic Gravity Particles</strong>: Wykorzystuje animowane, fizyczne opadanie pyłków świetlnych (HTML5 Canvas). Cząsteczki powoli osadzają się na dnie stopki, a kursor myszy działa jak tarcza grawitacyjna, rozpychając i rozdmuchując zawiesinę.',
+        init: function() {
+          const canvas = document.getElementById('c4-particle-canvas-el');
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          const parent = canvas.parentElement;
+
+          let width = canvas.width = parent.offsetWidth;
+          let height = canvas.height = parent.offsetHeight;
+
+          let mx = -1000;
+          let my = -1000;
+
+          parent.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mx = e.clientX - rect.left;
+            my = e.clientY - rect.top;
+          });
+
+          parent.addEventListener('mouseleave', () => {
+            mx = -1000;
+            my = -1000;
+          });
+
+          let particles = Array.from({ length: 45 }, () => ({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            r: Math.random() * 2 + 0.8,
+            vy: Math.random() * 0.3 + 0.2,
+            originVy: 0,
+            alpha: Math.random() * 0.35 + 0.15
+          }));
+          particles.forEach(p => p.originVy = p.vy);
+
+          function draw() {
+            ctx.clearRect(0,0,width,height);
+            ctx.fillStyle = 'rgba(255, 193, 7, 0.45)';
+
+            particles.forEach(p => {
+              p.y += p.vy;
+              if (p.y > height) {
+                p.y = 0;
+                p.x = Math.random() * width;
+              }
+
+              // Physics repulsion calculation
+              const dx = p.x - mx;
+              const dy = p.y - my;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 100) {
+                const force = (100 - dist) / 100;
+                p.x += (dx / dist) * force * 5;
+                p.y += (dy / dist) * force * 3;
+              }
+
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+              ctx.fill();
+            });
+
+            window.c4AnimId = requestAnimationFrame(draw);
+          }
+          draw();
+        }
+      },
+      '5': {
+        desc: '<strong>Typography Split Editorial</strong>: Czysty, luksusowy design z gigantycznym, dynamicznie rozciągającym się nagłówkiem logo „MATHUB //” na samej górze. Układ kolumn jest wysoce minimalistyczny, zapewniając szlachetny i przestronny wygląd stopki.',
+        init: function() {}
+      }
+    };
+
+    function update() {
+      // Clear previous animations if active
+      if (window.c2AnimId) cancelAnimationFrame(window.c2AnimId);
+      if (window.c4AnimId) cancelAnimationFrame(window.c4AnimId);
+
+      // Swapping HTML content
+      const templateHtml = document.getElementById(`concept-${activeId}-html`).innerHTML;
+      footerSlot.innerHTML = templateHtml;
+
+      // Update description meta
+      dbMeta.innerHTML = metaInfo[activeId].desc;
+
+      // Trigger custom interactivity listeners
+      metaInfo[activeId].init();
+
+      // Update Code box content
+      const cssRules = document.getElementById('custom-concepts-css').innerHTML.trim();
+
+      // Extract specific style rules for active concept
+      let matchStart = `CONCEPT ${activeId}:`;
+      let matchEnd = `CONCEPT ${parseInt(activeId) + 1}:`;
+      if (activeId === '5') matchEnd = '==';
+
+      const startIndex = cssRules.indexOf(matchStart);
+      const endIndex = cssRules.indexOf(matchEnd);
+
+      let scopedCSS = '';
+      if (startIndex !== -1) {
+        if (endIndex !== -1) {
+          scopedCSS = cssRules.substring(startIndex - 8, endIndex - 8);
+        } else {
+          scopedCSS = cssRules.substring(startIndex - 8);
+        }
+      }
+
+      const codeTemplate = `<!-- === REDESIGN STOPKI (FOOTER): WERSJA ${activeId} === -->
+
+<!-- 1. STYLE CSS (Dodaj do sekcji head lub pliku stylów) -->
+<style>
+${scopedCSS.trim()}
+</style>
+
+<!-- 2. STRUKTURA HTML (Zastąp dotychczasowy element <footer> w stopce strony) -->
+${templateHtml.trim()}`;
+
+      codeBoxOutput.textContent = codeTemplate;
+    }
+
+    function toggleCodeOverlay() {
+      document.getElementById('code-overlay').classList.toggle('show');
+    }
+
+    conceptSelect.addEventListener('change', (e) => {
+      activeId = e.target.value;
+      update();
+    });
+
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(codeBoxOutput.textContent).then(() => {
+        copyToast.style.opacity = '1';
+        setTimeout(() => { copyToast.style.opacity = '0'; }, 2000);
+      });
+    });
+
+    // Boot Up first wariant
+    update();
+  </script>
+</body>
+</html>
