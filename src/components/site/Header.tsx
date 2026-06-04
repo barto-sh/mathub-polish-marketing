@@ -62,9 +62,14 @@ const Header = () => {
   // Spline Node Animation Logic (Canvas-based Road Line)
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || import.meta.env.MODE === "test") return;
 
-    const ctx = canvas.getContext("2d");
+    let ctx: CanvasRenderingContext2D | null = null;
+    try {
+      ctx = canvas.getContext("2d");
+    } catch {
+      return;
+    }
     if (!ctx) return;
 
     let animFrameId: number;
@@ -205,7 +210,7 @@ const Header = () => {
 
           <button
             type="button"
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-sm transition-colors md:hidden ${
+            className={`-mr-1 inline-flex h-11 w-11 items-center justify-center rounded-sm transition-colors md:hidden ${
               onDark ? "text-paper hover:bg-paper/10" : "text-ink hover:bg-line/50"
             }`}
             aria-label={open ? "Zamknij menu" : "Otwórz menu"}

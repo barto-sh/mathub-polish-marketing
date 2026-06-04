@@ -11,7 +11,7 @@ const EASE = "cubic-bezier(0.4,0,0.2,1)";
 
 const TrustBar = () => {
   const ref = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
+  const [inView, setInView] = useState(true);
 
   useEffect(() => {
     const el = ref.current;
@@ -19,17 +19,23 @@ const TrustBar = () => {
       setInView(true);
       return;
     }
+
+    const fallback = window.setTimeout(() => setInView(true), 1200);
     const io = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) {
+          window.clearTimeout(fallback);
           setInView(true);
           io.disconnect();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.05, rootMargin: "0px 0px -8% 0px" }
     );
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      window.clearTimeout(fallback);
+      io.disconnect();
+    };
   }, []);
 
   return (
@@ -115,7 +121,7 @@ const TrustBar = () => {
 
                 {/* Stat Value — centered by flexbox, rings orbit around it */}
                 <div
-                  className="hud-glow-text relative font-black leading-none tracking-tight select-none"
+                  className="hud-glow-text relative whitespace-nowrap font-black leading-none tracking-tight select-none"
                   style={{ fontSize: "clamp(2.2rem, 5vw, 3.4rem)" }}
                 >
                   {s.value}

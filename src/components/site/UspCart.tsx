@@ -89,7 +89,7 @@ const UspCart = () => {
       </div>
 
       {/* Content */}
-      <div className="container-mh relative w-full pb-16 pt-[430px] md:py-20">
+      <div className="container-mh relative w-full pb-16 pt-[390px] min-[390px]:pt-[430px] md:py-20">
         <div className="max-w-2xl">
           <div className="kicker text-yellow" style={rise(0)}>
             Wyróżnik

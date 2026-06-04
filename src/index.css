@@ -347,11 +347,18 @@
 
 /* Concentric expanding ripples around timeline nodes */
 .c3-ripple-container {
+  --c3-ripple-scale: 2.4;
   position: relative;
   width: 42px;
   height: 42px;
   display: grid;
   place-items: center;
+}
+
+@media (max-width: 480px) {
+  .c3-ripple-container {
+    --c3-ripple-scale: 1.75;
+  }
 }
 
 .c3-ripple-ring {
@@ -376,7 +383,7 @@
 
 @keyframes c3-ripple {
   0% { transform: scale(0.85); opacity: 0.85; }
-  100% { transform: scale(2.4); opacity: 0; }
+  100% { transform: scale(var(--c3-ripple-scale, 2.4)); opacity: 0; }
 }
 
 /* Shimmer Button Container (wraps content with spinning conic gradient border) */

@@ -13,9 +13,14 @@ const Footer = () => {
   // 3D Wireframe Canvas Animation Logic
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || import.meta.env.MODE === "test") return;
 
-    const ctx = canvas.getContext("2d");
+    let ctx: CanvasRenderingContext2D | null = null;
+    try {
+      ctx = canvas.getContext("2d");
+    } catch {
+      return;
+    }
     if (!ctx) return;
 
     let animFrameId: number;
