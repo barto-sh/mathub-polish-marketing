@@ -1,0 +1,20 @@
+
+> vite_react_shadcn_ts@0.0.0 dev
+> vite
+
+Port 8080 is in use, trying another one...
+
+  [32m[1mVITE[22m v5.4.19[39m  [2mready in [0m[1m205[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m8081[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.1.16:[1m8081[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://172.18.80.1:[1m8081[22m/[39m
+[2m09:37:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/site/Contact.tsx, /src/index.css[22m
+[2m09:39:09[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/site/Contact.tsx, /src/index.css[22m
+[2m09:47:42[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/site/UspCart.tsx, /src/index.css[22m
+[2m09:47:51[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/site/UspCart.tsx, /src/index.css[22m
+[2m09:47:58[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/index.css[22m
+[2m09:48:39[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/site/UspCart.tsx, /src/index.css[22m
+[2m09:58:42[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/site/UspCart.tsx, /src/index.css[22m
+[2m09:58:52[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/site/UspCart.tsx, /src/index.css[22m
+[2m12:11:03[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2mnavbar-concepts.html[22m
