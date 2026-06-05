@@ -72,7 +72,7 @@ const TrustBar = () => {
           {STATS.map((s, i) => (
             <div
               key={s.label}
-              className="relative flex flex-col items-center justify-center p-6 text-center border border-white/5 bg-white/[0.01] rounded-lg overflow-hidden transition-all duration-500 hover:border-yellow/20 hover:bg-white/[0.02]"
+              className="relative flex min-h-[196px] flex-col items-center justify-center overflow-hidden rounded-lg border border-white/5 bg-white/[0.01] px-5 py-6 text-center transition-all duration-500 hover:border-yellow/20 hover:bg-white/[0.02] sm:min-h-[210px] sm:p-6 md:min-h-[220px]"
               style={{
                 opacity: inView ? 1 : 0,
                 transform: inView ? "none" : "translateY(20px)",
@@ -95,41 +95,30 @@ const TrustBar = () => {
                 }}
               />
 
-              {/* Value hero — rings center exclusively on the stat value */}
-              <div className="relative flex items-center justify-center py-5">
-                {/* Holographic Radar Ring (Outer) */}
+              {/* Value hero — fixed stage prevents ring clipping and label overlap */}
+              <div className="relative flex h-[116px] w-full items-center justify-center sm:h-[128px] md:h-[140px]">
                 <div
-                  className="absolute pointer-events-none left-1/2 top-1/2 rounded-full border border-dashed border-yellow/25"
-                  style={{
-                    width: 140,
-                    height: 140,
-                    animation: `hudRotate ${12 + i * 2}s linear infinite`,
-                    transform: "translate(-50%, -50%)",
-                  }}
+                  className="absolute left-1/2 top-1/2 h-[116px] w-[116px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-yellow/25 sm:h-[128px] sm:w-[128px] md:h-[140px] md:w-[140px]"
+                  style={{ animation: `hudRotate ${12 + i * 2}s linear infinite` }}
+                  aria-hidden="true"
                 />
 
-                {/* Holographic Radar Ring (Inner) */}
                 <div
-                  className="absolute pointer-events-none left-1/2 top-1/2 rounded-full border border-dotted border-yellow/15"
-                  style={{
-                    width: 100,
-                    height: 100,
-                    animation: `hudRotateBack ${8 + i}s linear infinite`,
-                    transform: "translate(-50%, -50%)",
-                  }}
+                  className="absolute left-1/2 top-1/2 h-[82px] w-[82px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dotted border-yellow/15 sm:h-[92px] sm:w-[92px] md:h-[100px] md:w-[100px]"
+                  style={{ animation: `hudRotateBack ${8 + i}s linear infinite` }}
+                  aria-hidden="true"
                 />
 
-                {/* Stat Value — centered by flexbox, rings orbit around it */}
                 <div
-                  className="hud-glow-text relative whitespace-nowrap font-black leading-none tracking-tight select-none"
-                  style={{ fontSize: "clamp(2.2rem, 5vw, 3.4rem)" }}
+                  className="hud-glow-text relative z-10 whitespace-nowrap font-black leading-none tracking-tight select-none"
+                  style={{ fontSize: "clamp(2.1rem, 9vw, 3.4rem)" }}
                 >
                   {s.value}
                 </div>
               </div>
 
-              {/* Stat Label — outside the ring container */}
-              <div className="relative mx-auto mt-1 max-w-[20ch] text-[13px] leading-snug text-paper/60 md:text-[14px] text-center">
+              {/* Stat Label — outside the fixed ring stage */}
+              <div className="relative z-10 mx-auto mt-2 max-w-[22ch] text-center text-[13px] leading-snug text-paper/65 md:text-[14px]">
                 {s.label}
               </div>
             </div>
