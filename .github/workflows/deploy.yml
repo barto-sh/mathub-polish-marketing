@@ -12,6 +12,7 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  VITE_BASE_PATH: /mathub-polish-marketing/
 
 concurrency:
   group: pages
