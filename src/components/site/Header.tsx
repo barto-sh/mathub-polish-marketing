@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 import { Phone, Menu, X, Truck } from "lucide-react";
+import { scrollToHash } from "@/lib/scrollToHash";
 
 const PHONE_DISPLAY = "+48 730 857 710";
 const PHONE_HREF = "tel:+48730857710";
@@ -73,8 +75,12 @@ const Header = () => {
     if (!ctx) return;
 
     let animFrameId: number;
-    let width = (canvas.width = canvas.offsetWidth);
-    let height = (canvas.height = 8);
+    const dpr = window.devicePixelRatio || 1;
+    let width = canvas.offsetWidth;
+    let height = 8;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
 
     // Dynamic targets for spring physics
     let currentY = 4;
@@ -85,12 +91,15 @@ const Header = () => {
 
     const handleResize = () => {
       if (!canvas) return;
-      width = canvas.width = canvas.offsetWidth;
-      height = canvas.height = 8;
+      width = canvas.offsetWidth;
+      height = 8;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx!.scale(dpr, dpr);
     };
     window.addEventListener("resize", handleResize);
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMouseMove = (e: globalThis.MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       mouseRef.current.x = e.clientX - rect.left;
       mouseRef.current.active = true;
@@ -151,6 +160,17 @@ const Header = () => {
 
   const onDark = !scrolled && !open;
 
+  const scrollToSection = (href: string) => (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    if (!href.startsWith("#")) {
+      setOpen(false);
+      return;
+    }
+
+    event.preventDefault();
+    setOpen(false);
+    scrollToHash(href, { delay: 0 });
+  };
+
   return (
     <header
       className={`fixed top-0 z-50 w-full backdrop-blur-md transition-all duration-300 ${
@@ -180,12 +200,13 @@ const Header = () => {
               <a
                 key={item.href}
                 href={item.href}
+                onClick={scrollToSection(item.href)}
                 aria-current={activeId === item.id ? "true" : undefined}
                 className={`text-[14.5px] font-medium transition-all duration-200 hover:-translate-y-px ${
                   activeId === item.id
                     ? onDark
                       ? "text-yellow"
-                      : "text-navy font-bold"
+                      : "text-navy [text-shadow:0_0_0.6px_currentColor]"
                     : onDark
                       ? "text-paper/72 hover:text-paper"
                       : "text-ink/60 hover:text-ink"
@@ -230,9 +251,16 @@ const Header = () => {
 
       {/* Mobile Menu */}
       <div
+        aria-hidden="true"
+        onClick={() => setOpen(false)}
+        className={`absolute left-0 top-full h-[calc(100dvh-72px)] w-full bg-ink/42 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${
+          open ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
+      <div
         id="mobile-menu"
         aria-hidden={!open}
-        className={`absolute left-0 top-full w-full overflow-hidden overscroll-contain bg-paper/95 shadow-[0_24px_64px_hsl(222_33%_9%/0.14)] backdrop-blur-md transition-all duration-300 ease-out md:hidden ${
+        className={`absolute left-0 top-full z-10 w-full overflow-hidden overscroll-contain bg-paper/95 shadow-[0_24px_64px_hsl(222_33%_9%/0.18)] backdrop-blur-md transition-all duration-300 ease-out md:hidden ${
           open
             ? "max-h-[calc(100dvh-72px)] translate-y-0 border-t border-line opacity-100"
             : "pointer-events-none max-h-0 -translate-y-2 border-t border-transparent opacity-0"
@@ -245,7 +273,7 @@ const Header = () => {
                 key={item.href}
                 href={item.href}
                 tabIndex={open ? 0 : -1}
-                onClick={() => setOpen(false)}
+                onClick={scrollToSection(item.href)}
                 className="flex min-h-11 items-center px-4 py-3 text-[15px] font-medium text-ink transition-colors hover:bg-cream/70"
               >
                 {item.label}

@@ -42,7 +42,7 @@ const TrustBar = () => {
     <section
       ref={ref}
       aria-label="Kluczowe liczby"
-      className="relative overflow-hidden bg-navy-deep py-20 md:py-24"
+      className="relative overflow-hidden bg-navy-deep py-14 md:py-[72px]"
     >
       {/* Component-level custom keyframes to avoid altering global CSS configs */}
       <style>{`
@@ -96,15 +96,15 @@ const TrustBar = () => {
               />
 
               {/* Value hero — fixed stage prevents ring clipping and label overlap */}
-              <div className="relative flex h-[116px] w-full items-center justify-center sm:h-[128px] md:h-[140px]">
+              <div className="relative flex h-[160px] w-full items-center justify-center sm:h-[200px] md:h-[240px]">
                 <div
-                  className="absolute left-1/2 top-1/2 h-[116px] w-[116px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-yellow/25 sm:h-[128px] sm:w-[128px] md:h-[140px] md:w-[140px]"
+                  className="absolute left-1/2 top-1/2 h-[160px] w-[160px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-yellow/25 sm:h-[200px] sm:w-[200px] md:h-[240px] md:w-[240px]"
                   style={{ animation: `hudRotate ${12 + i * 2}s linear infinite` }}
                   aria-hidden="true"
                 />
 
                 <div
-                  className="absolute left-1/2 top-1/2 h-[82px] w-[82px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dotted border-yellow/15 sm:h-[92px] sm:w-[92px] md:h-[100px] md:w-[100px]"
+                  className="absolute left-1/2 top-1/2 h-[120px] w-[120px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dotted border-yellow/15 sm:h-[160px] sm:w-[160px] md:h-[190px] md:w-[190px]"
                   style={{ animation: `hudRotateBack ${8 + i}s linear infinite` }}
                   aria-hidden="true"
                 />

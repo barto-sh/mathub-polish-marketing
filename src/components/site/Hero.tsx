@@ -1,12 +1,19 @@
 import { Fragment } from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 import { Phone, ArrowRight } from "lucide-react";
 import heroImg from "@/assets/hero-hands.jpg";
+import { scrollToHash } from "@/lib/scrollToHash";
 
 const PHONE_DISPLAY = "+48 730 857 710";
 const PHONE_HREF = "tel:+48730857710";
 const HEAD_WORDS = ["Przeprowadzki", "bez", "problemów."];
 
 const Hero = () => {
+  const scrollToContact = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    scrollToHash("#kontakt");
+  };
+
   return (
     <section
       id="top"
@@ -70,6 +77,7 @@ const Hero = () => {
           </a>
           <a
             href="#kontakt"
+            onClick={scrollToContact}
             className="inline-flex h-12 items-center justify-center gap-2 rounded-sm border border-paper/30 px-5 text-[15px] font-semibold text-paper transition-mh hover:border-yellow hover:text-yellow"
           >
             Sprawdź termin

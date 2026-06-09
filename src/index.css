@@ -264,29 +264,6 @@
 
 
 
-/* TrustBar — „Zlota poswiata": plynace zloto + oddychajace halo */
-.tb-num { color: #FFC107; }
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  .tb-num {
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-    background-image: linear-gradient(110deg, #a9760a, #ffe08a 30%, #fff7e0 50%, #FFC107 70%, #a9760a);
-    -webkit-background-clip: text;
-    background-clip: text;
-    background-size: 250% 100%;
-  }
-}
-.tb-halo { opacity: 0.7; }
-@media (prefers-reduced-motion: no-preference) {
-  .tb-num { animation: tbShimmer 5s linear infinite; }
-  .tb-halo { animation: tbBreathe 5.5s ease-in-out infinite; }
-}
-@keyframes tbShimmer { to { background-position: -250% 0; } }
-@keyframes tbBreathe {
-  0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(0.92); }
-  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.12); }
-}
-
 /* ============================================================
    Contact Section Redesign — Kinetic Option
    ============================================================ */
@@ -333,7 +310,7 @@
   border-radius: 12px;
   padding: 24px;
   transform-style: preserve-3d;
-  transition: transform 150ms cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s, box-shadow 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .c3-tilt-card:hover {

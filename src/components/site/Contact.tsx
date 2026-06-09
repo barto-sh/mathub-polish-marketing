@@ -44,6 +44,7 @@ const Contact = () => {
   const handleMouseMove = (cardRef: React.RefObject<HTMLDivElement | null>) => (e: React.MouseEvent) => {
     const card = cardRef.current;
     if (!card) return;
+    card.style.transition = "none";
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left - (rect.width / 2);
     const y = e.clientY - rect.top - (rect.height / 2);
@@ -58,6 +59,7 @@ const Contact = () => {
   const handleMouseLeave = (cardRef: React.RefObject<HTMLDivElement | null>) => () => {
     const card = cardRef.current;
     if (!card) return;
+    card.style.transition = "transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1)";
     card.style.transform = "rotateX(0deg) rotateY(0deg) translateZ(0px)";
   };
 
@@ -66,8 +68,10 @@ const Contact = () => {
       ref={ref}
       id="kontakt"
       aria-label="Kontakt"
-      className="text-paper py-20 md:py-28 overflow-hidden"
-      style={{ background: "radial-gradient(125% 90% at 100% 0%, hsl(217 48% 27%), hsl(var(--navy)) 58%)" }}
+      className="scroll-mt-0 overflow-hidden py-14 pb-20 text-paper sm:py-16 md:py-24 md:pb-28 lg:py-28"
+      style={{
+        background: "radial-gradient(125% 90% at 100% 0%, hsl(217 48% 27%), hsl(var(--navy)) 58%)",
+      }}
     >
       <div className="container-mh">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:gap-20">
@@ -120,7 +124,7 @@ const Contact = () => {
                 ref={card1Ref}
                 onMouseMove={handleMouseMove(card1Ref)}
                 onMouseLeave={handleMouseLeave(card1Ref)}
-                className="c3-tilt-card transition-all duration-300"
+                className="c3-tilt-card"
                 style={{ padding: 0 }}
               >
                 <a
@@ -129,7 +133,7 @@ const Contact = () => {
                 >
                   <span className="c3-shimmer-btn-content">
                     <span className="min-w-0 flex-1 text-left">
-                      <span className="block font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/45 group-hover:text-navy-deep/50 transition-colors duration-300">
+                      <span className="block font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/70 group-hover:text-navy-deep/60 transition-colors duration-300">
                         Zadzwoń
                       </span>
                       <span className="mt-1.5 block whitespace-nowrap text-[1.25rem] font-bold leading-tight tracking-tight sm:text-[clamp(1.55rem,3vw,2.05rem)] text-paper group-hover:text-navy-deep transition-colors duration-300">
@@ -165,9 +169,9 @@ const Contact = () => {
                 className="c3-tilt-card"
               >
                 <div className="flex flex-col gap-1.5 pt-0.5">
-                  <span className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/45">Dostępność</span>
+                  <span className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/70">Dostępność</span>
                   <span className="text-[17px] font-semibold text-paper">Oddzwaniam po nieodebranych</span>
-                  <span className="text-[13.5px] text-paper/55">Najlepiej telefonicznie, bez formularzy</span>
+                  <span className="text-[13.5px] font-medium text-paper/72">Najlepiej telefonicznie, bez formularzy</span>
                 </div>
               </div>
             </li>
@@ -192,9 +196,13 @@ const Contact = () => {
                 className="c3-tilt-card"
               >
                 <div className="flex flex-col gap-1.5 pt-0.5">
-                  <span className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/45">Baza</span>
+                  <span className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/70">Baza</span>
                   <span className="text-[17px] font-semibold text-paper">Trzeszczyn, 72-004 Police</span>
-                  <span className="font-mono text-[13px] text-paper/55">Zachodniopomorskie · 53.55° N · 14.52° E</span>
+                  <span className="flex flex-col gap-0.5 font-mono text-[12.5px] font-medium leading-relaxed text-paper/72 min-[420px]:flex-row min-[420px]:gap-2">
+                    <span>Zachodniopomorskie</span>
+                    <span aria-hidden="true" className="hidden min-[420px]:inline">·</span>
+                    <span>53.55° N · 14.52° E</span>
+                  </span>
                 </div>
               </div>
             </li>

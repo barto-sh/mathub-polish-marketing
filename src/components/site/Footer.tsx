@@ -24,13 +24,20 @@ const Footer = () => {
     if (!ctx) return;
 
     let animFrameId: number;
-    let width = (canvas.width = canvas.offsetWidth);
-    let height = (canvas.height = canvas.offsetHeight);
+    const dpr = window.devicePixelRatio || 1;
+    let width = canvas.offsetWidth;
+    let height = canvas.offsetHeight;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
 
     const handleResize = () => {
       if (!canvas) return;
-      width = canvas.width = canvas.offsetWidth;
-      height = canvas.height = canvas.offsetHeight;
+      width = canvas.offsetWidth;
+      height = canvas.offsetHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx!.scale(dpr, dpr);
     };
     window.addEventListener("resize", handleResize);
 
@@ -86,7 +93,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="relative bg-[hsl(var(--navy-deep))] text-paper overflow-hidden">
+    <footer className="relative border-t border-white/10 bg-[hsl(var(--navy-deep))] text-paper overflow-hidden">
       {/* 3D Wireframe Canvas Overlay */}
       <canvas
         ref={canvasRef}

@@ -38,7 +38,7 @@ const Coverage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
             {FEATURES.map((feature, idx) => (
               <div key={idx} className="flex flex-col gap-4 group">
-                <div className="w-12 h-12 rounded-2xl bg-white border border-line shadow-sm flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-md">
+                <div className="w-12 h-12 rounded-md bg-white border border-line shadow-sm flex items-center justify-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:shadow-md">
                   {feature.icon}
                 </div>
                 <div>
@@ -51,7 +51,7 @@ const Coverage = () => {
             ))}
           </div>
 
-          <div className="relative rounded-3xl overflow-hidden border border-line bg-white shadow-lg group">
+          <div className="relative rounded-lg overflow-hidden border border-line bg-white shadow-lg group">
             <iframe
               title="Mapa: Trzeszczyn, 72-004 Police"
               src="https://www.google.com/maps?q=53.55,14.52&z=11&output=embed"

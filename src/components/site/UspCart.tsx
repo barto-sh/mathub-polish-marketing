@@ -54,17 +54,21 @@ const UspCart = () => {
       aria-label="Wózek samozaładowczy"
       className="relative flex min-h-[640px] items-end overflow-hidden bg-navy text-paper md:min-h-[88vh]"
     >
-      <picture className="absolute inset-x-0 top-0 block h-[390px] w-full md:inset-0 md:h-full">
+      <picture className="absolute inset-0 block h-full w-full">
         <source media="(min-width: 768px)" srcSet={cartImg} width={1920} height={1080} />
         <img
           src={cartMobileImg}
           alt="Elektryczny wózek paletowy z masztem podnoszącym MatHub (udźwig 500 kg) we wnętrzu paki samochodu transportowego."
           width={1732}
           height={1672}
-          className="usp-kenburns h-full w-full object-contain object-top md:object-cover md:object-center"
+          className="usp-kenburns h-full w-full object-cover object-[58%_34%] md:object-center"
         />
       </picture>
       <div className="hero-kino__scrim absolute inset-0" aria-hidden="true" />
+      <div
+        className="absolute inset-x-0 bottom-0 h-[76%] bg-gradient-to-b from-transparent via-navy/88 to-navy-deep md:hidden"
+        aria-hidden="true"
+      />
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -89,7 +93,7 @@ const UspCart = () => {
       </div>
 
       {/* Content */}
-      <div className="container-mh relative w-full pb-16 pt-[390px] min-[390px]:pt-[430px] md:py-20">
+      <div className="container-mh relative w-full pb-14 pt-[330px] min-[390px]:pt-[360px] md:py-20">
         <div className="max-w-2xl">
           <div className="kicker text-yellow" style={rise(0)}>
             Wyróżnik
@@ -121,11 +125,11 @@ const UspCart = () => {
             ))}
           </ul>
 
-          <div className="mt-8 flex flex-wrap gap-y-5" style={rise(4)}>
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-y-5" style={rise(4)}>
             {SPECS.map((s, i) => (
               <div
                 key={s.label}
-                className={`min-w-[150px] flex-1 ${i > 0 ? "border-l-2 pl-5" : ""}`}
+                className={`flex-1 ${i > 0 ? "sm:border-l-2 sm:pl-5" : ""}`}
                 style={i > 0 ? { borderColor: "hsl(45 100% 51% / 0.5)" } : undefined}
               >
                 <div className="flex items-baseline gap-1.5">
