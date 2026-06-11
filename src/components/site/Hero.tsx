@@ -42,12 +42,13 @@ const Hero = () => {
             style={{ backgroundColor: "hsl(142 71% 38%)" }}
             aria-hidden="true"
           />
-          <span className="text-[12.5px] font-medium text-paper">
-            Dostępny dziś · Trzeszczyn / Szczecin i okolice
+          <span className="text-[12px] font-medium text-paper sm:text-[12.5px]">
+            <span className="sm:hidden">Dostępny dziś · Szczecin i okolice</span>
+            <span className="hidden sm:inline">Dostępny dziś · Trzeszczyn / Szczecin i okolice</span>
           </span>
         </div>
 
-        <h1 className="display mt-6 text-paper" style={{ fontSize: "clamp(2.1rem, 11vw, 6rem)", maxWidth: "16ch" }}>
+        <h1 className="display mt-6 max-w-full text-paper" style={{ fontSize: "clamp(2rem, 10vw, 6rem)", maxWidth: "min(16ch, 100%)" }}>
           {HEAD_WORDS.map((word, i) => (
             <Fragment key={word}>
               <span className="hero-kino__word">
@@ -63,8 +64,13 @@ const Hero = () => {
         </h1>
 
         <p className="hero-kino__rise lede mt-6 max-w-xl text-paper/85" style={{ animationDelay: "0.34s" }}>
-          Mieszkania, domy, biura. Pakujemy, ładujemy, wieziemy - z wózkiem samozaładowczym o udźwigu 500 kg,
-          dzięki czemu żadna winda hydrauliczna nie jest potrzebna. Zachodniopomorskie i cała Polska.
+          <span className="md:hidden">
+            Mieszkania, domy, biura i trudny transport z wózkiem samozaładowczym 500 kg. Wycena szybko, bez ukrytych kosztów.
+          </span>
+          <span className="hidden md:inline">
+            Mieszkania, domy, biura. Pakujemy, ładujemy, wieziemy - z wózkiem samozaładowczym o udźwigu 500 kg,
+            dzięki czemu żadna winda hydrauliczna nie jest potrzebna. Zachodniopomorskie i cała Polska.
+          </span>
         </p>
 
         <div className="hero-kino__rise mt-8 flex flex-col gap-3 sm:flex-row" style={{ animationDelay: "0.42s" }}>
@@ -90,7 +96,24 @@ const Hero = () => {
       <p className="sr-only">Ubezpieczenie towaru w cenie · Wycena w 24 h · Bez ukrytych kosztów</p>
 
       <div className="hero-kino__proof relative z-10 w-full px-6 pb-6 sm:px-10" aria-hidden="true">
-        <div className="hero-kino__route mx-auto grid w-full max-w-[1200px] grid-cols-1 items-center gap-3 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:gap-4">
+        <div className="hero-kino__route mx-auto grid w-full max-w-[1200px] grid-cols-3 items-stretch gap-px md:hidden">
+          <div className="hero-kino__stop">
+            <span className="hero-kino__pin">1</span>
+            <strong>Ochrona</strong>
+          </div>
+          <span className="hero-kino__line hidden" />
+          <div className="hero-kino__stop">
+            <span className="hero-kino__pin">2</span>
+            <strong>24 h</strong>
+          </div>
+          <span className="hero-kino__line hidden" />
+          <div className="hero-kino__stop">
+            <span className="hero-kino__pin">3</span>
+            <strong>Bez dopłat</strong>
+          </div>
+        </div>
+
+        <div className="hero-kino__route mx-auto hidden w-full max-w-[1200px] grid-cols-1 items-center gap-3 md:grid lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:gap-4">
           <div className="hero-kino__stop">
             <span className="hero-kino__pin">1</span>
             <strong>Ubezpieczenie towaru w cenie</strong>

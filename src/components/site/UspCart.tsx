@@ -15,6 +15,12 @@ const SPECS = [
   { value: "0", unit: "", label: "Ramp i wind hydraulicznych" },
 ];
 
+const MOBILE_SPECS = [
+  { value: "500", unit: "kg", label: "Udźwig" },
+  { value: "0", unit: "", label: "Ramp i wind" },
+  { value: "24", unit: "h", label: "Wycena" },
+];
+
 const UspCart = () => {
   const ref = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
@@ -54,7 +60,75 @@ const UspCart = () => {
       aria-label="Wózek samozaładowczy"
       className="relative flex min-h-[640px] items-end overflow-hidden bg-navy text-paper md:min-h-[88vh]"
     >
-      <picture className="absolute inset-0 block h-full w-full">
+      <div
+        className="w-full md:hidden"
+        style={{
+          background:
+            "radial-gradient(circle at 76% 12%, hsl(45 100% 51% / 0.11), transparent 14rem), linear-gradient(180deg, hsl(217 50% 21%) 0%, hsl(var(--navy-deep)) 78%)",
+        }}
+      >
+        <div className="container-mh py-12">
+          <div className="kicker text-yellow">
+            Wyróżnik
+          </div>
+          <h2 className="h2 mt-3 text-paper">
+            Wózek samozaładowczy. Winda, której nie musisz mieć.
+          </h2>
+          <p className="lede mt-4 text-paper/78">
+            Sprzęt do ciężkich rzeczy: AGD, mebli, maszyn i ładunków, których nie chcesz wnosić ręcznie ani ryzykować na prowizorycznej rampie.
+          </p>
+
+          <div
+            className="mt-6 overflow-hidden rounded-lg border border-paper/10 bg-paper/[0.035] p-3 shadow-[0_24px_60px_hsl(var(--ink)/0.24)]"
+          >
+            <img
+              src={cartMobileImg}
+              alt="Elektryczny wózek paletowy z masztem podnoszącym MatHub (udźwig 500 kg) we wnętrzu paki samochodu transportowego."
+              width={1732}
+              height={1672}
+              loading="lazy"
+              className="block h-[clamp(286px,78vw,392px)] w-full rounded-sm object-contain object-bottom"
+            />
+          </div>
+
+          <div className="mt-5 grid grid-cols-3 gap-px border border-yellow/25 bg-yellow/25 shadow-[0_16px_36px_hsl(var(--ink)/0.16)]">
+            {MOBILE_SPECS.map((s) => (
+              <div key={s.label} className="min-w-0 bg-navy-deep/95 px-1 py-3 text-center min-[390px]:px-1.5">
+                <div className="flex min-w-0 items-baseline justify-center gap-0.5">
+                  <span className="whitespace-nowrap font-mono text-[clamp(1.35rem,7vw,1.65rem)] font-black leading-none tracking-tight text-yellow">
+                    {s.value}
+                  </span>
+                  {s.unit && <span className="text-[8px] font-semibold leading-none text-paper/70 min-[390px]:text-[9px]">{s.unit}</span>}
+                </div>
+                <div className="mt-1.5 text-[8px] font-bold uppercase leading-tight tracking-[0.04em] text-paper/60 min-[390px]:text-[9px] min-[390px]:tracking-[0.06em]">
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-5 text-[15.5px] font-medium leading-relaxed text-paper/80">
+            Paleciak, sztaplarka i winda załadunkowa w jednym. Wózek sam wjeżdża na przestrzeń ładunkową busa, więc trudny transport nie wymaga rampy przy budynku ani dużej ekipy.
+          </p>
+
+          <ul className="mt-5 space-y-3">
+            {FEATURES.map((f) => (
+              <li key={f} className="flex items-start gap-3 text-[14.5px] font-medium leading-relaxed text-paper/88">
+                <span
+                  className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-sm"
+                  style={{ backgroundColor: "hsl(45 100% 51% / 0.15)" }}
+                  aria-hidden="true"
+                >
+                  <Check className="h-3.5 w-3.5 text-yellow" strokeWidth={3} />
+                </span>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <picture className="absolute inset-0 hidden h-full w-full md:block">
         <source media="(min-width: 768px)" srcSet={cartImg} width={1920} height={1080} />
         <img
           src={cartMobileImg}
@@ -64,13 +138,9 @@ const UspCart = () => {
           className="usp-kenburns h-full w-full object-cover object-[58%_34%] md:object-center"
         />
       </picture>
-      <div className="hero-kino__scrim absolute inset-0" aria-hidden="true" />
+      <div className="hero-kino__scrim absolute inset-0 hidden md:block" aria-hidden="true" />
       <div
-        className="absolute inset-x-0 bottom-0 h-[76%] bg-gradient-to-b from-transparent via-navy/88 to-navy-deep md:hidden"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 hidden md:block"
         style={{
           background:
             "linear-gradient(105deg, transparent 40%, hsl(0 0% 100% / 0.06) 50%, transparent 60%)",
@@ -81,8 +151,8 @@ const UspCart = () => {
       />
 
       {/* Top label corner */}
-      <div className="pointer-events-none absolute inset-x-0 top-0">
-        <div className="container-mh pt-8 md:pt-10">
+      <div className="pointer-events-none absolute inset-x-0 top-0 hidden md:block">
+        <div className="container-mh pt-10">
           <div className="flex items-center gap-2">
             <span className="inline-block h-2 w-2 rounded-full bg-yellow" aria-hidden="true" />
             <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-paper/80">
@@ -93,7 +163,7 @@ const UspCart = () => {
       </div>
 
       {/* Content */}
-      <div className="container-mh relative w-full pb-14 pt-[330px] min-[390px]:pt-[360px] md:py-20">
+      <div className="container-mh relative hidden w-full py-20 md:block">
         <div className="max-w-2xl">
           <div className="kicker text-yellow" style={rise(0)}>
             Wyróżnik
@@ -125,7 +195,7 @@ const UspCart = () => {
             ))}
           </ul>
 
-          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-y-5" style={rise(4)}>
+          <div className="mt-8 grid grid-cols-1 gap-y-5 sm:grid-cols-3" style={rise(4)}>
             {SPECS.map((s, i) => (
               <div
                 key={s.label}

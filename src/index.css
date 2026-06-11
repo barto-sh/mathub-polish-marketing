@@ -236,6 +236,28 @@
     background: linear-gradient(90deg, transparent, hsl(var(--paper) / 0.86), transparent);
     transform: translateX(-100%);
   }
+  @media (max-width: 767px) {
+    .hero-kino__route { padding: 0; }
+    .hero-kino__stop {
+      flex-direction: column;
+      justify-content: center;
+      gap: 7px;
+      min-height: 82px;
+      padding: 11px 8px;
+      text-align: center;
+    }
+    .hero-kino__stop strong {
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      line-height: 1.18;
+      text-transform: uppercase;
+    }
+    .hero-kino__pin {
+      flex-basis: 26px;
+      width: 26px;
+      height: 26px;
+    }
+  }
   @media (min-width: 1024px) {
     .hero-kino__route { padding: 16px 18px; }
     .hero-kino__line { display: block; }
@@ -377,11 +399,12 @@
 .c3-shimmer-btn::after {
   content: "";
   position: absolute;
-  inset: -50%;
+  inset: 0;
   background: conic-gradient(from 0deg, transparent 40%, rgba(255, 193, 7, 0.45) 50%, transparent 60%);
   pointer-events: none;
   z-index: 1;
   opacity: 0.12;
+  transform: rotate(0deg);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -392,6 +415,12 @@
 
 .c3-shimmer-btn:hover::after {
   opacity: 0.7;
+}
+
+@media (max-width: 767px) {
+  .c3-shimmer-btn::after {
+    content: none;
+  }
 }
 
 .c3-shimmer-btn-content {

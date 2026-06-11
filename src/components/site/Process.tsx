@@ -31,7 +31,7 @@ const Process = () => {
     <section
       id="proces"
       aria-label="Proces współpracy"
-      className="bg-paper py-20 md:py-28"
+      className="bg-paper py-20 max-md:py-12 md:py-28"
     >
       <div className="container-mh">
         <div className="max-w-3xl">
@@ -39,14 +39,14 @@ const Process = () => {
           <h2 className="h2 mt-3 text-ink">Trzy kroki, zero tajemnic.</h2>
         </div>
 
-        <ol className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+        <ol className="mt-14 grid grid-cols-1 gap-10 max-md:mt-7 max-md:border-t max-md:border-line md:grid-cols-3 md:gap-8">
           {STEPS.map((step) => (
             <li
               key={step.n}
-              className="relative flex flex-col"
+              className="relative flex flex-col max-md:grid max-md:grid-cols-[54px_minmax(0,1fr)] max-md:gap-4 max-md:border-b max-md:border-line max-md:py-5"
             >
               {/* Image */}
-              <div className="relative overflow-hidden rounded-md bg-cream aspect-[5/4] mb-6">
+              <div className="relative mb-6 overflow-hidden rounded-md bg-cream aspect-[5/4] max-md:hidden">
                 <img
                   src={step.img}
                   alt={step.alt}
@@ -66,15 +66,17 @@ const Process = () => {
                 </div>
               </div>
 
-              <div className="text-yellow-ink text-[44px] md:text-[56px] font-semibold leading-none tracking-tight">
+              <div className="text-[44px] font-semibold leading-none tracking-tight text-yellow-ink max-md:text-[30px] md:text-[56px]">
                 {step.n}
               </div>
-              <h3 className="mt-3 text-[20px] font-semibold text-ink">
-                {step.title}
-              </h3>
-              <p className="mt-2 text-[15px] leading-relaxed text-ink/65 max-w-[42ch]">
-                {step.body}
-              </p>
+              <div>
+                <h3 className="mt-3 text-[20px] font-semibold text-ink max-md:mt-0 max-md:text-[18px]">
+                  {step.title}
+                </h3>
+                <p className="mt-2 max-w-[42ch] text-[15px] leading-relaxed text-ink/65 max-md:mt-1.5 max-md:text-[14px]">
+                  {step.body}
+                </p>
+              </div>
             </li>
           ))}
         </ol>

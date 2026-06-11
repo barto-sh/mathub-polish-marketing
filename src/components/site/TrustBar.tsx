@@ -42,7 +42,7 @@ const TrustBar = () => {
     <section
       ref={ref}
       aria-label="Kluczowe liczby"
-      className="relative overflow-hidden bg-navy-deep py-14 md:py-[72px]"
+      className="relative hidden overflow-hidden bg-navy-deep py-14 md:block md:py-[72px]"
     >
       {/* Component-level custom keyframes to avoid altering global CSS configs. */}
       <style>{`

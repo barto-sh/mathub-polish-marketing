@@ -52,25 +52,25 @@ const SERVICES = [
 
 const Services = () => {
   return (
-    <section id="uslugi" aria-label="Usługi" className="bg-paper py-20 md:py-28">
+    <section id="uslugi" aria-label="Usługi" className="bg-paper py-20 max-md:py-12 md:py-28">
       <div className="container-mh">
         <div className="max-w-3xl">
           <div className="kicker text-yellow-ink">Zakres</div>
           <h2 className="h2 mt-3 text-ink">Co wozimy i jak.</h2>
-          <p className="lede mt-5 text-ink/70">
+          <p className="lede mt-5 text-ink/70 max-md:mt-4">
             Jedna ekipa, jeden bus, sześć typowych zleceń. Jeśli nie ma tu tego,
             czego szukasz, zadzwoń - realizujemy też nietypowe zlecenia, od fortepianu po motocykl.
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-line">
+        <div className="mt-12 grid grid-cols-1 gap-px bg-line max-md:mt-7 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICES.map((s, i) => (
             <article
               key={s.title}
-              className="group bg-paper transition-mh hover:bg-white hover:shadow-md cursor-default flex flex-col relative hover:z-10"
+              className="group relative flex cursor-default flex-col bg-paper transition-mh hover:z-10 hover:bg-white hover:shadow-md max-md:grid max-md:min-h-[104px] max-md:grid-cols-[82px_minmax(0,1fr)]"
             >
               {/* Image */}
-              <div className="relative overflow-hidden bg-navy aspect-[4/3]">
+              <div className="relative aspect-[4/3] overflow-hidden bg-navy max-md:aspect-auto max-md:min-h-full">
                 <img
                   src={s.img}
                   alt={s.alt}
@@ -90,21 +90,21 @@ const Services = () => {
                   aria-hidden="true"
                 />
                 {/* Index marker */}
-                <div className="absolute top-3 left-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-paper/90">
+                <div className="absolute left-3 top-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-paper/90 max-md:left-2 max-md:top-2 max-md:text-[9px]">
                   0{i + 1} / 06
                 </div>
               </div>
               {/* Content */}
-              <div className="p-6 md:p-7 flex flex-col flex-1">
+              <div className="flex flex-1 flex-col p-6 max-md:min-w-0 max-md:p-4 md:p-7">
                 <div className="kicker text-[11px] text-yellow-ink">{s.tag}</div>
-                <h3 className="mt-2 text-[18px] font-semibold text-ink leading-snug">
+                <h3 className="mt-2 text-[18px] font-semibold leading-snug text-ink max-md:mt-1.5 max-md:text-[17px]">
                   {s.title}
                 </h3>
-                <p className="mt-3 text-[14.5px] leading-relaxed text-ink/65 max-w-[60ch]">
+                <p className="mt-3 max-w-[60ch] text-[14.5px] leading-relaxed text-ink/65 max-md:mt-2 max-md:text-[13.5px] max-md:leading-snug">
                   {s.body}
                 </p>
                 <div
-                  className="mt-5 h-px w-10 transition-mh group-hover:w-16"
+                  className="mt-5 h-px w-10 transition-mh group-hover:w-16 max-md:mt-3"
                   style={{ backgroundColor: "hsl(217 50% 21%)" }}
                 />
               </div>
