@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MatHub — TrustBar Redesign proposals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Reset & CSS variables */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-dark: #070c14;
+      --bg-card: #0e1b2e;
+      --brand-navy: #1a2f4f;
+      --brand-navy-deep: #0e1b2e;
+      --brand-yellow: #ffc107;
+      --brand-yellow-accent: #c8941a;
+      --brand-paper: #fafafa;
+      --brand-ink: #0b1220;
+      
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-display: 'Syne', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--brand-paper);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding-bottom: 5rem;
+    }
+
+    /* Background lines and radial glow */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.007) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.007) 1px, transparent 1px);
+      background-size: 60px 60px;
+      background-position: center;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(26, 47, 79, 0.2) 0%, transparent 80%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    header {
+      padding: 5rem 0 3rem 0;
+      text-align: center;
+    }
+
+    .kicker {
+      font-family: var(--font-mono);
+      color: var(--brand-yellow);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.25em;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #ffffff 40%, rgba(255, 255, 255, 0.5) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .lead-text {
+      max-width: 700px;
+      margin: 0 auto 3rem auto;
+      color: rgba(250, 250, 250, 0.7);
+      font-size: clamp(1rem, 1.2vw, 1.15rem);
+    }
+
+    /* Tab Selector */
+    .tab-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 4rem;
+      background: rgba(14, 27, 46, 0.6);
+      padding: 0.5rem;
+      border-radius: 99px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      max-width: max-content;
+      margin-left: auto;
+      margin-right: auto;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: rgba(250, 250, 250, 0.6);
+      padding: 0.8rem 1.6rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 99px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--brand-paper);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab-btn.active {
+      color: var(--brand-ink);
+      background: var(--brand-yellow);
+      box-shadow: 0 10px 25px rgba(255, 193, 7, 0.3);
+    }
+
+    /* Live Preview sandbox wrapper */
+    .preview-container {
+      background: #040812;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 6rem 3rem;
+      position: relative;
+      overflow: hidden;
+      min-height: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8);
+      margin-bottom: 3rem;
+    }
+
+    .preview-container::before {
+      content: '';
+      position: absolute;
+      top: 1.5rem;
+      left: 1.75rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ff5f56;
+      box-shadow: 18px 0 0 #ffbd2e, 36px 0 0 #27c93f;
+      z-index: 2;
+    }
+
+    .preview-container::after {
+      content: 'PREVIEW (STRICT ORIGINAL TEXTS)';
+      position: absolute;
+      top: 1.35rem;
+      right: 1.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: rgba(255, 255, 255, 0.15);
+      z-index: 2;
+    }
+
+    .preview-wrapper {
+      width: 100%;
+      max-width: 1200px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Details Panel */
+    .details-pane {
+      background: rgba(14, 27, 46, 0.45);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 3rem;
+      backdrop-filter: blur(20px);
+    }
+
+    .pane-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #ffffff;
+      border-left: 5px solid var(--brand-yellow);
+      padding-left: 1rem;
+    }
+
+    .feature-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .feature-tag {
+      background: rgba(255, 193, 7, 0.08);
+      border: 1px solid rgba(255, 193, 7, 0.2);
+      color: var(--brand-yellow);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 0.3rem 0.9rem;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+
+    .feature-tag.tech {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .design-desc {
+      color: rgba(250, 250, 250, 0.8);
+      margin-bottom: 2.5rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .pro-cons {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .pro-cons {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .pro-column, .con-column {
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    .pro-column h4, .con-column h4 {
+      font-size: 1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .pro-column h4 { color: #00ff87; }
+    .con-column h4 { color: var(--brand-yellow); }
+
+    .bullet-list {
+      list-style: none;
+    }
+
+    .bullet-list li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.85rem;
+      font-size: 0.95rem;
+      color: rgba(250, 250, 250, 0.75);
+    }
+
+    .bullet-list li::before {
+      content: '▪';
+      position: absolute;
+      left: 0;
+      font-size: 0.7rem;
+      top: 0.25rem;
+    }
+
+    .pro-column .bullet-list li::before { color: #00ff87; }
+    .con-column .bullet-list li::before { color: var(--brand-yellow); }
+
+    /* Code Snippets */
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .code-title {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-copy {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--brand-paper);
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s;
+      font-weight: 600;
+    }
+
+    .btn-copy:hover {
+      background: var(--brand-yellow);
+      color: var(--brand-ink);
+      border-color: var(--brand-yellow);
+      box-shadow: 0 4px 12px rgba(255, 193, 7, 0.25);
+    }
+
+    .code-viewport {
+      background: #02040a;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 14px;
+      padding: 1.75rem;
+      max-height: 500px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #9cdcfe;
+      white-space: pre;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       DESIGN 1: Quantum Light Conduit
+       ============================================================ */
+    .d1-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    @media (max-width: 990px) {
+      .d1-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 550px) {
+      .d1-grid { grid-template-columns: 1fr; }
+    }
+
+    .d1-card {
+      background: rgba(14, 27, 46, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 2.5rem 1.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 200px;
+    }
+
+    /* Light tube gradient border simulation */
+    .d1-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, var(--brand-yellow), transparent 60%, var(--brand-yellow-accent));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0.12;
+      transition: opacity 0.5s;
+    }
+
+    .d1-card:hover::after {
+      opacity: 0.8;
+    }
+
+    .d1-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Conduit pulse node */
+    .d1-node {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      align-self: flex-end;
+      transition: all 0.4s;
+    }
+
+    .d1-card:hover .d1-node {
+      background: var(--brand-yellow);
+      box-shadow: 0 0 10px var(--brand-yellow);
+    }
+
+    .d1-val {
+      font-family: var(--font-mono);
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+      margin-bottom: 1rem;
+      transition: all 0.4s;
+    }
+
+    .d1-card:hover .d1-val {
+      color: var(--brand-yellow);
+      text-shadow: 0 0 20px rgba(255, 193, 7, 0.45);
+    }
+
+    .d1-label {
+      font-size: 0.85rem;
+      color: rgba(250, 250, 250, 0.65);
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .d1-card:hover .d1-label {
+      color: #ffffff;
+    }
+
+    /* ============================================================
+       DESIGN 2: Interactive Concentric Vector Horizon (3D Rings)
+       ============================================================ */
+    .d2-perspective-container {
+      width: 100%;
+    }
+
+    .d2-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    @media (max-width: 990px) {
+      .d2-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 550px) {
+      .d2-grid { grid-template-columns: 1fr; }
+    }
+
+    .d2-card {
+      background: linear-gradient(135deg, rgba(14, 27, 46, 0.5) 0%, rgba(3, 7, 18, 0.8) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 20px;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      transition: border-color 0.4s, box-shadow 0.4s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 250px;
+    }
+
+    .d2-card:hover {
+      border-color: rgba(255, 193, 7, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .d2-rings {
+      position: relative;
+      width: 105px;
+      height: 105px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .d2-svg {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      inset: 0;
+    }
+
+    .d2-ring-outer {
+      fill: none;
+      stroke: rgba(255, 193, 7, 0.15);
+      stroke-width: 1.5;
+      stroke-dasharray: 4 8;
+      transform-origin: center;
+      animation: d2-spin-clockwise 15s infinite linear;
+    }
+
+    .d2-ring-inner {
+      fill: none;
+      stroke: var(--brand-yellow);
+      stroke-width: 1.5;
+      stroke-dasharray: 40 40;
+      transform-origin: center;
+      animation: d2-spin-counter 10s infinite linear;
+      opacity: 0.4;
+      transition: opacity 0.3s;
+    }
+
+    .d2-card:hover .d2-ring-inner {
+      opacity: 1;
+      stroke-width: 2;
+    }
+
+    @keyframes d2-spin-clockwise {
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes d2-spin-counter {
+      100% { transform: rotate(-360deg); }
+    }
+
+    .d2-val {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #ffffff;
+      position: relative;
+      z-index: 2;
+      transition: all 0.3s;
+    }
+
+    .d2-card:hover .d2-val {
+      color: var(--brand-yellow);
+      text-shadow: 0 0 12px rgba(255, 193, 7, 0.5);
+      transform: scale(1.1);
+    }
+
+    .d2-label {
+      font-size: 0.85rem;
+      color: rgba(250, 250, 250, 0.6);
+      line-height: 1.35;
+      max-width: 18ch;
+      transition: color 0.3s;
+    }
+
+    .d2-card:hover .d2-label {
+      color: #ffffff;
+    }
+
+    /* ============================================================
+       DESIGN 3: Bento Spotlight Grid
+       ============================================================ */
+    .d3-bento {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1.25rem;
+      width: 100%;
+    }
+
+    .d3-card {
+      background: rgba(14, 27, 46, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 20px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 200px;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+      cursor: pointer;
+    }
+
+    .d3-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(350px circle at var(--mx, 0px) var(--my, 0px), rgba(255, 193, 7, 0.08), transparent 85%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .d3-card:hover::before {
+      opacity: 1;
+    }
+
+    .d3-card:hover {
+      transform: translateY(-4px) scale(1.01);
+      border-color: rgba(255, 193, 7, 0.25);
+    }
+
+    .d3-span-4 { grid-column: span 4; }
+    .d3-span-2 { grid-column: span 2; }
+    .d3-span-3 { grid-column: span 3; }
+
+    @media (max-width: 900px) {
+      .d3-span-4, .d3-span-2, .d3-span-3 { grid-column: span 3; }
+    }
+    @media (max-width: 600px) {
+      .d3-bento { grid-template-columns: 1fr; }
+      .d3-span-4, .d3-span-2, .d3-span-3 { grid-column: span 1; }
+    }
+
+    .d3-val {
+      font-family: var(--font-mono);
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+      margin-bottom: 1.5rem;
+      z-index: 1;
+      transition: color 0.3s;
+    }
+
+    .d3-card:hover .d3-val {
+      color: var(--brand-yellow);
+    }
+
+    .d3-label {
+      font-size: 0.9rem;
+      color: rgba(250, 250, 250, 0.7);
+      line-height: 1.4;
+      font-weight: 500;
+      z-index: 1;
+    }
+
+    .d3-card:hover .d3-label {
+      color: #ffffff;
+    }
+
+    /* ============================================================
+       DESIGN 4: Brutalist Typographic Reveal
+       ============================================================ */
+    .d4-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    @media (max-width: 990px) {
+      .d4-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 550px) {
+      .d4-grid { grid-template-columns: 1fr; }
+    }
+
+    .d4-wrapper {
+      background: #030712;
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+      padding: 2rem 0.5rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      height: 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .d4-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: -1.5px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--brand-yellow);
+      transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .d4-wrapper:hover::after {
+      width: 100%;
+    }
+
+    .d4-box {
+      position: relative;
+      height: 70px;
+      display: flex;
+      align-items: center;
+    }
+
+    .d4-giant {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 6vw, 4.4rem);
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.1);
+      position: absolute;
+      left: 0;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      line-height: 1;
+    }
+
+    .d4-val {
+      font-family: var(--font-mono);
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      font-weight: 800;
+      color: var(--brand-yellow);
+      position: absolute;
+      left: 0;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .d4-wrapper:hover .d4-giant {
+      transform: translateY(-25px);
+      opacity: 0.02;
+    }
+
+    .d4-wrapper:hover .d4-val {
+      opacity: 1;
+      transform: translateY(0);
+      text-shadow: 0 0 20px rgba(255, 193, 7, 0.25);
+    }
+
+    .d4-label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: rgba(250, 250, 250, 0.7);
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      line-height: 1.35;
+    }
+
+    .d4-wrapper:hover .d4-label {
+      transform: translateY(-5px);
+      color: #ffffff;
+    }
+
+    /* ============================================================
+       DESIGN 5: Holographic CRT Glitch Scanner
+       ============================================================ */
+    .d5-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    @media (max-width: 990px) {
+      .d5-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 550px) {
+      .d5-grid { grid-template-columns: 1fr; }
+    }
+
+    .d5-crt {
+      background: #02050d;
+      border: 1px solid rgba(255, 193, 7, 0.1);
+      border-radius: 12px;
+      padding: 2.25rem 1.75rem;
+      height: 210px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s;
+    }
+
+    .d5-crt:hover {
+      border-color: var(--brand-yellow);
+      box-shadow: 0 0 25px rgba(255, 193, 7, 0.25);
+    }
+
+    /* Scanlines */
+    .d5-crt::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.3) 50-percent
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Laser sweep bar */
+    .d5-bar {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(180deg, transparent, var(--brand-yellow), transparent);
+      box-shadow: 0 0 15px var(--brand-yellow);
+      opacity: 0;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .d5-crt:hover .d5-bar {
+      animation: d5-sweep-bar 1.5s infinite linear;
+    }
+
+    @keyframes d5-sweep-bar {
+      0% { top: -10px; opacity: 0.8; }
+      100% { top: 220px; opacity: 0.8; }
+    }
+
+    .d5-header {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--brand-yellow);
+      opacity: 0.4;
+      letter-spacing: 0.1em;
+      transition: opacity 0.3s;
+    }
+
+    .d5-crt:hover .d5-header {
+      opacity: 1;
+    }
+
+    .d5-val {
+      font-family: var(--font-mono);
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1;
+      margin-bottom: 0.75rem;
+    }
+
+    .d5-crt:hover .d5-val {
+      color: var(--brand-yellow);
+      text-shadow: 0 0 10px rgba(255, 193, 7, 0.4);
+    }
+
+    .d5-label {
+      font-size: 0.85rem;
+      color: rgba(250, 250, 250, 0.65);
+      line-height: 1.4;
+    }
+
+    .d5-crt:hover .d5-label {
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+
+  <header>
+    <div class="container">
+      <div class="kicker">ULTRA-ESTETYKA & SPÓJNOŚĆ TEKSTOWA</div>
+      <h1>Siatka Kluczowych Liczb MatHub</h1>
+      <p class="lead-text">
+        Propozycje redesignu dla sekcji z kluczowymi liczbami (TrustBar). Każdy z pięciu wariantów wykorzystuje <strong>wyłącznie oryginalne etykiety i wartości liczbowe</strong>, przenosząc interaktywność i estetykę na najwyższy poziom.
+      </p>
+      
+      <!-- Selector Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchDesign(1)">
+          <span>01.</span> Quantum Conduit
+        </button>
+        <button class="tab-btn" onclick="switchDesign(2)">
+          <span>02.</span> Vector Horizon
+        </button>
+        <button class="tab-btn" onclick="switchDesign(3)">
+          <span>03.</span> Bento Spotlight
+        </button>
+        <button class="tab-btn" onclick="switchDesign(4)">
+          <span>04.</span> Brutalist Reveal
+        </button>
+        <button class="tab-btn" onclick="switchDesign(5)">
+          <span>05.</span> CRT Glitch Scanner
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Live preview -->
+    <section class="preview-container" id="previewContainer">
+      <div class="preview-wrapper" id="previewWrapper">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Details Box -->
+    <section class="details-pane">
+      <h2 class="pane-title" id="designTitle">01. Quantum Conduit</h2>
+      
+      <div class="feature-tags" id="designTags">
+        <!-- Tags -->
+      </div>
+
+      <p class="design-desc" id="designDescription">
+        Prosty, czysty i bardzo elegancki układ z imitacją mostów świetlnych w postaci gradientowych linii wokół krawędzi kart. Bardzo wysoki kontrast, idealne spasowanie tekstu i subtelny ruch po najechaniu kursorem.
+      </p>
+
+      <div class="pro-cons">
+        <div class="pro-column">
+          <h4>✓ Wyróżnik Estetyczny</h4>
+          <ul class="bullet-list" id="proList">
+            <!-- Pros -->
+          </ul>
+        </div>
+        <div class="con-column">
+          <h4>⚠ Rationale wdrożeniowe</h4>
+          <ul class="bullet-list" id="conList">
+            <!-- Cons -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Code Copy -->
+      <div class="code-area">
+        <div class="code-header">
+          <span class="code-title">HTML & CSS (ZERO DODATKOWEGO TEKSTU)</span>
+          <button class="btn-copy" onclick="copyCode()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Kopiuj Kod
+          </button>
+        </div>
+        <pre class="code-viewport" id="codeViewport"></pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // 5 designs using strictly the original values and labels
+    const STRICT_DESIGNS = {
+      1: {
+        title: "Quantum Conduit",
+        tags: ["GRADIENT BORDERS", "GLOW LIGHTS", "NEON CAPS", "CLEAN STACK"],
+        description: "Minimalistyczny i szalenie elegancki układ ze świetlnymi, neonowymi liniami obramowania (gradient border). Wykorzystuje zaawansowany trick CSS mask-composite dla osiągnięcia idealnie ostrej linii gradientu o grubości 1px. Czysty, czytelny, bezpieczny dla WCAG.",
+        pros: [
+          "Brak dodatkowego szumu wizualnego — skupienie wyłącznie na liczbach.",
+          "Niezwykle nowoczesna linia świetlna reagująca rozświetleniem na hover.",
+          "Najbardziej naturalna integracja z dotychczasową strukturą witryny MatHub."
+        ],
+        cons: [
+          "Klasyczna siatka 4-kolumnowa, mało modyfikuje układ przestrzenny.",
+          "Ogranicza się do efektów krawędziowych (border glow)."
+        ],
+        html: `<div class="d1-grid">
+  <!-- Card 1 -->
+  <div class="d1-card">
+    <div class="d1-val">500 kg+</div>
+    <div class="d1-label">udźwig wózka samozaładowczego</div>
+    <div class="d1-node"></div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="d1-card">
+    <div class="d1-val">0</div>
+    <div class="d1-label">ramp i wind hydraulicznych</div>
+    <div class="d1-node"></div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="d1-card">
+    <div class="d1-val">24 h</div>
+    <div class="d1-label">na wycenę od zgłoszenia</div>
+    <div class="d1-node"></div>
+  </div>
+
+  <!-- Card 4 -->
+  <div class="d1-card">
+    <div class="d1-val">PL</div>
+    <div class="d1-label">zasięg: od Szczecina do Rzeszowa</div>
+    <div class="d1-node"></div>
+  </div>
+</div>`
+      },
+      2: {
+        title: "Vector Horizon",
+        tags: ["SVG ORBIT RINGS", "STATIC CARDS", "GEOMETRIC LAYERS", "ROTATION"],
+        description: "Przeniesienie parametru wewnątrz obrotowego sensora geometrycznego. Dwa współśrodkowe okręgi SVG o różnym stopniu przerywania linii (dashed) i zróżnicowanej prędkości obrotu tworzą wrażenie precyzyjnego pozycjonowania maszynowego w czasie rzeczywistym, bez przechylania kart przy interakcji.",
+        pros: [
+          "Bardzo wysoki poziom wyrafinowania geometrycznego bez obciążania procesora.",
+          "Okręgi obracają się w przeciwnych kierunkach i wzmacniają kontrast przy hoverze.",
+          "Liczby lewitują dokładnie w środku osi obrotu."
+        ],
+        cons: [
+          "Wymaga kołowego kadrowania (wymaga dopasowania wysokości na najmniejszych ekranach).",
+          "Podpisy muszą być idealnie scentrowane i krótkie."
+        ],
+        html: `<div class="d2-perspective-container">
+  <div class="d2-grid" id="vectorGrid">
+    <!-- Card 1 -->
+    <div class="d2-card-wrap">
+      <div class="d2-card">
+        <div class="d2-rings">
+          <svg class="d2-svg" viewBox="0 0 100 100">
+            <circle class="d2-ring-outer" cx="50" cy="50" r="46" />
+            <circle class="d2-ring-inner" cx="50" cy="50" r="40" />
+          </svg>
+          <span class="d2-val">500 kg+</span>
+        </div>
+        <div class="d2-label">udźwig wózka samozaładowczego</div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="d2-card-wrap">
+      <div class="d2-card">
+        <div class="d2-rings">
+          <svg class="d2-svg" viewBox="0 0 100 100">
+            <circle class="d2-ring-outer" cx="50" cy="50" r="46" />
+            <circle class="d2-ring-inner" cx="50" cy="50" r="40" />
+          </svg>
+          <span class="d2-val">0</span>
+        </div>
+        <div class="d2-label">ramp i wind hydraulicznych</div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="d2-card-wrap">
+      <div class="d2-card">
+        <div class="d2-rings">
+          <svg class="d2-svg" viewBox="0 0 100 100">
+            <circle class="d2-ring-outer" cx="50" cy="50" r="46" />
+            <circle class="d2-ring-inner" cx="50" cy="50" r="40" />
+          </svg>
+          <span class="d2-val">24 h</span>
+        </div>
+        <div class="d2-label">na wycenę od zgłoszenia</div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="d2-card-wrap">
+      <div class="d2-card">
+        <div class="d2-rings">
+          <svg class="d2-svg" viewBox="0 0 100 100">
+            <circle class="d2-ring-outer" cx="50" cy="50" r="46" />
+            <circle class="d2-ring-inner" cx="50" cy="50" r="40" />
+          </svg>
+          <span class="d2-val">PL</span>
+        </div>
+        <div class="d2-label">zasięg: od Szczecina do Rzeszowa</div>
+      </div>
+    </div>
+  </div>
+</div>`
+      },
+      3: {
+        title: "Bento Spotlight",
+        tags: ["BENTO LAYOUT", "SPOTLIGHT MOUSE", "GLOW LIGHTS", "ASYMMETRY"],
+        description: "Wykorzystuje asymetryczną strukturę bento grid dla urozmaicenia rytmu strony. Ruch myszy jest przechwytywany w czasie rzeczywistym przez lekki skrypt JS i przekładany na dynamiczny gradient radialny podążający pod spodem szklanej warstwy karty (spotlight glow).",
+        pros: [
+          "Najbardziej nowoczesny układ kart bento.",
+          "Poświata świetlna podąża za kursorem, dając niesamowicie immersyjny efekt głębi.",
+          "Bardzo dobre wykorzystanie proporcji ekranów szerokokątnych."
+        ],
+        cons: [
+          "Wymaga zadeklarowania nasłuchiwania zdarzeń ruchu myszy w React.",
+          "Asymetria musi być wyłączana (zamieniana na zwykły pionowy stack) na urządzeniach mobilnych."
+        ],
+        html: `<div class="d3-bento">
+  <!-- Card 1 - Span 4 -->
+  <div class="d3-card d3-span-4" onmousemove="handleBentoSpot(event)" onmouseleave="resetBentoSpot(event)">
+    <div class="d3-val">500 kg+</div>
+    <div class="d3-label">udźwig wózka samozaładowczego</div>
+  </div>
+
+  <!-- Card 2 - Span 2 -->
+  <div class="d3-card d3-span-2" onmousemove="handleBentoSpot(event)" onmouseleave="resetBentoSpot(event)">
+    <div class="d3-val">0</div>
+    <div class="d3-label">ramp i wind hydraulicznych</div>
+  </div>
+
+  <!-- Card 3 - Span 2 -->
+  <div class="d3-card d3-span-2" onmousemove="handleBentoSpot(event)" onmouseleave="resetBentoSpot(event)">
+    <div class="d3-val">24 h</div>
+    <div class="d3-label">na wycenę od zgłoszenia</div>
+  </div>
+
+  <!-- Card 4 - Span 4 -->
+  <div class="d3-card d3-span-4" onmousemove="handleBentoSpot(event)" onmouseleave="resetBentoSpot(event)">
+    <div class="d3-val">PL</div>
+    <div class="d3-label">zasięg: od Szczecina do Rzeszowa</div>
+  </div>
+</div>`
+      },
+      4: {
+        title: "Brutalist Reveal",
+        tags: ["EDITORIAL STYLE", "SPLIT REVEAL", "PURE TYPOGRAPHY", "MINIMALIST"],
+        description: "Czysty brutalizm typograficzny. W tle każdego wiersza wyrysowany jest ogromny, dyskretny, ciemnoszary skrót tekstowy wykonany za pomocą geometrycznego fontu Syne. Po najechaniu myszką tło rozsuwa się, a na wierzch płynnie wyskakuje jaskrawożółta, ostra wartość parametru z podpisem.",
+        pros: [
+          "Ekstremalnie czysta i luksusowa estetyka plakatowa.",
+          "Brak elementów graficznych (tylko fonty) gwarantuje zerowe obciążenie przeglądarki.",
+          "Bardzo wysoka czytelność i duży kontrast wartości liczbowych."
+        ],
+        cons: [
+          "Wymaga dołączenia czcionki Syne lub innej grubej sans-serif do projektu.",
+          "Może wydawać się zbyt surowy w przypadku braku odpowiedniego wycentrowania kontenera."
+        ],
+        html: `<div class="d4-grid">
+  <!-- Card 1 -->
+  <div class="d4-wrapper">
+    <div class="d4-box">
+      <div class="d4-giant">LOAD</div>
+      <div class="d4-val">500 kg+</div>
+    </div>
+    <div class="d4-label">udźwig wózka samozaładowczego</div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="d4-wrapper">
+    <div class="d4-box">
+      <div class="d4-giant">RAMP</div>
+      <div class="d4-val">0</div>
+    </div>
+    <div class="d4-label">ramp i wind hydraulicznych</div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="d4-wrapper">
+    <div class="d4-box">
+      <div class="d4-giant">TIME</div>
+      <div class="d4-val">24 h</div>
+    </div>
+    <div class="d4-label">na wycenę od zgłoszenia</div>
+  </div>
+
+  <!-- Card 4 -->
+  <div class="d4-wrapper">
+    <div class="d4-box">
+      <div class="d4-giant">ZONE</div>
+      <div class="d4-val">PL</div>
+    </div>
+    <div class="d4-label">zasięg: od Szczecina do Rzeszowa</div>
+  </div>
+</div>`
+      },
+      5: {
+        title: "CRT Glitch Scanner",
+        tags: ["CRT GLITCH", "MATRIX SCRAMBLE", "LASER SWEEP", "TERMINAL STYLE"],
+        description: "Holograficzny stół deszyfrujący. Wykorzystuje rastrowe linie CRT. Najazd myszą uruchamia laser skanujący kartę w pionie, a sama wartość liczbowa przechodzi proces deszyfracji (tekst szybko losuje losowe znaki, po czym zatrzymuje się na właściwej wartości).",
+        pros: [
+          "Niezwykle wciągająca, dynamiczna interakcja (deszyfracja znaków).",
+          "Laserowy skaner doskonale maskuje moment renderowania nowych stanów.",
+          "Technologiczny styl budujący silną tożsamość marki."
+        ],
+        cons: [
+          "Wymaga prostego JS do podmieniania znaków (efekt scramble).",
+          "Podświetlenie (neon glow) wymaga ostrożnego pozycjonowania na słabszych mobilnych GPU."
+        ],
+        html: `<div class="d5-grid">
+  <!-- Card 1 -->
+  <div class="d5-crt" onmouseenter="triggerCrtScramble(this, '500 kg+')" onmouseleave="resetCrtScramble(this, '500 kg+')">
+    <div class="d5-bar"></div>
+    <div class="d5-header">SEC_LOAD // ACTIVE</div>
+    <div class="d5-val">500 kg+</div>
+    <div class="d5-label">udźwig wózka samozaładowczego</div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="d5-crt" onmouseenter="triggerCrtScramble(this, '0')" onmouseleave="resetCrtScramble(this, '0')">
+    <div class="d5-bar"></div>
+    <div class="d5-header">SEC_RAMP // EMPTY</div>
+    <div class="d5-val">0</div>
+    <div class="d5-label">ramp i wind hydraulicznych</div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="d5-crt" onmouseenter="triggerCrtScramble(this, '24 h')" onmouseleave="resetCrtScramble(this, '24 h')">
+    <div class="d5-bar"></div>
+    <div class="d5-header">SEC_TIME // RESPONSE</div>
+    <div class="d5-val">24 h</div>
+    <div class="d5-label">na wycenę od zgłoszenia</div>
+  </div>
+
+  <!-- Card 4 -->
+  <div class="d5-crt" onmouseenter="triggerCrtScramble(this, 'PL')" onmouseleave="resetCrtScramble(this, 'PL')">
+    <div class="d5-bar"></div>
+    <div class="d5-header">SEC_ZONE // COUNTRY</div>
+    <div class="d5-val">PL</div>
+    <div class="d5-label">zasięg: od Szczecina do Rzeszowa</div>
+  </div>
+</div>`
+      }
+    };
+
+    let activeDesign = 1;
+
+    function switchDesign(id) {
+      activeDesign = id;
+      
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach((btn, index) => {
+        if (index + 1 === id) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+
+      const d = STRICT_DESIGNS[id];
+
+      document.getElementById('previewWrapper').innerHTML = d.html;
+      document.getElementById('designTitle').innerText = `0${id}. ${d.title}`;
+      document.getElementById('designDescription').innerText = d.description;
+
+      const tagBox = document.getElementById('designTags');
+      tagBox.innerHTML = '';
+      d.tags.forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'feature-tag';
+        span.innerText = tag;
+        tagBox.appendChild(span);
+      });
+      const techSpan = document.createElement('span');
+      techSpan.className = 'feature-tag tech';
+      techSpan.innerText = 'STRICT ORIGINAL TEXTS';
+      tagBox.appendChild(techSpan);
+
+      const pros = document.getElementById('proList');
+      pros.innerHTML = '';
+      d.pros.forEach(pro => {
+        const li = document.createElement('li');
+        li.innerText = pro;
+        pros.appendChild(li);
+      });
+
+      const cons = document.getElementById('conList');
+      cons.innerHTML = '';
+      d.cons.forEach(con => {
+        const li = document.createElement('li');
+        li.innerText = con;
+        cons.appendChild(li);
+      });
+
+      document.getElementById('codeViewport').innerText = getFormattedCode(id);
+    }
+
+    function getFormattedCode(id) {
+      const d = STRICT_DESIGNS[id];
+      let styles = '';
+      let scripts = '';
+
+      if (id === 1) {
+        styles = `
+/* CSS DLA QUANTUM CONDUIT */
+.d1-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 990px) {
+  .d1-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 550px) {
+  .d1-grid { grid-template-columns: 1fr; }
+}
+
+.d1-card {
+  background: rgba(14, 27, 46, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 2.5rem 1.75rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
+}
+
+.d1-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(135deg, #ffc107, transparent 60%, #c8941a);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.12;
+  transition: opacity 0.5s;
+}
+
+.d1-card:hover::after {
+  opacity: 0.8;
+}
+
+.d1-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.d1-node {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  align-self: flex-end;
+  transition: all 0.4s;
+}
+
+.d1-card:hover .d1-node {
+  background: #ffc107;
+  box-shadow: 0 0 10px #ffc107;
+}
+
+.d1-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  margin-bottom: 1rem;
+  transition: all 0.4s;
+}
+
+.d1-card:hover .d1-val {
+  color: #ffc107;
+  text-shadow: 0 0 20px rgba(255, 193, 7, 0.45);
+}
+
+.d1-label {
+  font-size: 0.85rem;
+  color: rgba(250, 250, 250, 0.65);
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.d1-card:hover .d1-label {
+  color: #ffffff;
+}`;
+      } else if (id === 2) {
+        styles = `
+/* CSS DLA VECTOR HORIZON */
+.d2-perspective-container {
+  width: 100%;
+}
+
+.d2-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 990px) {
+  .d2-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 550px) {
+  .d2-grid { grid-template-columns: 1fr; }
+}
+
+.d2-card {
+  background: linear-gradient(135deg, rgba(14, 27, 46, 0.5) 0%, rgba(3, 7, 18, 0.8) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  transition: border-color 0.4s, box-shadow 0.4s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 250px;
+}
+
+.d2-card:hover {
+  border-color: rgba(255, 193, 7, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+.d2-rings {
+  position: relative;
+  width: 105px;
+  height: 105px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.d2-svg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+}
+
+.d2-ring-outer {
+  fill: none;
+  stroke: rgba(255, 193, 7, 0.15);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 8;
+  transform-origin: center;
+  animation: d2-spin-clockwise 15s infinite linear;
+}
+
+.d2-ring-inner {
+  fill: none;
+  stroke: #ffc107;
+  stroke-width: 1.5;
+  stroke-dasharray: 40 40;
+  transform-origin: center;
+  animation: d2-spin-counter 10s infinite linear;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+
+.d2-card:hover .d2-ring-inner {
+  opacity: 1;
+  stroke-width: 2;
+}
+
+@keyframes d2-spin-clockwise {
+  100% { transform: rotate(360deg); }
+}
+@keyframes d2-spin-counter {
+  100% { transform: rotate(-360deg); }
+}
+
+.d2-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffffff;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s;
+}
+
+.d2-card:hover .d2-val {
+  color: #ffc107;
+  text-shadow: 0 0 12px rgba(255, 193, 7, 0.5);
+  transform: scale(1.1);
+}
+
+.d2-label {
+  font-size: 0.85rem;
+  color: rgba(250, 250, 250, 0.6);
+  line-height: 1.35;
+  max-width: 18ch;
+}`;
+      } else if (id === 3) {
+        styles = `
+/* CSS DLA BENTO SPOTLIGHT */
+.d3-bento {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.d3-card {
+  background: rgba(14, 27, 46, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 20px;
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+  cursor: pointer;
+}
+
+.d3-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(350px circle at var(--mx, 0px) var(--my, 0px), rgba(255, 193, 7, 0.08), transparent 85%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.d3-card:hover::before {
+  opacity: 1;
+}
+
+.d3-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(255, 193, 7, 0.25);
+}
+
+.d3-span-4 { grid-column: span 4; }
+.d3-span-2 { grid-column: span 2; }
+.d3-span-3 { grid-column: span 3; }
+
+@media (max-width: 900px) {
+  .d3-span-4, .d3-span-2, .d3-span-3 { grid-column: span 3; }
+}
+
+.d3-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  margin-bottom: 1.5rem;
+  z-index: 1;
+  transition: color 0.3s;
+}
+
+.d3-card:hover .d3-val {
+  color: #ffc107;
+}
+
+.d3-label {
+  font-size: 0.9rem;
+  color: rgba(250, 250, 250, 0.7);
+  line-height: 1.4;
+  font-weight: 500;
+  z-index: 1;
+}`;
+        scripts = `
+<!-- JAVASCRIPT: BENTO SPOTLIGHT CONTROLLER -->
+<script>
+  function handleBentoSpot(e) {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    card.style.setProperty('--mx', \`\${x}px\`);
+    card.style.setProperty('--my', \`\${y}px\`);
+  }
+
+  function resetBentoSpot(e) {
+    const card = e.currentTarget;
+    card.style.removeProperty('--mx');
+    card.style.removeProperty('--my');
+  }
+<\/script>`;
+      } else if (id === 4) {
+        styles = `
+/* CSS DLA BRUTALIST REVEAL */
+.d4-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 990px) {
+  .d4-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.d4-wrapper {
+  background: #030712;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding: 2rem 0.5rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  height: 190px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.d4-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: -1.5px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: #ffc107;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.d4-wrapper:hover::after {
+  width: 100%;
+}
+
+.d4-box {
+  position: relative;
+  height: 70px;
+  display: flex;
+  align-items: center;
+}
+
+.d4-giant {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(3rem, 6vw, 4.4rem);
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.1);
+  position: absolute;
+  left: 0;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  line-height: 1;
+}
+
+.d4-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(2.2rem, 5vw, 3rem);
+  font-weight: 800;
+  color: #ffc107;
+  position: absolute;
+  left: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.d4-wrapper:hover .d4-giant {
+  transform: translateY(-25px);
+  opacity: 0.02;
+}
+
+.d4-wrapper:hover .d4-val {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.d4-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(250, 250, 250, 0.7);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.d4-wrapper:hover .d4-label {
+  transform: translateY(-5px);
+  color: #ffffff;
+}`;
+      } else if (id === 5) {
+        styles = `
+/* CSS DLA CRT GLITCH SCANNER */
+.d5-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (max-width: 990px) {
+  .d5-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.d5-crt {
+  background: #02050d;
+  border: 1px solid rgba(255, 193, 7, 0.1);
+  border-radius: 12px;
+  padding: 2.25rem 1.75rem;
+  height: 210px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.d5-crt:hover {
+  border-color: #ffc107;
+  box-shadow: 0 0 25px rgba(255, 193, 7, 0.25);
+}
+
+.d5-crt::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+.d5-bar {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(180deg, transparent, #ffc107, transparent);
+  box-shadow: 0 0 15px #ffc107;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.d5-crt:hover .d5-bar {
+  animation: d5-sweep-bar 1.5s infinite linear;
+}
+
+@keyframes d5-sweep-bar {
+  0% { top: -10px; opacity: 0.8; }
+  100% { top: 220px; opacity: 0.8; }
+}
+
+.d5-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: #ffc107;
+  opacity: 0.4;
+  letter-spacing: 0.1em;
+}
+
+.d5-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+
+.d5-crt:hover .d5-val {
+  color: #ffc107;
+}
+
+.d5-label {
+  font-size: 0.85rem;
+  color: rgba(250, 250, 250, 0.65);
+}`;
+        scripts = `
+<!-- JAVASCRIPT: CRT DECRYPTION EFFECT -->
+<script>
+  const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$%#@&';
+
+  function triggerCrtScramble(card, finalVal) {
+    const valEl = card.querySelector('.d5-val');
+    let iterations = 0;
+    
+    clearInterval(valEl.interval);
+    
+    valEl.interval = setInterval(() => {
+      valEl.innerText = finalVal
+        .split('')
+        .map((char, index) => {
+          if (index < iterations) return finalVal[index];
+          return chars[Math.floor(Math.random() * chars.length)];
+        })
+        .join('');
+        
+      if (iterations >= finalVal.length) clearInterval(valEl.interval);
+      iterations += 1/3;
+    }, 30);
+  }
+
+  function resetCrtScramble(card, finalVal) {
+    const valEl = card.querySelector('.d5-val');
+    clearInterval(valEl.interval);
+    valEl.innerText = finalVal;
+  }
+<\/script>`;
+      }
+
+      return `<!-- ========================================================
+     KOD DLA OPCJI: ${d.title.toUpperCase()}
+     ======================================================== -->
+
+<!-- ELEMENT HTML -->
+${d.html}
+
+${styles}
+${scripts}`;
+    }
+
+    function copyCode() {
+      const code = document.getElementById('codeViewport').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const btn = document.querySelector('.btn-copy');
+        const orig = btn.innerHTML;
+        btn.innerHTML = `
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Skopiowano!
+        `;
+        btn.style.backgroundColor = '#ffc107';
+        btn.style.borderColor = '#ffc107';
+        btn.style.color = '#0b1220';
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.style.backgroundColor = '';
+          btn.style.borderColor = '';
+          btn.style.color = '';
+        }, 1500);
+      });
+    }
+
+    switchDesign(1);
+
+    // ========================================================
+    // PREVIEW RUNTIME SIMULATORS
+    // ========================================================
+
+    // Bento spotlight follow
+    function handleBentoSpot(e) {
+      const card = e.currentTarget;
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      card.style.setProperty('--mx', `${x}px`);
+      card.style.setProperty('--my', `${y}px`);
+    }
+
+    function resetBentoSpot(e) {
+      const card = e.currentTarget;
+      card.style.removeProperty('--mx');
+      card.style.removeProperty('--my');
+    }
+
+    // CRT Glitch Scrambler
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ$%#@&';
+    function triggerCrtScramble(card, finalVal) {
+      const valEl = card.querySelector('.d5-val');
+      let iterations = 0;
+      clearInterval(valEl.interval);
+      valEl.interval = setInterval(() => {
+        valEl.innerText = finalVal
+          .split('')
+          .map((char, index) => {
+            if (index < iterations) return finalVal[index];
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join('');
+          
+        if (iterations >= finalVal.length) clearInterval(valEl.interval);
+        iterations += 1/3;
+      }, 30);
+    }
+
+    function resetCrtScramble(card, finalVal) {
+      const valEl = card.querySelector('.d5-val');
+      clearInterval(valEl.interval);
+      valEl.innerText = finalVal;
+    }
+  </script>
+</body>
+</html>

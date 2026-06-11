@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 const STATS = [
   { value: "500 kg+", label: "udźwig wózka samozaładowczego" },
-  { value: "0", label: "ramp i wind hydraulicznych potrzebnych" },
+  { value: "0", label: "ramp i wind hydraulicznych" },
   { value: "24 h", label: "na wycenę od zgłoszenia" },
   { value: "PL", label: "zasięg: od Szczecina do Rzeszowa" },
 ];
@@ -44,26 +44,48 @@ const TrustBar = () => {
       aria-label="Kluczowe liczby"
       className="relative overflow-hidden bg-navy-deep py-14 md:py-[72px]"
     >
-      {/* Component-level custom keyframes to avoid altering global CSS configs */}
+      {/* Component-level custom keyframes to avoid altering global CSS configs. */}
       <style>{`
-        @keyframes hudRotate {
-          from { transform: translate(-50%, -50%) rotate(0deg); }
-          to { transform: translate(-50%, -50%) rotate(360deg); }
+        @keyframes vectorRingClockwise {
+          to { transform: rotate(360deg); }
         }
-        @keyframes hudRotateBack {
-          from { transform: translate(-50%, -50%) rotate(360deg); }
-          to { transform: translate(-50%, -50%) rotate(0deg); }
+        @keyframes vectorRingCounter {
+          to { transform: rotate(-360deg); }
         }
-        @keyframes hudSweep {
-          0% { top: 0%; opacity: 0; }
-          15% { opacity: 0.7; }
-          85% { opacity: 0.7; }
-          100% { top: 100%; opacity: 0; }
+        @keyframes vectorHorizonPulse {
+          0%, 100% { opacity: 0.18; }
+          50% { opacity: 0.42; }
         }
-        .hud-glow-text {
+        .vector-horizon-value {
           color: #ffc107;
           font-family: 'JetBrains Mono', monospace;
-          text-shadow: 0 0 16px rgba(255, 193, 7, 0.55), 0 0 4px rgba(255, 193, 7, 0.3);
+          text-shadow: 0 0 14px rgba(255, 193, 7, 0.42);
+        }
+        .vector-horizon-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at 50% 32%, rgba(255, 193, 7, 0.1), transparent 42%),
+            linear-gradient(135deg, rgba(255, 255, 255, 0.045), transparent 58%);
+          opacity: 0.66;
+          pointer-events: none;
+        }
+        .vector-horizon-card::after {
+          content: "";
+          position: absolute;
+          left: 18%;
+          right: 18%;
+          top: 50%;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.42), transparent);
+          opacity: 0.38;
+          pointer-events: none;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .vector-ring {
+            animation: none !important;
+          }
         }
       `}</style>
 
@@ -72,53 +94,65 @@ const TrustBar = () => {
           {STATS.map((s, i) => (
             <div
               key={s.label}
-              className="relative flex min-h-[196px] flex-col items-center justify-center overflow-hidden rounded-lg border border-white/5 bg-white/[0.01] px-5 py-6 text-center transition-all duration-500 hover:border-yellow/20 hover:bg-white/[0.02] sm:min-h-[210px] sm:p-6 md:min-h-[220px]"
+              className="vector-horizon-card group relative flex min-h-[230px] flex-col items-center justify-center overflow-hidden rounded-lg border border-white/5 bg-[linear-gradient(135deg,hsl(var(--navy-deep)/0.78),hsl(var(--ink)/0.9))] px-5 py-7 text-center shadow-[0_18px_44px_hsl(var(--ink)/0.28)] transition-[border-color,box-shadow,background-color] duration-500 hover:border-yellow/30 hover:shadow-[0_22px_54px_hsl(var(--ink)/0.42)] sm:min-h-[250px] sm:p-6"
               style={{
                 opacity: inView ? 1 : 0,
                 transform: inView ? "none" : "translateY(20px)",
-                transition: `opacity 700ms ${EASE}, transform 700ms ${EASE}, border-color 0.3s, background 0.3s`,
+                transition: `opacity 700ms ${EASE}, transform 700ms ${EASE}, border-color 0.3s, box-shadow 0.3s, background-color 0.3s`,
                 transitionDelay: `${i * 100}ms`,
               }}
             >
-              {/* Corner HUD Bracket Accents */}
-              <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t border-l border-white/10" />
-              <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t border-r border-white/10" />
-              <div className="absolute bottom-0 left-0 w-2.5 h-2.5 border-b border-l border-white/10" />
-              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b border-r border-white/10" />
-
-              {/* Laser Scanning Line */}
-              <div
-                className="absolute left-0 w-full h-[2px] pointer-events-none z-10"
-                style={{
-                  background: "linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.45), transparent)",
-                  animation: `hudSweep ${3 + i * 0.5}s ease-in-out infinite`,
-                }}
-              />
-
-              {/* Value hero — fixed stage prevents ring clipping and label overlap */}
-              <div className="relative flex h-[160px] w-full items-center justify-center sm:h-[200px] md:h-[220px] lg:h-[180px] xl:h-[220px]">
-                <div
-                  className="absolute left-1/2 top-1/2 aspect-square w-[160px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-yellow/25 sm:w-[200px] md:w-[220px] lg:w-[180px] xl:w-[220px]"
-                  style={{ animation: `hudRotate ${12 + i * 2}s linear infinite` }}
+              <div className="relative z-10 flex h-[132px] w-[132px] items-center justify-center sm:h-[150px] sm:w-[150px]">
+                <svg
+                  className="absolute inset-0 h-full w-full"
+                  viewBox="0 0 100 100"
+                  role="presentation"
                   aria-hidden="true"
-                />
-
-                <div
-                  className="absolute left-1/2 top-1/2 aspect-square w-[120px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dotted border-yellow/15 sm:w-[150px] md:w-[170px] lg:w-[130px] xl:w-[170px]"
-                  style={{ animation: `hudRotateBack ${8 + i}s linear infinite` }}
-                  aria-hidden="true"
-                />
-
-                <div
-                  className="hud-glow-text relative z-10 whitespace-nowrap font-black leading-none tracking-tight select-none"
-                  style={{ fontSize: "clamp(2.1rem, 9vw, 3.4rem)" }}
                 >
+                  <circle
+                    className="vector-ring origin-center"
+                    cx="50"
+                    cy="50"
+                    r="46"
+                    fill="none"
+                    stroke="rgba(255, 193, 7, 0.2)"
+                    strokeWidth="1.2"
+                    strokeDasharray="4 8"
+                    style={{ animation: `vectorRingClockwise ${15 + i * 2}s linear infinite` }}
+                  />
+                  <circle
+                    className="vector-ring origin-center transition-[opacity,stroke-width] duration-300 group-hover:opacity-100"
+                    cx="50"
+                    cy="50"
+                    r="39"
+                    fill="none"
+                    stroke="#ffc107"
+                    strokeWidth="1.35"
+                    strokeDasharray="38 40"
+                    opacity="0.45"
+                    style={{ animation: `vectorRingCounter ${10 + i}s linear infinite` }}
+                  />
+                  <circle
+                    className="vector-ring origin-center"
+                    cx="50"
+                    cy="50"
+                    r="28"
+                    fill="none"
+                    stroke="rgba(255, 255, 255, 0.1)"
+                    strokeWidth="0.8"
+                    strokeDasharray="1 6"
+                    style={{ animation: "vectorHorizonPulse 3.4s ease-in-out infinite" }}
+                  />
+                </svg>
+
+                <div className="absolute inset-6 rounded-full bg-yellow/5 blur-xl" aria-hidden="true" />
+
+                <div className="vector-horizon-value relative z-10 whitespace-nowrap text-[2.15rem] font-black leading-none tracking-tight transition-[color,text-shadow] duration-300 group-hover:text-yellow sm:text-[2.55rem]">
                   {s.value}
                 </div>
               </div>
 
-              {/* Stat Label — outside the fixed ring stage */}
-              <div className="relative z-10 mx-auto mt-2 max-w-[22ch] text-center text-[13px] leading-snug text-paper/65 md:text-[14px]">
+              <div className="relative z-10 mx-auto mt-5 max-w-[22ch] text-center text-[13px] font-medium leading-snug text-paper/65 transition-colors duration-300 group-hover:text-paper md:text-[14px]">
                 {s.label}
               </div>
             </div>

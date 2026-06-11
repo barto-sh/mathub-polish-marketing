@@ -272,8 +272,8 @@
 .c3-line-track {
   position: absolute;
   left: 20px;
-  top: 0;
-  bottom: 0;
+  top: 21px;
+  bottom: 21px;
   width: 2px;
   background: rgba(255, 255, 255, 0.08);
   overflow: hidden;

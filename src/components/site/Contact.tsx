@@ -89,7 +89,7 @@ const Contact = () => {
           </div>
 
           {/* Route with stops (Kinetic Connection Line) */}
-          <ol className="relative flex flex-col gap-6 pl-12 lg:pl-16 c3-perspective-panel">
+          <ol className="relative flex flex-col gap-6 c3-perspective-panel">
             {/* Pulsing kinetic timeline track */}
             <div
               aria-hidden="true"
@@ -104,9 +104,9 @@ const Contact = () => {
             </div>
 
             {/* 1 — Zadzwoń (primary action) */}
-            <li className="relative" style={stop(0)}>
+            <li className="relative grid grid-cols-[42px_minmax(0,1fr)] items-stretch gap-4 lg:gap-5" style={stop(0)}>
               {/* Concentric ripples around the icon */}
-              <div className="absolute -left-12 lg:-left-16 top-5 z-10" aria-hidden="true">
+              <div className="relative z-10 self-center" aria-hidden="true">
                 <div className="c3-ripple-container">
                   <span className="c3-ripple-ring" />
                   <span className="c3-ripple-ring" />
@@ -150,8 +150,8 @@ const Contact = () => {
             </li>
 
             {/* 2 — Dostępność */}
-            <li className="relative" style={stop(1)}>
-              <div className="absolute -left-12 lg:-left-16 top-6 z-10" aria-hidden="true">
+            <li className="relative grid grid-cols-[42px_minmax(0,1fr)] items-stretch gap-4 lg:gap-5" style={stop(1)}>
+              <div className="relative z-10 self-center" aria-hidden="true">
                 <div className="c3-ripple-container">
                   <span className="c3-ripple-ring" />
                   <span className="c3-ripple-ring" />
@@ -177,8 +177,8 @@ const Contact = () => {
             </li>
 
             {/* 3 — Baza */}
-            <li className="relative" style={stop(2)}>
-              <div className="absolute -left-12 lg:-left-16 top-6 z-10" aria-hidden="true">
+            <li className="relative grid grid-cols-[42px_minmax(0,1fr)] items-stretch gap-4 lg:gap-5" style={stop(2)}>
+              <div className="relative z-10 self-center" aria-hidden="true">
                 <div className="c3-ripple-container">
                   <span className="c3-ripple-ring" />
                   <span className="c3-ripple-ring" />
