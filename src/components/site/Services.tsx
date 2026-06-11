@@ -67,10 +67,10 @@ const Services = () => {
           {SERVICES.map((s, i) => (
             <article
               key={s.title}
-              className="group relative flex cursor-default flex-col bg-paper transition-mh hover:z-10 hover:bg-white hover:shadow-md max-md:grid max-md:min-h-[104px] max-md:grid-cols-[82px_minmax(0,1fr)]"
+              className="group relative flex cursor-default flex-col bg-paper transition-mh hover:z-10 hover:bg-white hover:shadow-md min-[380px]:max-md:grid min-[380px]:max-md:min-h-[132px] min-[380px]:max-md:grid-cols-[112px_minmax(0,1fr)]"
             >
               {/* Image */}
-              <div className="relative aspect-[4/3] overflow-hidden bg-navy max-md:aspect-auto max-md:min-h-full">
+              <div className="relative aspect-[4/3] overflow-hidden bg-navy min-[380px]:max-md:aspect-auto min-[380px]:max-md:min-h-full max-[379px]:aspect-[16/9]">
                 <img
                   src={s.img}
                   alt={s.alt}

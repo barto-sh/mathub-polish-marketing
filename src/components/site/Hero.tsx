@@ -96,7 +96,7 @@ const Hero = () => {
       <p className="sr-only">Ubezpieczenie towaru w cenie · Wycena w 24 h · Bez ukrytych kosztów</p>
 
       <div className="hero-kino__proof relative z-10 w-full px-6 pb-6 sm:px-10" aria-hidden="true">
-        <div className="hero-kino__route mx-auto grid w-full max-w-[1200px] grid-cols-3 items-stretch gap-px md:hidden">
+        <div className="hero-kino__route mx-auto grid w-full max-w-[1200px] grid-cols-3 items-stretch gap-px lg:hidden">
           <div className="hero-kino__stop">
             <span className="hero-kino__pin">1</span>
             <strong>Ochrona</strong>
@@ -113,7 +113,7 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="hero-kino__route mx-auto hidden w-full max-w-[1200px] grid-cols-1 items-center gap-3 md:grid lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:gap-4">
+        <div className="hero-kino__route mx-auto hidden w-full max-w-[1200px] grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-4 lg:grid">
           <div className="hero-kino__stop">
             <span className="hero-kino__pin">1</span>
             <strong>Ubezpieczenie towaru w cenie</strong>

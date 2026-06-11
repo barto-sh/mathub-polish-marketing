@@ -206,7 +206,7 @@ const Header = () => {
                 href={item.href}
                 onClick={scrollToSection(item.href)}
                 aria-current={activeId === item.id ? "true" : undefined}
-                className={`text-[14.5px] font-medium transition-all duration-200 hover:-translate-y-px ${
+                className={`inline-flex min-h-10 items-center text-[14.5px] font-medium transition-all duration-200 hover:-translate-y-px ${
                   activeId === item.id
                     ? onDark
                       ? "text-yellow"
@@ -255,22 +255,15 @@ const Header = () => {
 
       {/* Mobile Menu */}
       <div
-        aria-hidden="true"
-        onClick={() => setOpen(false)}
-        className={`absolute left-0 top-full h-[calc(100dvh-72px)] w-full bg-ink/42 backdrop-blur-[2px] transition-opacity duration-300 md:hidden ${
-          open ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
-      />
-      <div
         id="mobile-menu"
         aria-hidden={!open}
-        className={`absolute left-0 top-full z-10 w-full overflow-hidden overscroll-contain bg-paper/95 shadow-[0_24px_64px_hsl(222_33%_9%/0.18)] backdrop-blur-md transition-all duration-300 ease-out md:hidden ${
+        className={`absolute left-0 top-full z-10 w-full overflow-hidden overscroll-contain bg-paper shadow-[0_24px_64px_hsl(222_33%_9%/0.18)] transition-all duration-300 ease-out md:hidden ${
           open
-            ? "max-h-[calc(100dvh-72px)] translate-y-0 border-t border-line opacity-100"
+            ? "h-[calc(100dvh-72px)] translate-y-0 border-t border-line opacity-100"
             : "pointer-events-none max-h-0 -translate-y-2 border-t border-transparent opacity-0"
         }`}
       >
-        <div className="container-mh flex max-h-[calc(100dvh-72px)] flex-col py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+        <div className="container-mh flex h-full flex-col py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
           <div className="min-h-0 divide-y divide-line overflow-y-auto rounded-md border border-line bg-paper">
             {NAV.map((item) => (
               <a
