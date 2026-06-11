@@ -1,284 +1,1062 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MatHub - Wizualny Raport Debugowania (Post-Mortem)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        navy: '#0E1B2E',
-                        paper: '#FAFAFA',
-                        yellow: '#FFC107',
-                        danger: '#EF4444',
-                        success: '#10B981'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { background-color: #050A15; color: #E2E8F0; }
-        .hud-spin { animation: spin 10s linear infinite; }
-        @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
-        
-        /* Bug 1: Z-Index Shadow Specifics */
-        .z-bug-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background-color: #1E293B; padding: 2px; border-radius: 8px;}
-        .z-bug-card { background-color: #0F172A; padding: 24px; transition: all 0.3s ease; cursor: pointer; color: #94A3B8; }
-        
-        /* BEFORE: Shadow gets masked by the next DOM element */
-        .z-bug-card-before:hover {
-            box-shadow: 25px 25px 50px 10px rgba(255, 193, 7, 0.4);
-            background-color: #1E293B;
-            color: #fff;
-        }
-        
-        /* AFTER: Shadow renders on top of next DOM element */
-        .z-bug-card-after { position: relative; }
-        .z-bug-card-after:hover {
-            z-index: 10;
-            box-shadow: 25px 25px 50px 10px rgba(16, 185, 129, 0.4);
-            background-color: #1E293B;
-            color: #fff;
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MatHub - wizualny raport bugow</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #0b1220;
+      --navy: #0e1b2e;
+      --paper: #fafafa;
+      --cream: #f5f1e8;
+      --yellow: #ffc107;
+      --line: rgba(11, 18, 32, 0.14);
+      --muted: #5f6876;
+      --danger: #d92d20;
+      --warn: #b7791f;
+      --ok: #047857;
+      --panel: #ffffff;
+      --shadow: 0 18px 50px rgba(11, 18, 32, 0.12);
+      --radius: 8px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
 
-        /* Bug 2: TrustBar Clipping Specifics */
-        .clip-container { width: 212px; height: 220px; overflow: hidden; position: relative; background: #0F172A; border-radius: 8px; border: 1px solid #1E293B; margin: 0 auto;}
-        .clip-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; border: 2px dashed; }
-        .clip-ring-before { width: 240px; height: 240px; border-color: rgba(239, 68, 68, 0.8); }
-        .clip-ring-after { width: 180px; height: 180px; border-color: rgba(16, 185, 129, 0.8); }
+    * {
+      box-sizing: border-box;
+    }
 
-        /* Bug 3: Typography Overflow Specifics */
-        .typo-container { width: 280px; background: #0F172A; padding: 0 24px; position: relative; overflow: hidden; border: 1px solid #1E293B; border-radius: 8px; margin: 0 auto; height: 120px; display: flex; align-items: center;}
-        .typo-guide { position: absolute; left: 24px; right: 24px; top: 0; bottom: 0; border-left: 1px dashed #334155; border-right: 1px dashed #334155; pointer-events: none; }
-        .typo-text { font-weight: 800; white-space: nowrap; color: #fff; }
-        .typo-before { font-size: 41.6px; color: #EF4444; }
-        .typo-after { font-size: 33.6px; color: #10B981; }
+    html {
+      scroll-behavior: smooth;
+      background: var(--paper);
+      color: var(--ink);
+    }
 
-        /* Bug 4: Scroll specifics */
-        .scroll-demo-box { height: 250px; overflow-y: auto; background: #0F172A; border: 1px solid #1E293B; border-radius: 8px; position: relative; scroll-behavior: smooth; }
-        .scroll-content { height: 800px; background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%); position: relative;}
-        .scroll-target { position: absolute; top: 500px; left: 20px; right: 20px; padding: 20px; background: #FFC107; color: #000; font-weight: bold; border-radius: 4px; text-align: center;}
-    </style>
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(14, 27, 46, 0.04), transparent 420px),
+        var(--paper);
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      background: #e8eaee;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--line);
+      background: rgba(250, 250, 250, 0.92);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 64px;
+      padding: 10px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 32px;
+      height: 32px;
+      place-items: center;
+      border-radius: 4px;
+      background: var(--yellow);
+      color: var(--navy);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .nav a {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 0 12px;
+      text-decoration: none;
+    }
+
+    .nav a:hover {
+      border-color: var(--line);
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .hero {
+      padding: 72px 0 38px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(255, 193, 7, 0.35);
+      border-radius: 999px;
+      background: rgba(255, 193, 7, 0.12);
+      padding: 7px 11px;
+      color: #8a6100;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 900px;
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(2.25rem, 6vw, 4.9rem);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+      gap: 32px;
+      align-items: end;
+      margin-top: 24px;
+    }
+
+    .lede {
+      max-width: 720px;
+      margin: 0;
+      color: #3f4857;
+      font-size: clamp(1.05rem, 2vw, 1.3rem);
+      line-height: 1.55;
+    }
+
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .summary-card h2 {
+      margin: 0 0 12px;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .metric-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: #3f4857;
+      font-size: 14px;
+    }
+
+    .metric-list strong {
+      color: var(--ink);
+    }
+
+    .toc {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding: 22px 0 46px;
+    }
+
+    .toc a {
+      min-height: 86px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 14px;
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(11, 18, 32, 0.06);
+    }
+
+    .toc a:hover {
+      border-color: rgba(255, 193, 7, 0.8);
+      transform: translateY(-1px);
+    }
+
+    .toc small {
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .toc span {
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .bug {
+      scroll-margin-top: 86px;
+      margin: 0 0 56px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .bug-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: start;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fff, #fbfbfb);
+      padding: 28px;
+    }
+
+    .bug-kicker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .pill {
+      display: inline-flex;
+      min-height: 26px;
+      align-items: center;
+      border-radius: 999px;
+      padding: 0 9px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .pill.high {
+      background: rgba(217, 45, 32, 0.1);
+      color: var(--danger);
+    }
+
+    .pill.medium {
+      background: rgba(183, 121, 31, 0.12);
+      color: var(--warn);
+    }
+
+    .pill.low {
+      background: rgba(4, 120, 87, 0.1);
+      color: var(--ok);
+    }
+
+    .pill.viewport {
+      background: rgba(14, 27, 46, 0.08);
+      color: var(--navy);
+    }
+
+    .bug h2 {
+      margin: 0;
+      font-size: clamp(1.5rem, 3vw, 2.35rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .bug-intro {
+      max-width: 820px;
+      margin: 14px 0 0;
+      color: #445064;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .verdict {
+      width: min(260px, 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      padding: 14px;
+    }
+
+    .verdict b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .verdict p {
+      margin: 0;
+      color: #445064;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .bug-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: 0;
+    }
+
+    .evidence {
+      border-right: 1px solid var(--line);
+      padding: 24px;
+      background: #f6f7f9;
+    }
+
+    .analysis {
+      padding: 24px;
+    }
+
+    .shot-frame {
+      position: relative;
+      width: 100%;
+      border: 1px solid rgba(11, 18, 32, 0.2);
+      border-radius: 10px;
+      background: #dfe3e8;
+      box-shadow: 0 16px 42px rgba(11, 18, 32, 0.14);
+      overflow: hidden;
+    }
+
+    .shot-frame.mobile {
+      max-width: 430px;
+      margin: 0 auto;
+    }
+
+    .shot-caption {
+      margin: 12px 0 0;
+      color: #5c6675;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .callout {
+      position: absolute;
+      border: 3px solid var(--danger);
+      background: rgba(217, 45, 32, 0.12);
+      box-shadow: 0 0 0 9999px rgba(11, 18, 32, 0.03);
+      pointer-events: none;
+    }
+
+    .callout.warn {
+      border-color: var(--warn);
+      background: rgba(183, 121, 31, 0.12);
+    }
+
+    .note {
+      position: absolute;
+      max-width: 260px;
+      border-radius: 6px;
+      background: var(--danger);
+      color: white;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.25;
+      box-shadow: 0 12px 28px rgba(11, 18, 32, 0.25);
+      pointer-events: none;
+    }
+
+    .note.warn {
+      background: var(--warn);
+    }
+
+    .analysis h3 {
+      margin: 0 0 10px;
+      color: var(--ink);
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .analysis p {
+      margin: 0 0 16px;
+      color: #445064;
+      line-height: 1.55;
+    }
+
+    .detail-grid {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .detail {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 12px;
+    }
+
+    .detail b {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .detail span {
+      display: block;
+      color: #4b5563;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    code {
+      border: 1px solid rgba(11, 18, 32, 0.12);
+      border-radius: 4px;
+      background: rgba(14, 27, 46, 0.05);
+      padding: 2px 5px;
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: 0.88em;
+    }
+
+    .fix {
+      border-left: 4px solid var(--yellow);
+      background: #fff9e7;
+      padding: 14px;
+      color: #3f3212;
+    }
+
+    .fix p {
+      margin: 0;
+      color: inherit;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .mini {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 12px;
+    }
+
+    .mini h4 {
+      margin: 0 0 8px;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .mini.bad h4 {
+      color: var(--danger);
+    }
+
+    .mini.good h4 {
+      color: var(--ok);
+    }
+
+    .proof-demo {
+      display: grid;
+      gap: 8px;
+      border: 1px solid rgba(11, 18, 32, 0.2);
+      background: rgba(14, 27, 46, 0.92);
+      padding: 12px;
+      color: white;
+    }
+
+    .proof-demo.bad {
+      min-height: 112px;
+      grid-template-columns: 1fr;
+    }
+
+    .proof-demo.good {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .proof-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .dot {
+      display: grid;
+      flex: 0 0 28px;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--yellow);
+      color: var(--navy);
+      font-weight: 900;
+    }
+
+    .menu-demo {
+      display: grid;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 12px;
+    }
+
+    .menu-row {
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #f8f8f8;
+    }
+
+    .cta-row {
+      height: 46px;
+      border-radius: 6px;
+      background: var(--yellow);
+    }
+
+    .hero-ghost {
+      height: 110px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #0e1b2e, #4a3412);
+      opacity: 0.95;
+    }
+
+    .thumb-demo {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      gap: 0;
+      min-height: 144px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .thumb-demo .slice {
+      background:
+        linear-gradient(rgba(14, 27, 46, 0.12), rgba(14, 27, 46, 0.28)),
+        url("visual-audit/sections/mobile320-uslugi.png") 0 40% / 320px auto no-repeat;
+    }
+
+    .thumb-demo .copy {
+      padding: 14px;
+    }
+
+    .thumb-demo h4 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      line-height: 1.15;
+    }
+
+    .thumb-demo p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .target-demo {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 12px;
+    }
+
+    .target-demo a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 22px;
+      border: 1px solid rgba(217, 45, 32, 0.55);
+      background: rgba(217, 45, 32, 0.06);
+      padding: 0 8px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .footer {
+      padding: 28px 0 54px;
+      color: #687386;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 960px) {
+      .hero-grid,
+      .bug-body,
+      .bug-header {
+        grid-template-columns: 1fr;
+      }
+
+      .evidence {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .toc {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .topbar-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav {
+        justify-content: flex-start;
+      }
+
+      .hero {
+        padding-top: 42px;
+      }
+
+      .toc,
+      .compare {
+        grid-template-columns: 1fr;
+      }
+
+      .bug-header,
+      .evidence,
+      .analysis {
+        padding: 18px;
+      }
+    }
+  </style>
 </head>
-<body class="p-4 md:p-8 lg:p-12">
+<body>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">M</span>
+        <span>MatHub bug report</span>
+      </div>
+      <nav class="nav" aria-label="Sekcje raportu">
+        <a href="#bug-tablet-proof">Tablet proof strip</a>
+        <a href="#bug-mobile-menu">Mobile menu</a>
+        <a href="#bug-service-thumbs">Service thumbnails</a>
+        <a href="#bug-targets">Tap targets</a>
+      </nav>
+    </div>
+  </header>
 
-    <header class="max-w-6xl mx-auto mb-16 border-b border-slate-800 pb-8">
-        <div class="inline-flex items-center gap-2 px-3 py-1 bg-yellow/10 border border-yellow/20 text-yellow text-xs font-mono rounded-full mb-6 uppercase tracking-widest">
-            Środowisko Weryfikacyjne
-        </div>
-        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">Raport Debugowania Silnika Renderowania</h1>
-        <p class="text-slate-400 text-lg max-w-3xl leading-relaxed">
-            Ten interaktywny dokument to laboratoryjna rekonstrukcja zidentyfikowanych defektów matematycznych w systemie CSS/DOM projektu MatHub. Prezentuje surową różnicę między "tym co wydawało się działać", a tym "co zostało inżynieryjnie udowodnione i naprawione".
+  <main>
+    <section class="shell hero">
+      <span class="eyebrow">Visual QA evidence</span>
+      <h1>Bug report pokazujacy realne problemy z audytu strony MatHub.</h1>
+      <div class="hero-grid">
+        <p class="lede">
+          Ten plik nie jest abstrakcyjnym opisem. Kazdy bug ponizej ma przypieta
+          klatke z audytu, viewport, objaw, przyczyne w kodzie i konkretna poprawke.
+          Czerwone ramki pokazuja miejsce, na ktore trzeba patrzec.
         </p>
-    </header>
+        <aside class="summary-card">
+          <h2>Zakres dowodu</h2>
+          <ul class="metric-list">
+            <li><strong>Trasa:</strong> <code>/</code> na <code>127.0.0.1:5173</code></li>
+            <li><strong>Viewports:</strong> 320, 360, 375, 390, 430, 667 landscape, 768, 1024, 1280, 1440</li>
+            <li><strong>Global overflow:</strong> 0 px we wszystkich testach</li>
+            <li><strong>Status techniczny:</strong> build, lint i testy przeszly</li>
+          </ul>
+        </aside>
+      </div>
 
-    <main class="max-w-6xl mx-auto space-y-24">
+      <div class="toc" aria-label="Lista bugow">
+        <a href="#bug-tablet-proof">
+          <small>High</small>
+          <span>Tablet proof strip wyglada jak pusty panel</span>
+        </a>
+        <a href="#bug-mobile-menu">
+          <small>Medium</small>
+          <span>Menu mobilne konkuruje z hero CTA</span>
+        </a>
+        <a href="#bug-service-thumbs">
+          <small>Medium</small>
+          <span>Miniatury uslug sa zbyt waskie</span>
+        </a>
+        <a href="#bug-targets">
+          <small>Low</small>
+          <span>Desktop nav ma male hitboxy</span>
+        </a>
+      </div>
+    </section>
 
-        <!-- 1. Z-INDEX SHADOW CLIPPING -->
-        <section>
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                    <span class="text-slate-500 font-mono text-sm">01</span> Ucięte Cienie w Gridzie (Stacking Context)
-                </h2>
-                <p class="text-slate-400 mt-2">W 1-pikselowej siatce CSS DOM maluje elementy na podstawie kolejności występowania. Bez jawnego wyodrębnienia nowego kontekstu z-index na hover, cienie rzucane w prawo i w dół były połykane (obcinane) przez tła sąsiadujących elementów w DOM.</p>
+    <section id="bug-tablet-proof" class="shell bug">
+      <div class="bug-header">
+        <div>
+          <div class="bug-kicker">
+            <span class="pill high">High</span>
+            <span class="pill viewport">Viewport 768x1024</span>
+            <span class="pill viewport">Hero</span>
+          </div>
+          <h2>Tabletowy proof strip przelacza sie w zly layout.</h2>
+          <p class="bug-intro">
+            Na tablecie hero wyglada mocno, ale dolny pasek dowodow traci konstrukcje:
+            trzy punkty siedza po lewej, a wiekszosc panelu zostaje pusta. To wyglada
+            jak niedokonczony komponent, nie jak zamierzona kompozycja.
+          </p>
+        </div>
+        <aside class="verdict">
+          <b>Wniosek</b>
+          <p>To jest najwazniejszy bug wizualny. Uzytkownik widzi go w pierwszym ekranie na tablecie.</p>
+        </aside>
+      </div>
+      <div class="bug-body">
+        <div class="evidence">
+          <figure class="shot-frame">
+            <img src="visual-audit/tablet768-top.png" alt="Screenshot 768x1024 pokazujacy hero z pustym proof stripem po prawej stronie.">
+            <span class="callout" style="left:5.1%; right:5.2%; bottom:2.3%; height:13.6%;"></span>
+            <span class="note" style="left:34%; bottom:15.5%;">Pusty obszar panelu jest wiekszy niz sama tresc proof stripu.</span>
+          </figure>
+          <p class="shot-caption">
+            Dowod: <code>visual-audit/tablet768-top.png</code>. Panel zaczyna dzialac jak desktopowy wrapper,
+            ale tresc nadal uklada sie jak pojedyncza kolumna.
+          </p>
+        </div>
+        <div class="analysis">
+          <h3>Dlaczego to sie dzieje</h3>
+          <p>
+            Komponent ma dwa warianty proof stripu. Mobilny wariant jest widoczny tylko do <code>md</code>,
+            a desktopowy wlacza sie juz od <code>md</code>. Problem polega na tym, ze desktopowy wariant
+            ma <code>grid-cols-1</code> az do <code>lg</code>. W zakresie tabletowym dostajemy wiec szeroki
+            panel desktopowy z pionowa lista.
+          </p>
+
+          <div class="detail-grid">
+            <div class="detail">
+              <b>Kod zrodlowy</b>
+              <span><code>src/components/site/Hero.tsx</code>, okolice proof stripu: mobile <code>md:hidden</code>, desktop <code>hidden md:grid lg:grid-cols-[...]</code>.</span>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- BEFORE -->
-                <div class="border border-slate-800 bg-slate-900/50 rounded-xl p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <span class="text-danger font-mono text-sm tracking-widest font-bold">PRZED (Zepsute)</span>
-                    </div>
-                    <div class="z-bug-grid">
-                        <div class="z-bug-card z-bug-card-before">
-                            Najedź na mnie.<br><span class="text-xs">Zauważ ostro ścięty cień z prawej strony.</span>
-                        </div>
-                        <div class="z-bug-card">Karta blokująca z DOM</div>
-                        <div class="z-bug-card">Karta blokująca z DOM</div>
-                        <div class="z-bug-card">Karta blokująca z DOM</div>
-                    </div>
-                </div>
-
-                <!-- AFTER -->
-                <div class="border border-slate-800 bg-slate-900/50 rounded-xl p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <span class="text-success font-mono text-sm tracking-widest font-bold">PO (Naprawione)</span>
-                        <code class="text-xs text-slate-500 bg-slate-900 px-2 py-1 rounded">relative hover:z-10</code>
-                    </div>
-                    <div class="z-bug-grid">
-                        <div class="z-bug-card z-bug-card-after">
-                            Najedź na mnie.<br><span class="text-xs">Cień jest idealnie rzutowany na sąsiadów.</span>
-                        </div>
-                        <div class="z-bug-card">Karta blokująca z DOM</div>
-                        <div class="z-bug-card">Karta blokująca z DOM</div>
-                        <div class="z-bug-card">Karta blokująca z DOM</div>
-                    </div>
-                </div>
+            <div class="detail">
+              <b>Efekt uzytkownika</b>
+              <span>Pierwszy ekran na tablecie ma widoczna pusta ramke. To obniza wiarygodnosc strony, bo wyglada jak layout po niedopasowanej migracji breakpointow.</span>
             </div>
-        </section>
+          </div>
 
-        <hr class="border-slate-800">
-
-        <!-- 2. TRUSTBAR CLIPPING -->
-        <section>
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                    <span class="text-slate-500 font-mono text-sm">02</span> Maskowanie Pierścieni (Box Model Overflow)
-                </h2>
-                <p class="text-slate-400 mt-2">Na ekranie 1024px, 4-kolumnowy grid alokuje dokładnie 212px szerokości na kartę. Ponieważ pierścień miał rygorystyczne 240px szerokości, a karta posiadała <code>overflow-hidden</code>, lewa i prawa krawędź obracającego się HUD-a były fizycznie gilotynowane.</p>
+          <div class="compare">
+            <div class="mini bad">
+              <h4>Aktualnie</h4>
+              <div class="proof-demo bad">
+                <div class="proof-item"><span class="dot">1</span> Ubezpieczenie</div>
+                <div class="proof-item"><span class="dot">2</span> Wycena w 24 h</div>
+                <div class="proof-item"><span class="dot">3</span> Bez kosztow</div>
+              </div>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- BEFORE -->
-                <div class="border border-slate-800 bg-slate-900/50 rounded-xl p-6 text-center">
-                    <div class="flex justify-between items-center mb-6 text-left">
-                        <span class="text-danger font-mono text-sm tracking-widest font-bold">PRZED (Zepsute)</span>
-                        <code class="text-xs text-danger bg-danger/10 px-2 py-1 rounded">w-[240px] w kontenerze 212px</code>
-                    </div>
-                    <div class="clip-container">
-                        <div class="text-slate-500 text-xs absolute top-2 w-full text-center">Granica karty (212px)</div>
-                        <div class="clip-ring clip-ring-before hud-spin"></div>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-4">Krawędzie czerwonego pierścienia (240px) są ucięte przez kontener.</p>
-                </div>
-
-                <!-- AFTER -->
-                <div class="border border-slate-800 bg-slate-900/50 rounded-xl p-6 text-center">
-                    <div class="flex justify-between items-center mb-6 text-left">
-                        <span class="text-success font-mono text-sm tracking-widest font-bold">PO (Naprawione)</span>
-                        <code class="text-xs text-success bg-success/10 px-2 py-1 rounded">lg:w-[180px]</code>
-                    </div>
-                    <div class="clip-container">
-                        <div class="text-slate-500 text-xs absolute top-2 w-full text-center">Granica karty (212px)</div>
-                        <div class="clip-ring clip-ring-after hud-spin"></div>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-4">Zielony pierścień (180px) mieści się idealnie w masce, kształt okręgu uratowany.</p>
-                </div>
+            <div class="mini good">
+              <h4>Oczekiwane</h4>
+              <div class="proof-demo good">
+                <div class="proof-item"><span class="dot">1</span> Ochrona</div>
+                <div class="proof-item"><span class="dot">2</span> 24 h</div>
+                <div class="proof-item"><span class="dot">3</span> Bez doplat</div>
+              </div>
             </div>
-        </section>
+          </div>
 
-        <hr class="border-slate-800">
+          <div class="fix">
+            <p>
+              <strong>Poprawka:</strong> zostaw kompaktowy wariant proof stripu do <code>lg</code>,
+              albo dodaj prawdziwy layout tabletowy. Najmniej ryzykowny fix: zmien mobile proof
+              z <code>md:hidden</code> na <code>lg:hidden</code>, a desktop proof z <code>md:grid</code>
+              na <code>lg:grid</code>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <!-- 3. TYPOGRAPHY OVERFLOW -->
-        <section>
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                    <span class="text-slate-500 font-mono text-sm">03</span> Rozpad Typografii Fluid Clamp (280px Viewport)
-                </h2>
-                <p class="text-slate-400 mt-2">Dla ekranu 280px (np. Galaxy Fold), po odjęciu 48px paddingu, zostają 232px na tekst. Minimalny clamp <code>2.6rem</code> wymuszał szerokość wyrazu "Przeprowadzki" na ok. 297px. Wyraz brutalnie przebijał prawy padding i ulegał ucięciu poza ekranem.</p>
+    <section id="bug-mobile-menu" class="shell bug">
+      <div class="bug-header">
+        <div>
+          <div class="bug-kicker">
+            <span class="pill medium">Medium</span>
+            <span class="pill viewport">Viewport 320-430</span>
+            <span class="pill viewport">Header menu</span>
+          </div>
+          <h2>Otwarte menu mobilne pokazuje konkurencyjne CTA z hero.</h2>
+          <p class="bug-intro">
+            Menu dziala funkcjonalnie: otwiera sie, blokuje scroll i ma poprawne linki. Problem jest wizualny:
+            pod menu nadal widac hero oraz drugi zolty przycisk telefonu. W efekcie jeden ekran ma dwa
+            podobne CTA i nie ma jednoznacznego poczucia, ze menu jest aktywna warstwa nawigacji.
+          </p>
+        </div>
+        <aside class="verdict">
+          <b>Wniosek</b>
+          <p>Nie blokuje uzycia, ale psuje czytelnosc stanu. To szczegolnie widoczne na 430 px.</p>
+        </aside>
+      </div>
+      <div class="bug-body">
+        <div class="evidence">
+          <figure class="shot-frame mobile">
+            <img src="visual-audit/mobile430-menu.png" alt="Screenshot 430x932 z otwartym menu i widocznym hero CTA pod spodem.">
+            <span class="callout" style="left:5.3%; right:5.3%; top:8.7%; height:31.6%;"></span>
+            <span class="callout warn" style="left:5.3%; right:5.3%; top:58.7%; height:5.3%;"></span>
+            <span class="note" style="left:7%; top:41%;">Menu CTA</span>
+            <span class="note warn" style="right:6%; top:65%;">Drugie CTA widoczne pod menu</span>
+          </figure>
+          <p class="shot-caption">
+            Dowod: <code>visual-audit/mobile430-menu.png</code>. Body ma <code>overflow: hidden</code>,
+            wiec problem nie jest mechanika scrolla. To problem warstw i zasloniecia kontekstu.
+          </p>
+        </div>
+        <div class="analysis">
+          <h3>Dlaczego to sie dzieje</h3>
+          <p>
+            Overlay ma wysokosc pozostalego viewportu, ale sam panel menu ma wysokosc tylko swojej tresci.
+            Scrim jest polprzezroczysty, a menu nie zajmuje reszty ekranu. Pozycja hero pod spodem nadal
+            jest czytelna, wiec uzytkownik widzi dwa zolte przyciski telefonu w jednym stanie interfejsu.
+          </p>
+
+          <div class="detail-grid">
+            <div class="detail">
+              <b>Kod zrodlowy</b>
+              <span><code>src/components/site/Header.tsx</code>, okolice <code>#mobile-menu</code> i overlay po <code>top-full</code>.</span>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- BEFORE -->
-                <div class="border border-slate-800 bg-slate-900/50 rounded-xl p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <span class="text-danger font-mono text-sm tracking-widest font-bold">PRZED (Zepsute)</span>
-                        <code class="text-xs text-danger bg-danger/10 px-2 py-1 rounded">min: 2.6rem (41.6px)</code>
-                    </div>
-                    <div class="typo-container">
-                        <div class="typo-guide"></div>
-                        <div class="typo-text typo-before">Przeprowadzki</div>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-4 text-center">Pionowe przerywane linie to granice bezpiecznej strefy 232px. Czerwony tekst wylewa się poza układ i maskę.</p>
-                </div>
-
-                <!-- AFTER -->
-                <div class="border border-slate-800 bg-slate-900/50 rounded-xl p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <span class="text-success font-mono text-sm tracking-widest font-bold">PO (Naprawione)</span>
-                        <code class="text-xs text-success bg-success/10 px-2 py-1 rounded">min: 2.1rem (33.6px)</code>
-                    </div>
-                    <div class="typo-container">
-                        <div class="typo-guide"></div>
-                        <div class="typo-text typo-after">Przeprowadzki</div>
-                    </div>
-                    <p class="text-xs text-slate-500 mt-4 text-center">Niższa podłoga clampa (33.6px) kompresuje słowo do ok. 230px. Tekst mieści się matematycznie.</p>
-                </div>
+            <div class="detail">
+              <b>Pomiar</b>
+              <span>Na mobile menu ma okolo <code>310px</code> wysokosci, a viewport ma <code>812-932px</code>. Reszta ekranu pokazuje aktywny hero.</span>
             </div>
-        </section>
+          </div>
 
-        <hr class="border-slate-800">
-
-        <!-- 4. SCROLL JUMP -->
-        <section>
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-white flex items-center gap-3">
-                    <span class="text-slate-500 font-mono text-sm">04</span> Usunięcie Natywnego Smooth-Scroll (Scroll Bypass Bug)
-                </h2>
-                <p class="text-slate-400 mt-2">Aplikacja posiadała globalne <code>scroll-behavior: smooth</code>, ale mechanizm JS obsługujący kliknięcia sztucznie wyłączał tę właściwość ustawiając <code>behavior: "auto"</code> (skok 0ms) na czas scrollTo. Zniszczyło to nawigację UX w obrębie one-pagera.</p>
+          <div class="compare">
+            <div class="mini bad">
+              <h4>Aktualny model</h4>
+              <div class="menu-demo">
+                <div class="menu-row"></div>
+                <div class="menu-row"></div>
+                <div class="menu-row"></div>
+                <div class="cta-row"></div>
+                <div class="hero-ghost"></div>
+              </div>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- BEFORE -->
-                <div class="border border-slate-800 bg-slate-900/50 rounded-xl p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-danger font-mono text-sm tracking-widest font-bold">PRZED (Instant Jump)</span>
-                        <button onclick="simulateBrokenScroll()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded text-sm transition">Testuj Skok</button>
-                    </div>
-                    <div id="scroll-box-broken" class="scroll-demo-box">
-                        <div class="scroll-content">
-                            <div class="p-6 text-slate-500 text-sm">Kliknij "Testuj Skok". Zauważ agresywne cięcie (teleport) do żółtej strefy poniżej.</div>
-                            <div class="scroll-target shadow-[0_0_30px_rgba(239,68,68,0.5)]">CEL: Sekcja Kontakt</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- AFTER -->
-                <div class="border border-slate-800 bg-slate-900/50 rounded-xl p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-success font-mono text-sm tracking-widest font-bold">PO (Fluid Interpolation)</span>
-                        <button onclick="simulateFixedScroll()" class="bg-yellow hover:bg-yellow/80 text-navy font-bold px-4 py-2 rounded text-sm transition">Testuj Płynność</button>
-                    </div>
-                    <div id="scroll-box-fixed" class="scroll-demo-box">
-                        <div class="scroll-content">
-                            <div class="p-6 text-slate-500 text-sm">Kliknij "Testuj Płynność". Zauważ wykorzystanie przeglądarkowego silnika interpolacji krzywych Béziera.</div>
-                            <div class="scroll-target shadow-[0_0_30px_rgba(16,185,129,0.5)] bg-success text-white">CEL: Sekcja Kontakt</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="mini good">
+              <h4>Lepszy model</h4>
+              <div class="menu-demo" style="min-height:320px;background:#fafafa;">
+                <div class="menu-row"></div>
+                <div class="menu-row"></div>
+                <div class="menu-row"></div>
+                <div class="cta-row"></div>
+                <div style="flex:1;min-height:86px;border-radius:6px;background:#fafafa;"></div>
+              </div>
             </div>
-            
-            <script>
-                // Odtworzenie zachowania PRZED naprawą z codebase'u (wymuszony behavior: auto)
-                function simulateBrokenScroll() {
-                    const box = document.getElementById('scroll-box-broken');
-                    box.style.scrollBehavior = 'auto';
-                    if(box.scrollTop > 10) { box.scrollTo({ top: 0 }); return; }
-                    
-                    setTimeout(() => {
-                        box.style.scrollBehavior = 'auto';
-                        box.scrollTo({ top: 500, behavior: 'auto' });
-                    }, 50);
-                }
+          </div>
 
-                // Odtworzenie zachowania PO naprawie (respect behavior: smooth)
-                function simulateFixedScroll() {
-                    const box = document.getElementById('scroll-box-fixed');
-                    box.style.scrollBehavior = 'auto';
-                    if(box.scrollTop > 10) { box.scrollTo({ top: 0 }); return; }
-                    
-                    setTimeout(() => {
-                        box.style.scrollBehavior = 'smooth';
-                        box.scrollTo({ top: 500, behavior: 'smooth' });
-                    }, 50);
-                }
-            </script>
-        </section>
+          <div class="fix">
+            <p>
+              <strong>Poprawka:</strong> zrob panel menu pelna powierzchnia pod headerem
+              (<code>min-h-[calc(100dvh-72px)]</code>) albo zwieksz krycie warstwy pod menu.
+              Najczystszy UX: menu jako jasna pelnoekranowa powierzchnia z linkami i CTA u gory,
+              bez widocznego hero CTA pod spodem.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    </main>
-    
-    <footer class="max-w-6xl mx-auto mt-24 border-t border-slate-800 pt-8 pb-12 text-slate-600 text-sm font-mono text-center">
-        DOKUMENT WYGENEROWANY PO WERYFIKACJI RENDEROWANIA. <br>BRAK FAŁSZYWYCH ALARMÓW. STATUS: MATEMATYCZNIE UDOWODNIONE.
-    </footer>
+    <section id="bug-service-thumbs" class="shell bug">
+      <div class="bug-header">
+        <div>
+          <div class="bug-kicker">
+            <span class="pill medium">Medium</span>
+            <span class="pill viewport">Viewport 320</span>
+            <span class="pill viewport">Services</span>
+          </div>
+          <h2>Miniatury uslug na mobile sa za waskie, zeby przenosic informacje.</h2>
+          <p class="bug-intro">
+            Sekcja uslug jest czytelna tekstowo, ale obrazy na 320 px maja tylko 82 px szerokosci.
+            To zamienia zdjecia w pionowe wycinki. Kategoria nadal da sie przeczytac z tekstu, ale
+            obraz przestaje pomagac uzytkownikowi szybko rozpoznac typ uslugi.
+          </p>
+        </div>
+        <aside class="verdict">
+          <b>Wniosek</b>
+          <p>To nie jest blad techniczny overflow. To blad kompozycyjny: asset jest obecny, ale za slaby wizualnie.</p>
+        </aside>
+      </div>
+      <div class="bug-body">
+        <div class="evidence">
+          <figure class="shot-frame mobile">
+            <img src="visual-audit/sections/mobile320-uslugi.png" alt="Screenshot 320x812 sekcji uslug z waska kolumna miniatur.">
+            <span class="callout" style="left:7.4%; top:47.1%; width:25.8%; height:48.6%;"></span>
+            <span class="note" style="left:36%; top:47%;">Kolumna obrazu ma tylko 82 px</span>
+          </figure>
+          <p class="shot-caption">
+            Dowod: <code>visual-audit/sections/mobile320-uslugi.png</code>. Obrazy renderuja sie bez overflow,
+            ale ich przydatnosc informacyjna spada przez bardzo waski format.
+          </p>
+        </div>
+        <div class="analysis">
+          <h3>Dlaczego to sie dzieje</h3>
+          <p>
+            Mobilny wariant kazdej karty uzywa gridu <code>max-md:grid-cols-[82px_minmax(0,1fr)]</code>.
+            Przy 320 px szerokosci i 24 px paddingu kontenera obraz zostaje sprowadzony do slupka,
+            a <code>object-cover</code> dodatkowo kadruje zdjecie po bokach.
+          </p>
 
+          <div class="detail-grid">
+            <div class="detail">
+              <b>Kod zrodlowy</b>
+              <span><code>src/components/site/Services.tsx</code>, karta: <code>max-md:grid-cols-[82px_minmax(0,1fr)]</code>, obraz: <code>object-cover</code>.</span>
+            </div>
+            <div class="detail">
+              <b>Efekt uzytkownika</b>
+              <span>Lista jest skanowalna, ale zdjecia nie komunikuja dobrze roznicy miedzy mieszkaniem, domem, biurem, meblami czy AGD.</span>
+            </div>
+          </div>
+
+          <div class="mini">
+            <h4>Model aktualnej karty 320 px</h4>
+            <div class="thumb-demo">
+              <div class="slice"></div>
+              <div class="copy">
+                <h4>Przeprowadzki mieszkan</h4>
+                <p>Kawalerka, M3, M5. Pakowanie, demontaz mebli, transport, ustawienie na miejscu.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="fix">
+            <p>
+              <strong>Poprawka:</strong> powieksz mobilna kolumne obrazu do <code>104px-120px</code>
+              albo na najmniejszym breakpointcie uloz karte pionowo: obraz nad trescia. Jesli zostaje
+              wariant boczny, warto ustawic osobne <code>object-position</code> per asset, bo centralne
+              kadrowanie nie zawsze lapie istotny obiekt.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="bug-targets" class="shell bug">
+      <div class="bug-header">
+        <div>
+          <div class="bug-kicker">
+            <span class="pill low">Low</span>
+            <span class="pill viewport">Desktop/tablet</span>
+            <span class="pill viewport">Header nav</span>
+          </div>
+          <h2>Desktopowe linki nawigacji maja male hitboxy.</h2>
+          <p class="bug-intro">
+            To nie jest widoczny blad layoutu, ale jest wart poprawienia. Linki w headerze desktopowym
+            maja okolo 22 px wysokosci. Dla myszy to zwykle wystarczy, ale na tabletach i ekranach dotykowych
+            jest to mniej komfortowe niz 40-44 px.
+          </p>
+        </div>
+        <aside class="verdict">
+          <b>Wniosek</b>
+          <p>Niski priorytet wizualny, srednia wartosc UX. Poprawka jest tania i bezpieczna.</p>
+        </aside>
+      </div>
+      <div class="bug-body">
+        <div class="evidence">
+          <figure class="shot-frame">
+            <img src="visual-audit/desktop1280-top.png" alt="Screenshot desktopowego hero z headerem i linkami nawigacji.">
+            <span class="callout warn" style="left:32.6%; top:2.4%; width:33.3%; height:6.0%;"></span>
+            <span class="note warn" style="left:37%; top:10%;">Wizualnie OK, ale hitboxy linkow sa niskie.</span>
+          </figure>
+          <p class="shot-caption">
+            Dowod: <code>visual-audit/desktop1280-top.png</code> plus pomiar DOM: linki nav maja okolo
+            <code>22px</code> wysokosci, logo link okolo <code>33px</code>.
+          </p>
+        </div>
+        <div class="analysis">
+          <h3>Dlaczego to sie dzieje</h3>
+          <p>
+            Elementy nav sa stylowane glownie typografia i gapem kontenera, bez pionowego paddingu
+            na samych linkach. Caly header ma wygodna wysokosc, ale pojedyncze klikalne prostokaty
+            sa mniejsze niz wyglada ich obszar wizualny.
+          </p>
+
+          <div class="detail-grid">
+            <div class="detail">
+              <b>Pomiar</b>
+              <span><code>Uslugi</code>, <code>Wozek</code>, <code>Proces</code>, <code>Zasieg</code>, <code>Kontakt</code>: okolo <code>22px</code> wysokosci na desktopie.</span>
+            </div>
+            <div class="detail">
+              <b>Kod zrodlowy</b>
+              <span><code>src/components/site/Header.tsx</code>, linki w <code>nav aria-label="Glowna nawigacja"</code>.</span>
+            </div>
+          </div>
+
+          <div class="target-demo" aria-label="Model malych hitboxow">
+            <a href="#">Uslugi</a>
+            <a href="#">Wozek</a>
+            <a href="#">Proces</a>
+            <a href="#">Zasieg</a>
+            <a href="#">Kontakt</a>
+          </div>
+
+          <div class="fix">
+            <p>
+              <strong>Poprawka:</strong> dodaj linkom pionowy padding albo <code>min-h-10</code>
+              i <code>inline-flex items-center</code>. Wizualnie header moze zostac taki sam,
+              ale obszar klikniecia powinien byc wiekszy.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell summary-card" style="margin-bottom:40px;">
+      <h2>Co nie jest bugiem wedlug audytu</h2>
+      <ul class="metric-list">
+        <li><strong>Globalny poziomy overflow:</strong> nie wystapil, <code>overflowX = 0</code> w kazdym sprawdzonym viewportcie.</li>
+        <li><strong>Mobilny hero 320 px:</strong> tekst i glowne CTA mieszcza sie poprawnie.</li>
+        <li><strong>Sekcja wozka:</strong> produkt jest dobrze widoczny na mobile, rama nie jest ciasna.</li>
+        <li><strong>Proces i zasieg:</strong> sekcje sa czytelne i nie maja krytycznych problemow kompozycyjnych.</li>
+        <li><strong>Contact:</strong> ostrzezenia DOM o overflow wynikaja glownie z animowanych ripple, nie z realnego poziomego rozjechania strony.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="shell footer">
+    Plik opiera sie na screenshotach i pomiarach zapisanych w katalogu <code>visual-audit/</code>.
+    Jezeli screenshoty zostana usuniete albo przeniesione, raport nadal otworzy sie jako HTML,
+    ale sekcje dowodowe straca obrazy.
+  </footer>
 </body>
 </html>

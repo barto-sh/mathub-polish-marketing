@@ -61,6 +61,24 @@ const Coverage = () => {
           </div>
         </div>
 
+        <div className="mt-5 grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-line bg-line shadow-[0_14px_34px_hsl(var(--ink)/0.06)] md:hidden">
+          {FEATURES.map((feature) => (
+            <div key={feature.title} className="grid grid-cols-[38px_minmax(0,1fr)] gap-3 bg-white p-4">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-cream" aria-hidden="true">
+                {feature.icon}
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-[15px] font-semibold leading-tight tracking-tight text-ink">
+                  {feature.title}
+                </h3>
+                <p className="mt-1 text-[13px] font-medium leading-snug text-ink/65">
+                  {feature.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
         <div className="mt-16 hidden grid-cols-1 items-center gap-12 md:grid lg:grid-cols-2 lg:gap-20">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
             {FEATURES.map((feature, idx) => (

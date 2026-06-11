@@ -65,7 +65,7 @@ const Hero = () => {
 
         <p className="hero-kino__rise lede mt-6 max-w-xl text-paper/85" style={{ animationDelay: "0.34s" }}>
           <span className="md:hidden">
-            Mieszkania, domy, biura i trudny transport z wózkiem samozaładowczym 500 kg. Wycena szybko, bez ukrytych kosztów.
+            Mieszkania, domy, biura i trudny transport z wózkiem 500 kg. Bez ramp, wind hydraulicznych i ukrytych kosztów.
           </span>
           <span className="hidden md:inline">
             Mieszkania, domy, biura. Pakujemy, ładujemy, wieziemy - z wózkiem samozaładowczym o udźwigu 500 kg,
@@ -96,20 +96,20 @@ const Hero = () => {
       <p className="sr-only">Ubezpieczenie towaru w cenie · Wycena w 24 h · Bez ukrytych kosztów</p>
 
       <div className="hero-kino__proof relative z-10 w-full px-6 pb-6 sm:px-10" aria-hidden="true">
-        <div className="hero-kino__route mx-auto grid w-full max-w-[1200px] grid-cols-3 items-stretch gap-px lg:hidden">
+        <div className="hero-kino__proof-route hero-kino__route mx-auto grid w-full max-w-[1200px] grid-cols-3 items-stretch gap-px lg:hidden">
           <div className="hero-kino__stop">
             <span className="hero-kino__pin">1</span>
-            <strong>Ochrona</strong>
+            <strong>Ubezpieczenie towaru w cenie</strong>
           </div>
           <span className="hero-kino__line hidden" />
           <div className="hero-kino__stop">
             <span className="hero-kino__pin">2</span>
-            <strong>24 h</strong>
+            <strong>Wycena w&nbsp;24&nbsp;h</strong>
           </div>
           <span className="hero-kino__line hidden" />
           <div className="hero-kino__stop">
             <span className="hero-kino__pin">3</span>
-            <strong>Bez dopłat</strong>
+            <strong>Bez ukrytych kosztów</strong>
           </div>
         </div>
 

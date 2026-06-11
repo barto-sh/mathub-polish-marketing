@@ -16,9 +16,9 @@ const SPECS = [
 ];
 
 const MOBILE_SPECS = [
-  { value: "500", unit: "kg", label: "Udźwig" },
+  { value: "500", unit: "kg+", label: "Udźwig" },
+  { value: "800–1300", unit: "mm", label: "Podnoszenie" },
   { value: "0", unit: "", label: "Ramp i wind" },
-  { value: "24", unit: "h", label: "Wycena" },
 ];
 
 const UspCart = () => {
@@ -94,8 +94,8 @@ const UspCart = () => {
           <div className="mt-5 grid grid-cols-3 gap-px border border-yellow/25 bg-yellow/25 shadow-[0_16px_36px_hsl(var(--ink)/0.16)]">
             {MOBILE_SPECS.map((s) => (
               <div key={s.label} className="min-w-0 bg-navy-deep/95 px-1 py-3 text-center min-[390px]:px-1.5">
-                <div className="flex min-w-0 items-baseline justify-center gap-0.5">
-                  <span className="whitespace-nowrap font-mono text-[clamp(1.35rem,7vw,1.65rem)] font-black leading-none tracking-tight text-yellow">
+                <div className="flex min-w-0 items-baseline justify-center gap-0">
+                  <span className="whitespace-nowrap font-mono text-[clamp(0.84rem,4.65vw,1.65rem)] font-black leading-none tracking-tight text-yellow">
                     {s.value}
                   </span>
                   {s.unit && <span className="text-[8px] font-semibold leading-none text-paper/70 min-[390px]:text-[9px]">{s.unit}</span>}

@@ -39,6 +39,25 @@ const Process = () => {
           <h2 className="h2 mt-3 text-ink">Trzy kroki, zero tajemnic.</h2>
         </div>
 
+        <div className="mt-7 grid grid-cols-3 gap-px overflow-hidden rounded-md border border-line bg-line md:hidden">
+          {STEPS.map((step) => (
+            <div key={step.n} className="relative h-24 bg-cream">
+              <img
+                src={step.img}
+                alt=""
+                loading="lazy"
+                className="h-full w-full object-cover"
+                style={{ filter: "saturate(0.82) contrast(1.04)" }}
+                aria-hidden="true"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/45 to-transparent" aria-hidden="true" />
+              <span className="absolute bottom-2 left-2 font-mono text-[11px] font-bold text-paper">
+                {step.n}
+              </span>
+            </div>
+          ))}
+        </div>
+
         <ol className="mt-14 grid grid-cols-1 gap-10 max-md:mt-7 max-md:border-t max-md:border-line md:grid-cols-3 md:gap-8">
           {STEPS.map((step) => (
             <li
