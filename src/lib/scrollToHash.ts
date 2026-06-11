@@ -16,7 +16,6 @@ export const scrollToHash = (
     if (!target) return;
 
     const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
-    const root = document.documentElement;
 
     window.scrollTo({ top, behavior: "smooth" });
     window.history.pushState(null, "", hash);
