@@ -17,11 +17,8 @@ export const scrollToHash = (
 
     const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
     const root = document.documentElement;
-    const previousScrollBehavior = root.style.scrollBehavior;
 
-    root.style.scrollBehavior = "auto";
-    window.scrollTo({ top, behavior: "auto" });
-    root.style.scrollBehavior = previousScrollBehavior;
+    window.scrollTo({ top, behavior: "smooth" });
     window.history.pushState(null, "", hash);
   };
 

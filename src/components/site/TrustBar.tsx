@@ -96,15 +96,15 @@ const TrustBar = () => {
               />
 
               {/* Value hero — fixed stage prevents ring clipping and label overlap */}
-              <div className="relative flex h-[160px] w-full items-center justify-center sm:h-[200px] md:h-[240px]">
+              <div className="relative flex h-[160px] w-full items-center justify-center sm:h-[200px] md:h-[220px] lg:h-[180px] xl:h-[220px]">
                 <div
-                  className="absolute left-1/2 top-1/2 h-[160px] w-[160px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-yellow/25 sm:h-[200px] sm:w-[200px] md:h-[240px] md:w-[240px]"
+                  className="absolute left-1/2 top-1/2 aspect-square w-[160px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-yellow/25 sm:w-[200px] md:w-[220px] lg:w-[180px] xl:w-[220px]"
                   style={{ animation: `hudRotate ${12 + i * 2}s linear infinite` }}
                   aria-hidden="true"
                 />
 
                 <div
-                  className="absolute left-1/2 top-1/2 h-[120px] w-[120px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dotted border-yellow/15 sm:h-[160px] sm:w-[160px] md:h-[190px] md:w-[190px]"
+                  className="absolute left-1/2 top-1/2 aspect-square w-[120px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dotted border-yellow/15 sm:w-[150px] md:w-[170px] lg:w-[130px] xl:w-[170px]"
                   style={{ animation: `hudRotateBack ${8 + i}s linear infinite` }}
                   aria-hidden="true"
                 />

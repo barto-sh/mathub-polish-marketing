@@ -185,7 +185,11 @@ const Header = () => {
             href="#top"
             className="group flex items-center gap-2.5 transition-transform duration-300 hover:-translate-y-0.5"
             aria-label="Strona główna MatHub"
-            onClick={() => setOpen(false)}
+            onClick={(e) => {
+              e.preventDefault();
+              setOpen(false);
+              scrollToHash("#top");
+            }}
           >
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-sm bg-yellow" aria-hidden="true">
               <Truck className="h-5 w-5 text-navy" strokeWidth={2.25} />

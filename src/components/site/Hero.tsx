@@ -47,7 +47,7 @@ const Hero = () => {
           </span>
         </div>
 
-        <h1 className="display mt-6 text-paper" style={{ fontSize: "clamp(2.6rem, 8vw, 6rem)", maxWidth: "16ch" }}>
+        <h1 className="display mt-6 text-paper" style={{ fontSize: "clamp(2.1rem, 11vw, 6rem)", maxWidth: "16ch" }}>
           {HEAD_WORDS.map((word, i) => (
             <Fragment key={word}>
               <span className="hero-kino__word">

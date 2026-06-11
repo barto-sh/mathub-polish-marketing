@@ -67,7 +67,7 @@ const Services = () => {
           {SERVICES.map((s, i) => (
             <article
               key={s.title}
-              className="group bg-paper transition-mh hover:bg-white hover:shadow-md cursor-default flex flex-col"
+              className="group bg-paper transition-mh hover:bg-white hover:shadow-md cursor-default flex flex-col relative hover:z-10"
             >
               {/* Image */}
               <div className="relative overflow-hidden bg-navy aspect-[4/3]">
