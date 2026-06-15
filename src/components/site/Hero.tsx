@@ -1,136 +1,138 @@
-import { Fragment } from "react";
 import type { MouseEvent as ReactMouseEvent } from "react";
-import { Phone, ArrowRight } from "lucide-react";
-import heroImg from "@/assets/hero-hands.jpg";
+import { ArrowRight, Phone, ShieldCheck, Truck, Users } from "lucide-react";
+import heroDesktopImg from "@/assets/hero-redesign-desktop-gpt-v4.jpg";
+import heroMobileImg from "@/assets/hero-redesign-mobile-gpt-v4.jpg";
 import { scrollToHash } from "@/lib/scrollToHash";
 
 const PHONE_DISPLAY = "+48 730 857 710";
 const PHONE_HREF = "tel:+48730857710";
-const HEAD_WORDS = ["Przeprowadzki", "bez", "problemów."];
+
+const BENEFITS = [
+  {
+    icon: Truck,
+    label: "Transport wliczony w ofertę",
+  },
+  {
+    icon: Users,
+    label: "Wynajem z obsługą lub bez",
+  },
+  {
+    icon: ShieldCheck,
+    label: "Nowy, atestowany sprzęt",
+  },
+];
 
 const Hero = () => {
-  const scrollToContact = (event: ReactMouseEvent<HTMLAnchorElement>) => {
+  const scrollToServices = (event: ReactMouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-    scrollToHash("#kontakt");
+    scrollToHash("#uslugi");
   };
 
   return (
     <section
       id="top"
       aria-label="Wprowadzenie"
-      className="hero-kino relative isolate flex min-h-[88svh] flex-col overflow-hidden bg-navy-deep text-paper"
+      className="relative isolate overflow-hidden bg-navy-deep text-paper"
     >
-      {/* Full-bleed photo + cinematic treatment (unchanged image) */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
+      <picture className="absolute inset-0 z-0 block overflow-hidden">
+        <source media="(min-width: 768px)" srcSet={heroDesktopImg} />
         <img
-          src={heroImg}
-          alt="Pakowanie kartonu w trakcie przeprowadzki — dłonie w rękawicach roboczych zaklejają pudło taśmą."
-          width={1080}
-          height={1920}
-          className="h-full w-full object-cover"
-          style={{ transform: "scale(1.08)", objectPosition: "56% 42%" }}
+          src={heroMobileImg}
+          alt="Pakowanie kartonu, dmuchana zjeżdżalnia eventowa i maszyna do piany jako oferta MatHub."
+          width={864}
+          height={1821}
+          className="h-full w-full object-cover object-center"
         />
-      </div>
-      <div className="hero-kino__scrim absolute inset-0 z-0" aria-hidden="true" />
-      <div className="hero-kino__grain absolute inset-0 z-0" aria-hidden="true" />
+      </picture>
+      <div
+        className="absolute inset-0 z-0 md:hidden"
+        style={{
+          background:
+            "linear-gradient(90deg, hsl(var(--navy-deep) / 0.78) 0%, hsl(var(--navy-deep) / 0.58) 25%, hsl(var(--navy-deep) / 0.28) 51%, hsl(var(--navy-deep) / 0.10) 74%, hsl(var(--navy-deep) / 0.38) 100%), linear-gradient(0deg, hsl(var(--navy-deep) / 0.86) 0%, transparent 24%, transparent 74%, hsl(var(--ink) / 0.45) 100%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0 z-0 hidden md:block"
+        style={{
+          background:
+            "linear-gradient(90deg, hsl(var(--navy-deep) / 0.56) 0%, hsl(var(--navy-deep) / 0.42) 25%, hsl(var(--navy-deep) / 0.18) 51%, hsl(var(--navy-deep) / 0.06) 74%, hsl(var(--navy-deep) / 0.30) 100%), linear-gradient(0deg, hsl(var(--navy-deep) / 0.72) 0%, transparent 24%, transparent 74%, hsl(var(--ink) / 0.32) 100%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute inset-0 z-0 opacity-[0.08] mix-blend-soft-light"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+          backgroundSize: "180px",
+        }}
+        aria-hidden="true"
+      />
 
-      {/* Content — anchored bottom-left */}
-      <div className="container-mh relative z-10 flex flex-1 flex-col justify-end pt-24 pb-14 md:pb-16">
-        <div className="hero-kino__rise inline-flex w-fit items-center gap-2 rounded-full border border-paper/20 bg-paper/5 px-3 py-1.5 backdrop-blur-sm">
-          <span
-            className="inline-block h-2 w-2 rounded-full"
-            style={{ backgroundColor: "hsl(142 71% 38%)" }}
-            aria-hidden="true"
-          />
-          <span className="text-[12px] font-medium text-paper sm:text-[12.5px]">
-            <span className="sm:hidden">Dostępny dziś · Szczecin i okolice</span>
-            <span className="hidden sm:inline">Dostępny dziś · Trzeszczyn / Szczecin i okolice</span>
-          </span>
-        </div>
-
-        <h1 className="display mt-6 max-w-full text-paper" style={{ fontSize: "clamp(2rem, 10vw, 6rem)", maxWidth: "min(16ch, 100%)" }}>
-          {HEAD_WORDS.map((word, i) => (
-            <Fragment key={word}>
-              <span className="hero-kino__word">
-                <span style={{ animationDelay: `${0.05 + i * 0.06}s` }}>{word}</span>
-              </span>{" "}
-            </Fragment>
-          ))}
-          <span className="hero-kino__word">
-            <span className="text-yellow" style={{ animationDelay: `${0.05 + HEAD_WORDS.length * 0.06}s` }}>
-              My to nosimy.
+      <div className="container-mh relative z-10 min-h-[620px] pt-[92px] pb-7 sm:min-h-[560px] md:min-h-[390px] md:pt-[82px] lg:min-h-[418px]">
+        <div className="max-w-[28rem] md:ml-[15vw] md:max-w-[30rem] lg:ml-[190px] xl:ml-[210px]">
+          <h1
+            aria-label="Przeprowadzki bez problemów. Atrakcje, które zapamiętasz."
+            className="font-black leading-[0.98] tracking-normal text-paper"
+            style={{ fontSize: "clamp(2.05rem, 3.7vw, 3.15rem)" }}
+          >
+            Przeprowadzki
+            <br />
+            bez problemów.
+            <br />
+            <span className="text-yellow">
+              Atrakcje, które
+              <br />
+              zapamiętasz.
             </span>
-          </span>
-        </h1>
+          </h1>
 
-        <p className="hero-kino__rise lede mt-6 max-w-xl text-paper/85" style={{ animationDelay: "0.34s" }}>
-          <span className="md:hidden">
-            Mieszkania, domy, biura i trudny transport z wózkiem 500 kg. Bez ramp, wind hydraulicznych i ukrytych kosztów.
-          </span>
-          <span className="hidden md:inline">
-            Mieszkania, domy, biura. Pakujemy, ładujemy, wieziemy - z wózkiem samozaładowczym o udźwigu 500 kg,
-            dzięki czemu żadna winda hydrauliczna nie jest potrzebna. Zachodniopomorskie i cała Polska.
-          </span>
+        <p className="mt-5 max-w-[35ch] text-[14.5px] font-medium leading-relaxed text-paper/86 sm:text-[15.5px] md:mt-3 md:max-w-[46ch] md:text-[13.5px] md:leading-snug lg:text-[14.5px]">
+          Mieszkania, domy, biura i dmuchańce - obsługa. Zjeżdżalnie, dmuchany zamek,
+          wózek samozaładowczy, transport. Dowozimy, montujemy, pakujemy bezpiecznie i na czas.
         </p>
 
-        <div className="hero-kino__rise mt-8 flex flex-col gap-3 sm:flex-row" style={{ animationDelay: "0.42s" }}>
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row md:mt-4">
           <a
             href={PHONE_HREF}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-sm bg-yellow px-5 text-[15px] font-semibold text-navy shadow-sm transition-mh hover:-translate-y-0.5 hover:bg-[hsl(45_100%_56%)]"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-yellow px-5 text-[13.5px] font-extrabold text-navy shadow-[0_12px_28px_hsl(var(--ink)/0.2)] transition-mh hover:-translate-y-0.5 hover:bg-[hsl(45_100%_56%)] md:h-10 md:px-4 md:text-[12.5px]"
           >
             <Phone className="h-4 w-4" aria-hidden="true" />
-            Zadzwoń {PHONE_DISPLAY}
+            Zadzwoń: {PHONE_DISPLAY}
           </a>
           <a
-            href="#kontakt"
-            onClick={scrollToContact}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-sm border border-paper/30 px-5 text-[15px] font-semibold text-paper transition-mh hover:border-yellow hover:text-yellow"
+            href="#uslugi"
+            onClick={scrollToServices}
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-md border border-paper/35 bg-navy-deep/35 px-5 text-[13.5px] font-bold text-paper shadow-[0_10px_24px_hsl(var(--ink)/0.12)] backdrop-blur-sm transition-mh hover:border-yellow hover:text-yellow md:h-10 md:px-4 md:text-[12.5px]"
           >
-            Sprawdź termin
+            Zobacz atrakcje
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </a>
         </div>
       </div>
-
-      {/* Proof — accessible copy for AT; the route UI below is decorative */}
-      <p className="sr-only">Ubezpieczenie towaru w cenie · Wycena w 24 h · Bez ukrytych kosztów</p>
-
-      <div className="hero-kino__proof relative z-10 w-full px-6 pb-6 sm:px-10" aria-hidden="true">
-        <div className="hero-kino__proof-route hero-kino__route mx-auto grid w-full max-w-[1200px] grid-cols-3 items-stretch gap-px lg:hidden">
-          <div className="hero-kino__stop">
-            <span className="hero-kino__pin">1</span>
-            <strong>Ubezpieczenie towaru w cenie</strong>
-          </div>
-          <span className="hero-kino__line hidden" />
-          <div className="hero-kino__stop">
-            <span className="hero-kino__pin">2</span>
-            <strong>Wycena w&nbsp;24&nbsp;h</strong>
-          </div>
-          <span className="hero-kino__line hidden" />
-          <div className="hero-kino__stop">
-            <span className="hero-kino__pin">3</span>
-            <strong>Bez ukrytych kosztów</strong>
-          </div>
-        </div>
-
-        <div className="hero-kino__route mx-auto hidden w-full max-w-[1200px] grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-4 lg:grid">
-          <div className="hero-kino__stop">
-            <span className="hero-kino__pin">1</span>
-            <strong>Ubezpieczenie towaru w cenie</strong>
-          </div>
-          <span className="hero-kino__line" />
-          <div className="hero-kino__stop">
-            <span className="hero-kino__pin">2</span>
-            <strong>Wycena w 24 h</strong>
-          </div>
-          <span className="hero-kino__line" />
-          <div className="hero-kino__stop">
-            <span className="hero-kino__pin">3</span>
-            <strong>Bez ukrytych kosztów</strong>
-          </div>
-        </div>
       </div>
 
+      <p className="sr-only">
+        Transport wliczony w ofertę · Wynajem z obsługą lub bez · Nowy, atestowany sprzęt ·
+        Ubezpieczenie towaru w cenie · Wycena w 24 h · Bez ukrytych kosztów
+      </p>
+
+      <div className="relative z-10 border-y border-paper/10 bg-navy-deep/72 px-4 py-3 backdrop-blur-md sm:px-6 md:border-b-0 md:bg-navy-deep/58 md:py-2.5" aria-hidden="true">
+        <div className="mx-auto grid w-full max-w-[1040px] grid-cols-1 gap-2 sm:grid-cols-3 md:gap-2">
+          {BENEFITS.map(({ icon: Icon, label }) => (
+            <div
+              key={label}
+              className="flex min-h-10 items-center justify-center gap-3 rounded-md border border-paper/10 bg-navy-deep/70 px-4 py-2 text-center shadow-[0_14px_30px_hsl(var(--ink)/0.18)] md:min-h-9 md:px-3 md:py-1.5"
+            >
+              <Icon className="h-4 w-4 shrink-0 text-yellow md:h-3.5 md:w-3.5" strokeWidth={2.5} />
+              <span className="text-[12px] font-extrabold leading-tight text-paper md:text-[11.5px]">
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };
