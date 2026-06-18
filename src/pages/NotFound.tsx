@@ -1,7 +1,17 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Truck } from "lucide-react";
 
 const NotFound = () => {
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = "404 — MatHub";
+
+    return () => {
+      document.title = previousTitle;
+    };
+  }, []);
+
   return (
     <main className="min-h-screen bg-paper text-ink flex items-center justify-center px-6 py-16">
       <div className="max-w-md text-center">

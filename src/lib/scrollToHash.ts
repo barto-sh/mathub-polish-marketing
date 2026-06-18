@@ -5,6 +5,9 @@ type ScrollToHashOptions = {
   headerOffset?: number;
 };
 
+const prefersReducedMotion = () =>
+  window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+
 export const scrollToHash = (
   hash: string,
   { delay, headerOffset = DEFAULT_HEADER_OFFSET }: ScrollToHashOptions = {}
@@ -17,7 +20,7 @@ export const scrollToHash = (
 
     const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
 
-    window.scrollTo({ top, behavior: "smooth" });
+    window.scrollTo({ top, behavior: prefersReducedMotion() ? "auto" : "smooth" });
     window.history.pushState(null, "", hash);
   };
 

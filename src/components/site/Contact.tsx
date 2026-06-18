@@ -9,11 +9,6 @@ const Contact = () => {
   const ref = useRef<HTMLElement>(null);
   const [inView, setInView] = useState(false);
 
-  // Refs for 3D card tilt effects
-  const card1Ref = useRef<HTMLDivElement>(null);
-  const card2Ref = useRef<HTMLDivElement>(null);
-  const card3Ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     const el = ref.current;
     if (!el || !("IntersectionObserver" in window)) {
@@ -27,186 +22,128 @@ const Contact = () => {
           io.disconnect();
         }
       },
-      { threshold: 0.25 }
+      { threshold: 0.18 }
     );
     io.observe(el);
     return () => io.disconnect();
   }, []);
 
-  const stop = (i: number) => ({
+  const rise = (i: number) => ({
     opacity: inView ? 1 : 0,
-    transform: inView ? "none" : "translateY(10px)",
+    transform: inView ? "none" : "translateY(14px)",
     transition: `opacity 600ms ${EASE}, transform 600ms ${EASE}`,
-    transitionDelay: `${120 + i * 130}ms`,
+    transitionDelay: `${120 + i * 110}ms`,
   });
-
-  // Direct high-performance DOM manipulation for 3D tilt interaction (no state updates on mousemove)
-  const handleMouseMove = (cardRef: React.RefObject<HTMLDivElement | null>) => (e: React.MouseEvent) => {
-    const card = cardRef.current;
-    if (!card) return;
-    card.style.transition = "none";
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left - (rect.width / 2);
-    const y = e.clientY - rect.top - (rect.height / 2);
-
-    // Smooth 3D tilt calculation (max tilt angle 6 degrees)
-    const tiltX = (y / (rect.height / 2)) * -6;
-    const tiltY = (x / (rect.width / 2)) * 6;
-
-    card.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(12px)`;
-  };
-
-  const handleMouseLeave = (cardRef: React.RefObject<HTMLDivElement | null>) => () => {
-    const card = cardRef.current;
-    if (!card) return;
-    card.style.transition = "transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1)";
-    card.style.transform = "rotateX(0deg) rotateY(0deg) translateZ(0px)";
-  };
 
   return (
     <section
       ref={ref}
       id="kontakt"
       aria-label="Kontakt"
-      className="scroll-mt-0 overflow-hidden py-14 pb-20 text-paper sm:py-16 md:py-24 md:pb-28 lg:py-28"
-      style={{
-        background: "radial-gradient(125% 90% at 100% 0%, hsl(217 48% 27%), hsl(var(--navy)) 58%)",
-      }}
+      className="relative scroll-mt-0 overflow-hidden bg-navy-deep py-14 pb-20 text-paper sm:py-16 md:py-24 md:pb-28 lg:py-28"
     >
-      <div className="container-mh">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.92fr_1.08fr] lg:gap-20">
+      {/* Directional wash — same left-dark → right-light language as the hero */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          background:
+            "linear-gradient(90deg, hsl(var(--navy-deep) / 0.55) 0%, transparent 45%, transparent 68%, hsl(var(--navy) / 0.22) 100%)",
+        }}
+      />
+      {/* Top hairline glow — links back to the TrustBar under the hero */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 z-0 h-px bg-[linear-gradient(90deg,transparent,hsl(var(--yellow)/0.42),transparent)]"
+      />
+
+      <div className="container-mh relative z-10">
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16">
           {/* Intro */}
           <div>
-            <div className="font-mono text-[11.5px] font-medium uppercase tracking-[0.2em] text-yellow">
-              Kontakt
+            <div className="flex items-center gap-3" style={rise(0)}>
+              <span className="mh-led" aria-hidden="true" />
+              <span className="font-mono text-[11.5px] font-medium uppercase tracking-[0.2em] text-yellow">
+                Kontakt
+              </span>
             </div>
-            <h2 className="h2 mt-5 text-paper">Masz termin. Potrzebujesz wyceny.</h2>
-            <p className="lede mt-6 max-w-[44ch] text-paper/70">
-              Telefon to najszybszy kanał, dzwonisz, opisujesz sytuację, dostajesz
-              orientacyjną cenę w trakcie rozmowy. Jeśli nie odbiorę od razu,
-              oddzwonię w godzinach pracy.
+            <h2 className="h2 mt-5 text-paper" style={rise(1)}>
+              Masz termin. Potrzebujesz wyceny.
+            </h2>
+            <p className="lede mt-6 max-w-[44ch] text-paper/70" style={rise(2)}>
+              Telefon to najszybszy kanał — opisujesz transport albo event,
+              a ja dopytuję o termin, miejsce, dostęp i warunki. Jeśli nie
+              odbiorę od razu, oddzwonię w godzinach pracy.
             </p>
           </div>
 
-          {/* Route with stops (Kinetic Connection Line) */}
-          <ol className="relative flex flex-col gap-6 c3-perspective-panel">
-            {/* Pulsing kinetic timeline track */}
-            <div
-              aria-hidden="true"
-              className="c3-line-track"
-              style={{
-                transform: inView ? "scaleY(1)" : "scaleY(0)",
-                transformOrigin: "top",
-                transition: `transform 700ms ${EASE} 100ms`,
-              }}
-            >
-              <div className="c3-line-pulse" />
+          {/* Console panel */}
+          <div className="mh-console" style={rise(3)}>
+            {/* Primary row — phone CTA */}
+            <div className="mh-console__row">
+              <a
+                href={PHONE_HREF}
+                className="group mh-console__cta w-full"
+              >
+                <span className="mh-console__chip shrink-0" aria-hidden="true">
+                  <Phone className="h-5 w-5" strokeWidth={2} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/60">
+                    Zadzwoń
+                  </span>
+                  <span className="mt-1.5 block text-[1.35rem] font-bold leading-tight tracking-tight text-paper sm:text-[clamp(1.5rem,2.4vw,1.9rem)]">
+                    {PHONE_DISPLAY}
+                  </span>
+                  <span className="mt-1.5 block text-[13px] font-medium text-paper/65">
+                    Pon–Sob · 8:00–20:00
+                  </span>
+                </span>
+                <ArrowRight
+                  className="hidden h-5 w-5 shrink-0 text-yellow transition-mh group-hover:translate-x-1.5 sm:block"
+                  aria-hidden="true"
+                />
+              </a>
             </div>
 
-            {/* 1 — Zadzwoń (primary action) */}
-            <li className="relative grid grid-cols-[42px_minmax(0,1fr)] items-stretch gap-4 lg:gap-5" style={stop(0)}>
-              {/* Concentric ripples around the icon */}
-              <div className="relative z-10 self-center" aria-hidden="true">
-                <div className="c3-ripple-container">
-                  <span className="c3-ripple-ring" />
-                  <span className="c3-ripple-ring" />
-                  <span className="c3-ripple-ring" />
-                  <span
-                    className="relative z-10 grid h-[42px] w-[42px] place-items-center rounded-full bg-yellow text-navy"
-                    style={{ boxShadow: "0 0 0 7px hsl(45 100% 51% / 0.12)" }}
-                  >
-                    <Phone className="h-[18px] w-[18px]" strokeWidth={2} />
-                  </span>
-                </div>
+            {/* Secondary row — availability */}
+            <div className="mh-console__row">
+              <span className="mh-console__chip mh-console__chip--ghost shrink-0" aria-hidden="true">
+                <Clock className="h-[18px] w-[18px]" strokeWidth={2} />
+              </span>
+              <div className="min-w-0">
+                <span className="block font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/55">
+                  Dostępność
+                </span>
+                <span className="mt-1 block text-[16px] font-semibold leading-snug text-paper">
+                  Oddzwaniam po nieodebranych
+                </span>
+                <span className="mt-1 block text-[13px] font-medium text-paper/60">
+                  Najlepiej telefonicznie, bez formularzy
+                </span>
               </div>
+            </div>
 
-              <div
-                ref={card1Ref}
-                onMouseMove={handleMouseMove(card1Ref)}
-                onMouseLeave={handleMouseLeave(card1Ref)}
-                className="c3-tilt-card"
-                style={{ padding: 0 }}
-              >
-                <a
-                  href={PHONE_HREF}
-                  className="group c3-shimmer-btn block w-full"
-                >
-                  <span className="c3-shimmer-btn-content">
-                    <span className="min-w-0 flex-1 text-left">
-                      <span className="block font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/70 group-hover:text-navy-deep/60 transition-colors duration-300">
-                        Zadzwoń
-                      </span>
-                      <span className="mt-1.5 block whitespace-nowrap text-[1.25rem] font-bold leading-tight tracking-tight sm:text-[clamp(1.55rem,3vw,2.05rem)] text-paper group-hover:text-navy-deep transition-colors duration-300">
-                        {PHONE_DISPLAY}
-                      </span>
-                      <span className="mt-1 block text-[13px] text-paper/75 group-hover:text-navy-deep/75 transition-colors duration-300">
-                        Pon–Sob · 8:00–20:00
-                      </span>
-                    </span>
-                    <ArrowRight className="hidden h-5 w-5 shrink-0 transition-mh group-hover:translate-x-1.5 sm:block text-paper group-hover:text-navy-deep transition-colors duration-300" aria-hidden="true" />
-                  </span>
-                </a>
+            {/* Tertiary row — base / location */}
+            <div className="mh-console__row">
+              <span className="mh-console__chip mh-console__chip--ghost shrink-0" aria-hidden="true">
+                <MapPin className="h-[18px] w-[18px]" strokeWidth={2} />
+              </span>
+              <div className="min-w-0">
+                <span className="block font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/55">
+                  Baza
+                </span>
+                <span className="mt-1 block text-[16px] font-semibold leading-snug text-paper">
+                  Trzeszczyn, 72-004 Police
+                </span>
+                <span className="mt-1 flex flex-col gap-0.5 font-mono text-[12px] font-medium leading-relaxed text-paper/60 min-[420px]:flex-row min-[420px]:gap-2">
+                  <span>Zachodniopomorskie</span>
+                  <span aria-hidden="true" className="hidden min-[420px]:inline text-yellow/50">·</span>
+                  <span>53.55° N · 14.52° E</span>
+                </span>
               </div>
-            </li>
-
-            {/* 2 — Dostępność */}
-            <li className="relative grid grid-cols-[42px_minmax(0,1fr)] items-stretch gap-4 lg:gap-5" style={stop(1)}>
-              <div className="relative z-10 self-center" aria-hidden="true">
-                <div className="c3-ripple-container">
-                  <span className="c3-ripple-ring" />
-                  <span className="c3-ripple-ring" />
-                  <span className="c3-ripple-ring" />
-                  <span className="relative z-10 grid h-[42px] w-[42px] place-items-center rounded-full border border-paper/20 bg-navy text-yellow">
-                    <Clock className="h-[18px] w-[18px]" strokeWidth={2} />
-                  </span>
-                </div>
-              </div>
-
-              <div
-                ref={card2Ref}
-                onMouseMove={handleMouseMove(card2Ref)}
-                onMouseLeave={handleMouseLeave(card2Ref)}
-                className="c3-tilt-card"
-              >
-                <div className="flex flex-col gap-1.5 pt-0.5">
-                  <span className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/70">Dostępność</span>
-                  <span className="text-[17px] font-semibold text-paper">Oddzwaniam po nieodebranych</span>
-                  <span className="text-[13.5px] font-medium text-paper/72">Najlepiej telefonicznie, bez formularzy</span>
-                </div>
-              </div>
-            </li>
-
-            {/* 3 — Baza */}
-            <li className="relative grid grid-cols-[42px_minmax(0,1fr)] items-stretch gap-4 lg:gap-5" style={stop(2)}>
-              <div className="relative z-10 self-center" aria-hidden="true">
-                <div className="c3-ripple-container">
-                  <span className="c3-ripple-ring" />
-                  <span className="c3-ripple-ring" />
-                  <span className="c3-ripple-ring" />
-                  <span className="relative z-10 grid h-[42px] w-[42px] place-items-center rounded-full border border-paper/20 bg-navy text-yellow">
-                    <MapPin className="h-[18px] w-[18px]" strokeWidth={2} />
-                  </span>
-                </div>
-              </div>
-
-              <div
-                ref={card3Ref}
-                onMouseMove={handleMouseMove(card3Ref)}
-                onMouseLeave={handleMouseLeave(card3Ref)}
-                className="c3-tilt-card"
-              >
-                <div className="flex flex-col gap-1.5 pt-0.5">
-                  <span className="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-paper/70">Baza</span>
-                  <span className="text-[17px] font-semibold text-paper">Trzeszczyn, 72-004 Police</span>
-                  <span className="flex flex-col gap-0.5 font-mono text-[12.5px] font-medium leading-relaxed text-paper/72 min-[420px]:flex-row min-[420px]:gap-2">
-                    <span>Zachodniopomorskie</span>
-                    <span aria-hidden="true" className="hidden min-[420px]:inline">·</span>
-                    <span>53.55° N · 14.52° E</span>
-                  </span>
-                </div>
-              </div>
-            </li>
-          </ol>
+            </div>
+          </div>
         </div>
       </div>
     </section>

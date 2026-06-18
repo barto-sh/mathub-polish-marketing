@@ -9,25 +9,25 @@ import {
 const PROOF_POINTS = [
   {
     value: "500 kg+",
-    label: "transport ciężkich ładunków",
-    kicker: "Przeprowadzki",
+    label: "ciężkie rzeczy bez rampy",
+    kicker: "Wózek",
     icon: PackageCheck,
   },
   {
-    value: "3 strefy",
+    value: "Dowóz",
     label: "dmuchańce, piana i obsługa",
-    kicker: "Atrakcje",
+    kicker: "Eventy",
     icon: PartyPopper,
   },
   {
     value: "24 h",
-    label: "kontakt i wycena po zgłoszeniu",
-    kicker: "Organizacja",
+    label: "kontakt i dostępność terminu",
+    kicker: "Wycena",
     icon: Clock3,
   },
   {
-    value: "Cała PL",
-    label: "trasy lokalne i między miastami",
+    value: "Lokalnie + PL",
+    label: "trasy pod transport i eventy",
     kicker: "Zasięg",
     icon: MapPinned,
   },
@@ -41,8 +41,8 @@ const PROOF_POINTS = [
 const TrustBar = () => {
   return (
     <section
-      aria-label="Kluczowe liczby"
-      className="relative overflow-hidden bg-navy-deep py-4 text-paper md:py-6"
+      aria-label="Najważniejsze atuty"
+      className="relative overflow-hidden border-y border-paper/10 bg-navy-deep py-3 text-paper sm:py-4"
     >
       <div
         aria-hidden="true"
@@ -50,47 +50,49 @@ const TrustBar = () => {
       />
       <div
         aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-px bg-paper/10"
+        className="absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,hsl(var(--paper)/0.12),transparent)]"
       />
 
-      <div className="container relative z-10">
-        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-4 md:gap-3">
-          {PROOF_POINTS.map((point) => {
+      <div className="container-mh relative z-10">
+        <dl className="grid grid-cols-2 overflow-hidden rounded-md border border-paper/10 bg-[linear-gradient(180deg,hsl(var(--paper)/0.052),hsl(var(--paper)/0.018))] md:grid-cols-4">
+          {PROOF_POINTS.map((point, idx) => {
             const Icon = point.icon;
 
             return (
-              <article
+              <div
                 key={point.label}
-                className="group relative flex min-h-24 items-center gap-3 overflow-hidden rounded-lg border border-paper/10 bg-[linear-gradient(145deg,hsl(var(--navy)/0.68),hsl(var(--navy-deep)/0.96))] p-3 text-left shadow-[0_18px_48px_hsl(var(--navy-deep)/0.28)] md:min-h-28 md:gap-3.5 md:p-4"
+                className={`relative flex min-h-[92px] items-start gap-2.5 px-3 py-4 text-left sm:min-h-[88px] sm:items-center sm:gap-3 sm:px-4 md:min-h-[76px] lg:px-5 ${
+                  idx % 2 === 1 ? "max-md:border-l max-md:border-paper/10" : ""
+                } ${idx < 2 ? "max-md:border-b max-md:border-paper/10" : ""} ${
+                  idx > 0 ? "md:border-l md:border-paper/10" : ""
+                }`}
               >
                 <span
                   aria-hidden="true"
-                  className="absolute inset-x-0 top-0 h-[2px] bg-[linear-gradient(90deg,hsl(var(--yellow)/0.08),hsl(var(--yellow)/0.9),hsl(var(--yellow)/0.08))]"
+                  className="absolute inset-x-3 top-0 h-px bg-[linear-gradient(90deg,hsl(var(--yellow)/0.38),transparent)] md:inset-x-4"
                 />
                 <span
                   aria-hidden="true"
-                  className="absolute bottom-0 left-3 h-px w-10 bg-yellow/55 md:left-4 md:w-12"
-                />
-
-                <div className="relative z-10 grid h-9 w-9 flex-none place-items-center rounded-md border border-yellow/30 bg-yellow/12 text-yellow shadow-[inset_0_1px_0_hsl(var(--paper)/0.12),0_10px_24px_hsl(var(--yellow)/0.08)] md:h-11 md:w-11">
-                  <Icon className="h-[18px] w-[18px] stroke-[1.9] md:h-[21px] md:w-[21px]" />
-                </div>
+                  className="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-sm border border-yellow/[0.18] bg-yellow/[0.07] text-yellow/[0.78] sm:mt-0 sm:h-7 sm:w-7"
+                >
+                  <Icon className="h-[13px] w-[13px] stroke-[1.8] sm:h-[15px] sm:w-[15px]" />
+                </span>
 
                 <div className="relative z-10 min-w-0 flex-1">
-                  <p className="mb-1 text-[8px] font-black uppercase leading-[1.1] tracking-[0.08em] text-yellow/82 md:text-[9px] md:tracking-[0.14em]">
+                  <dt className="text-[8px] font-bold uppercase leading-none tracking-[0.16em] text-yellow/[0.74] sm:text-[9px] sm:tracking-[0.18em]">
                     {point.kicker}
-                  </p>
-                  <strong className="block font-heading text-[1.32rem] font-black leading-[1.08] tracking-normal text-paper md:text-[1.55rem]">
+                  </dt>
+                  <dd className="mt-1.5 block text-[1.08rem] font-bold leading-none tracking-tight text-paper sm:text-[1.16rem] md:text-[1.08rem] lg:text-[1.18rem]">
                     {point.value}
-                  </strong>
-                  <p className="mt-1 text-[0.7rem] font-semibold leading-snug tracking-normal text-paper/72 md:mt-1.5 md:text-[0.76rem]">
+                  </dd>
+                  <dd className="mt-1.5 text-[0.68rem] font-semibold leading-snug text-paper/[0.62] sm:text-[0.72rem] lg:text-[0.76rem]">
                     {point.label}
-                  </p>
+                  </dd>
                 </div>
-              </article>
+              </div>
             );
           })}
-        </div>
+        </dl>
       </div>
     </section>
   );

@@ -1,25 +1,28 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 
 const base = process.env.VITE_BASE_PATH ?? "/";
+const devHost = process.env.VITE_DEV_HOST ?? "127.0.0.1";
+const requestedDevPort = Number.parseInt(process.env.VITE_DEV_PORT ?? "8080", 10);
+const devPort = Number.isFinite(requestedDevPort) ? requestedDevPort : 8080;
+const hmrOverlay = process.env.VITE_HMR_OVERLAY !== "false";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(() => ({
   base,
   server: {
-    host: "::",
-    port: 8080,
+    host: devHost,
+    port: devPort,
     hmr: {
-      overlay: false,
+      overlay: hmrOverlay,
     },
   },
-  plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
+  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-    dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime", "@tanstack/react-query", "@tanstack/query-core"],
+    dedupe: ["react", "react-dom", "react/jsx-runtime", "react/jsx-dev-runtime"],
   },
 }));
