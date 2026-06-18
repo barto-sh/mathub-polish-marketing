@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { getGoldenHighwayScene } from "./goldenHighwayScene";
 
 /* ============================================================
    GoldenHighway — world-class driver's POV 3D highway canvas
@@ -25,20 +26,7 @@ interface HighwayState {
   reducedMotion: boolean;
 }
 
-const HIGHWAY = {
-  fov: 420,
-  cameraY: 110,
-  cameraZ: -260,
-  horizonYRatio: 0.38,
-  roadWidth: 720,
-  fogNear: 160,
-  fogFar: 2000,
-  edgeAlpha: 0.24,
-  laneAlpha: 0.34,
-  markerSpacing: 180,
-  markerLength: 60,
-  studSpacing: 240,
-};
+const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 
 const GoldenHighway = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -99,31 +87,32 @@ const GoldenHighway = () => {
       window.addEventListener("scroll", onScroll, { passive: true });
     }
 
-    const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
+    let scene = getGoldenHighwayScene(state.width, state.height);
 
     const project = (x: number, z: number): { x: number; y: number; scale: number } | null => {
-      const dz = z - HIGHWAY.cameraZ;
+      const dz = z - scene.cameraZ;
       if (dz <= 1) return null;
-      const scale = HIGHWAY.fov / dz;
+      const scale = scene.fov / dz;
       const px = state.width / 2 + x * scale;
-      const horizonY = state.height * HIGHWAY.horizonYRatio;
-      const py = horizonY + HIGHWAY.cameraY * scale;
+      const py = scene.horizonY + scene.cameraY * scale;
       return { x: px, y: py, scale };
     };
 
     const fog = (z: number): number => {
-      const dz = z - HIGHWAY.cameraZ;
-      return clamp((dz - HIGHWAY.fogNear) / (HIGHWAY.fogFar - HIGHWAY.fogNear), 0, 1);
+      const dz = z - scene.cameraZ;
+      return clamp((dz - scene.fogNear) / (scene.fogFar - scene.fogNear), 0, 1);
     };
 
     const headlightIntensity = (x: number, z: number): number => {
       const f = fog(z);
       if (f >= 0.98) return 0;
 
-      const depth = clamp((z - (HIGHWAY.cameraZ + HIGHWAY.fogNear)) / 1220, 0, 1);
+      const depth = clamp((z - (scene.cameraZ + scene.fogNear)) / 1220, 0, 1);
       const depthFalloff = Math.sin(depth * Math.PI) * 0.65 + (1 - depth) * 0.35;
-      const leftBeam = Math.max(0, 1 - Math.abs(x + 84) / 330);
-      const rightBeam = Math.max(0, 1 - Math.abs(x - 84) / 330);
+      const beamOffset = 84 * scene.roadScale;
+      const beamSpread = clamp(330 * scene.roadScale, 190, 330);
+      const leftBeam = Math.max(0, 1 - Math.abs(x + beamOffset) / beamSpread);
+      const rightBeam = Math.max(0, 1 - Math.abs(x - beamOffset) / beamSpread);
       const beam = Math.max(leftBeam, rightBeam);
 
       return clamp(beam * depthFalloff * (1 - f * 0.72), 0, 1);
@@ -131,10 +120,10 @@ const GoldenHighway = () => {
 
     const withRoadClip = (zNear: number, zFar: number, draw: () => void) => {
       const c = state.ctx;
-      const leftNear = project(-HIGHWAY.roadWidth / 2, zNear);
-      const rightNear = project(HIGHWAY.roadWidth / 2, zNear);
-      const leftFar = project(-HIGHWAY.roadWidth / 2, zFar);
-      const rightFar = project(HIGHWAY.roadWidth / 2, zFar);
+      const leftNear = project(-scene.roadWidth / 2, zNear);
+      const rightNear = project(scene.roadWidth / 2, zNear);
+      const leftFar = project(-scene.roadWidth / 2, zFar);
+      const rightFar = project(scene.roadWidth / 2, zFar);
       if (!leftNear || !rightNear || !leftFar || !rightFar) return;
 
       c.save();
@@ -202,10 +191,10 @@ const GoldenHighway = () => {
     // Draw the asphalt road surface as a perspective polygon.
     const drawRoadSurface = (zNear: number, zFar: number) => {
       const c = state.ctx;
-      const leftNear = project(-HIGHWAY.roadWidth / 2, zNear);
-      const rightNear = project(HIGHWAY.roadWidth / 2, zNear);
-      const leftFar = project(-HIGHWAY.roadWidth / 2, zFar);
-      const rightFar = project(HIGHWAY.roadWidth / 2, zFar);
+      const leftNear = project(-scene.roadWidth / 2, zNear);
+      const rightNear = project(scene.roadWidth / 2, zNear);
+      const leftFar = project(-scene.roadWidth / 2, zFar);
+      const rightFar = project(scene.roadWidth / 2, zFar);
       if (!leftNear || !rightNear || !leftFar || !rightFar) return;
 
       c.save();
@@ -231,7 +220,7 @@ const GoldenHighway = () => {
 
     // Center median strip.
     const drawMedianStrip = (zNear: number, zFar: number) => {
-      const halfMedian = 16;
+      const halfMedian = clamp(16 * scene.roadScale, 8, 16);
       const pNearLeft = project(-halfMedian, zNear);
       const pNearRight = project(halfMedian, zNear);
       const pFarLeft = project(-halfMedian, zFar);
@@ -253,11 +242,11 @@ const GoldenHighway = () => {
 
     // Side curbs.
     const drawCurbs = (zNear: number, zFar: number) => {
-      const curbW = 12;
-      const leftOuter = -HIGHWAY.roadWidth / 2 - curbW;
-      const leftInner = -HIGHWAY.roadWidth / 2;
-      const rightInner = HIGHWAY.roadWidth / 2;
-      const rightOuter = HIGHWAY.roadWidth / 2 + curbW;
+      const curbW = clamp(12 * scene.roadScale, 7, 12);
+      const leftOuter = -scene.roadWidth / 2 - curbW;
+      const leftInner = -scene.roadWidth / 2;
+      const rightInner = scene.roadWidth / 2;
+      const rightOuter = scene.roadWidth / 2 + curbW;
 
       const drawCurb = (x1: number, x2: number) => {
         const p1Near = project(x1, zNear);
@@ -286,11 +275,13 @@ const GoldenHighway = () => {
     const drawHeadlightWash = (zNear: number, zFar: number) => {
       const c = state.ctx;
       const zSource = zNear + 20;
-      const zFarBeam = HIGHWAY.cameraZ + 1480;
+      const zFarBeam = scene.cameraZ + 1480;
+      const headlightNearOffset = 92 * scene.roadScale;
+      const headlightFarOffset = 130 * scene.roadScale;
 
       withRoadClip(zNear, zFar, () => {
-        const horizonY = state.height * HIGHWAY.horizonYRatio;
-        const sourceY = state.height + 180;
+        const horizonY = scene.horizonY;
+        const sourceY = state.height + scene.sourceYOffset;
 
         // A broad low-beam flood clipped to the road plane. This avoids
         // visible lamp/truck shapes while still reading as headlights.
@@ -300,7 +291,7 @@ const GoldenHighway = () => {
           40,
           state.width / 2,
           sourceY,
-          state.height * 0.92
+          scene.washRadius
         );
         roadWash.addColorStop(0, "rgba(255, 238, 196, 0.28)");
         roadWash.addColorStop(0.28, "rgba(255, 224, 156, 0.18)");
@@ -316,17 +307,17 @@ const GoldenHighway = () => {
         // Real truck headlights form two overlapping lobes with a soft
         // horizontal cutoff instead of two sharp cones.
         [-1, 1].forEach((side) => {
-          const pNear = project(side * 92, zSource);
-          const pFar = project(side * 130, zFarBeam);
+          const pNear = project(side * headlightNearOffset, zSource);
+          const pFar = project(side * headlightFarOffset, zFarBeam);
           if (!pNear || !pFar) return;
 
           const beam = c.createRadialGradient(
             pNear.x,
-            pNear.y + 160,
+            pNear.y + scene.beamYOffset,
             20,
             pFar.x,
-            pFar.y + 160,
-            state.height * 0.58
+            pFar.y + scene.beamYOffset,
+            scene.beamRadius
           );
           beam.addColorStop(0, "rgba(255, 242, 205, 0.34)");
           beam.addColorStop(0.22, "rgba(255, 225, 162, 0.22)");
@@ -369,21 +360,21 @@ const GoldenHighway = () => {
 
       withRoadClip(zNear, zFar, () => {
         [-1, 1].forEach((side) => {
-          drawReflectiveStreak(side, 96, 150, 18, 0.1);
-          drawReflectiveStreak(side, 46, 70, 7, 0.08);
+          drawReflectiveStreak(side, 96 * scene.roadScale, 150 * scene.roadScale, clamp(18 * scene.roadScale, 10, 18), 0.1);
+          drawReflectiveStreak(side, 46 * scene.roadScale, 70 * scene.roadScale, clamp(7 * scene.roadScale, 4, 7), 0.08);
         });
       });
     };
 
     // Dashed center lane divider.
     const drawLaneDivider = (zNear: number, zFar: number) => {
-      const startZ = Math.floor((zNear - state.zOffset) / HIGHWAY.markerSpacing) * HIGHWAY.markerSpacing + state.zOffset;
-      for (let z = startZ; z <= zFar; z += HIGHWAY.markerSpacing) {
+      const startZ = Math.floor((zNear - state.zOffset) / scene.markerSpacing) * scene.markerSpacing + state.zOffset;
+      for (let z = startZ; z <= zFar; z += scene.markerSpacing) {
         const f = fog(z);
         if (f >= 0.98) continue;
-        const endZ = z + HIGHWAY.markerLength * clamp(1 - f * 0.5, 0.65, 1);
-        const alpha = HIGHWAY.laneAlpha * (1 - f);
-        const paintWidth = clamp(11 * (1 - f * 0.45), 5.5, 11);
+        const endZ = z + scene.markerLength * clamp(1 - f * 0.5, 0.65, 1);
+        const alpha = scene.laneAlpha * (1 - f);
+        const paintWidth = clamp(11 * scene.roadScale * (1 - f * 0.45), 5.5, 11);
         drawRoadBand(0, z, endZ, paintWidth, `hsla(45, 100%, 62%, ${alpha})`);
 
         const reflectAlpha = 0.42 * headlightIntensity(0, z);
@@ -395,7 +386,7 @@ const GoldenHighway = () => {
 
     // Solid road edges with reflective paint catching the headlight wash.
     const drawLongitudinalLines = (zNear: number, zFar: number) => {
-      const lanes = [-HIGHWAY.roadWidth / 2, HIGHWAY.roadWidth / 2];
+      const lanes = [-scene.roadWidth / 2, scene.roadWidth / 2];
       lanes.forEach((x) => {
         const segmentLength = 110;
         for (let z = zNear; z < zFar; z += segmentLength) {
@@ -403,12 +394,12 @@ const GoldenHighway = () => {
           const f = fog(z + segmentLength * 0.5);
           if (f >= 0.98) continue;
 
-          const baseAlpha = HIGHWAY.edgeAlpha * (1 - f);
-          drawRoadBand(x, z, zEnd, 8, `hsla(45, 100%, 54%, ${baseAlpha})`);
+          const baseAlpha = scene.edgeAlpha * (1 - f);
+          drawRoadBand(x, z, zEnd, clamp(8 * scene.roadScale, 5, 8), `hsla(45, 100%, 54%, ${baseAlpha})`);
 
           const reflectAlpha = 0.36 * headlightIntensity(x, z + segmentLength * 0.5);
           if (reflectAlpha > 0.015) {
-            drawRoadBand(x, z, zEnd, 13, `rgba(255, 236, 190, ${reflectAlpha})`);
+            drawRoadBand(x, z, zEnd, clamp(13 * scene.roadScale, 7, 13), `rgba(255, 236, 190, ${reflectAlpha})`);
           }
         }
       });
@@ -416,19 +407,19 @@ const GoldenHighway = () => {
 
     // Low-profile road studs that brighten only inside the headlight wash.
     const drawReflectiveRoadStuds = (zNear: number, zFar: number) => {
-      const startZ = Math.floor((zNear - state.zOffset) / HIGHWAY.studSpacing) * HIGHWAY.studSpacing + state.zOffset;
-      for (let z = startZ; z <= zFar; z += HIGHWAY.studSpacing) {
+      const startZ = Math.floor((zNear - state.zOffset) / scene.studSpacing) * scene.studSpacing + state.zOffset;
+      for (let z = startZ; z <= zFar; z += scene.studSpacing) {
         const f = fog(z);
         if (f >= 0.98) continue;
 
         [-1, 1].forEach((side) => {
-          const x = side * (HIGHWAY.roadWidth / 2 - 42);
+          const x = side * (scene.roadWidth / 2 - clamp(42 * scene.roadScale, 20, 42));
           const intensity = headlightIntensity(x, z);
           const alpha = 0.06 * (1 - f) + 0.48 * intensity;
           if (alpha < 0.035) return;
 
-          const length = clamp(24 * (1 - f) + 8, 10, 24);
-          const width = clamp(18 * (1 - f) + 5, 6, 18);
+          const length = clamp((24 * (1 - f) + 8) * scene.roadScale, 10, 24);
+          const width = clamp((18 * (1 - f) + 5) * scene.roadScale, 6, 18);
           drawRoadBand(x, z, z + length, width, `rgba(255, 214, 120, ${alpha})`);
 
           const hotAlpha = 0.26 * intensity;
@@ -441,8 +432,9 @@ const GoldenHighway = () => {
 
     // Continuous side rails kept intentionally subtle to avoid flashing ticks.
     const drawGuardrails = (zNear: number, zFar: number) => {
-      const leftRailX = -HIGHWAY.roadWidth / 2 - 48;
-      const rightRailX = HIGHWAY.roadWidth / 2 + 48;
+      const railOffset = clamp(48 * scene.roadScale, 24, 48);
+      const leftRailX = -scene.roadWidth / 2 - railOffset;
+      const rightRailX = scene.roadWidth / 2 + railOffset;
 
       [leftRailX, rightRailX].forEach((x) => {
         const segmentLength = 130;
@@ -459,6 +451,7 @@ const GoldenHighway = () => {
     };
 
     const draw = (time: number) => {
+      scene = getGoldenHighwayScene(state.width, state.height);
       const dt = Math.min((time - state.lastTime) / 1000, 0.05);
       state.lastTime = time;
 
@@ -472,15 +465,15 @@ const GoldenHighway = () => {
       c.clearRect(0, 0, state.width, state.height);
 
       // Horizon/sky fade.
-      const horizonY = state.height * HIGHWAY.horizonYRatio;
+      const horizonY = scene.horizonY;
       const skyGrad = c.createLinearGradient(0, 0, 0, horizonY + 70);
       skyGrad.addColorStop(0, "hsl(215 55% 9%)");
       skyGrad.addColorStop(1, "rgba(10, 20, 34, 0)");
       c.fillStyle = skyGrad;
       c.fillRect(0, 0, state.width, horizonY + 70);
 
-      const zNear = HIGHWAY.cameraZ + HIGHWAY.fogNear;
-      const zFar = HIGHWAY.cameraZ + HIGHWAY.fogFar;
+      const zNear = scene.cameraZ + scene.fogNear;
+      const zFar = scene.cameraZ + scene.fogFar;
 
       // Draw from back to front for correct layering.
       drawRoadSurface(zNear, zFar);
@@ -493,12 +486,12 @@ const GoldenHighway = () => {
       drawGuardrails(zNear, zFar);
 
       // Bottom vignette for text readability.
-      const vignette = c.createLinearGradient(0, state.height - 260, 0, state.height);
+      const vignette = c.createLinearGradient(0, state.height - scene.vignetteHeight, 0, state.height);
       vignette.addColorStop(0, "rgba(10, 18, 30, 0)");
       vignette.addColorStop(0.6, "rgba(10, 18, 30, 0.55)");
       vignette.addColorStop(1, "rgba(10, 18, 30, 0.82)");
       c.fillStyle = vignette;
-      c.fillRect(0, state.height - 260, state.width, 260);
+      c.fillRect(0, state.height - scene.vignetteHeight, state.width, scene.vignetteHeight);
 
       if (isVisible && !state.reducedMotion) {
         rafId = requestAnimationFrame(draw);

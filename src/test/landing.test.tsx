@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import Index from "@/pages/Index";
 import NotFound from "@/pages/NotFound";
 import { scrollToHash } from "@/lib/scrollToHash";
+import { getGoldenHighwayScene } from "@/components/site/goldenHighwayScene";
 
 const DESKTOP_NAV_QUERY = "(min-width: 768px)";
 
@@ -207,5 +208,34 @@ describe("landing page", () => {
     expect(document.title).toBe("404 — MatHub");
     unmount();
     expect(document.title).toBe("MatHub");
+  });
+});
+
+describe("golden highway scene", () => {
+  it("preserves the desktop road composition", () => {
+    const scene = getGoldenHighwayScene(1200, 360);
+
+    expect(scene.roadWidth).toBe(720);
+    expect(scene.horizonYRatio).toBe(0.38);
+    expect(scene.cameraY).toBe(110);
+    expect(scene.vignetteHeight).toBe(260);
+  });
+
+  it("scales the road smoothly below the full desktop width", () => {
+    const scene = getGoldenHighwayScene(900, 420);
+
+    expect(scene.roadWidth).toBe(540);
+    expect(scene.horizonYRatio).toBe(0.38);
+  });
+
+  it("normalizes the mobile road composition inside a tall footer", () => {
+    const scene = getGoldenHighwayScene(390, 680);
+    const nearRoadY = scene.horizonY + scene.cameraY * (scene.fov / scene.fogNear);
+
+    expect(scene.roadWidth).toBeCloseTo(234);
+    expect(scene.horizonYRatio).toBe(0.23);
+    expect(scene.horizonY).toBeCloseTo(156.4);
+    expect(nearRoadY).toBeGreaterThan(680);
+    expect(scene.vignetteHeight).toBeGreaterThan(320);
   });
 });
