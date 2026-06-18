@@ -12,7 +12,7 @@ permissions:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  VITE_BASE_PATH: /
+  VITE_BASE_PATH: ./
 
 concurrency:
   group: pages
